@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_primary">16dp</dimen>
+    <dimen name="margin_three_quarters">12dp</dimen>
+    <dimen name="margin_half">8dp</dimen>
+    <dimen name="margin_one_quarter">4dp</dimen>
+
+    <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_primary">14sp</dimen>
+    <dimen name="text_small">14sp</dimen>
+
+    <dimen name="radius_default">10dp</dimen>
+    <dimen name="radius_small">3dp</dimen>
+
+</resources>

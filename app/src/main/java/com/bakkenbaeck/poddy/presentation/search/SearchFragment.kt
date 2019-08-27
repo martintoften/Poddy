@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.model.Search
 import com.bakkenbaeck.poddy.util.TextListener
@@ -14,7 +15,9 @@ import kotlinx.android.synthetic.main.search_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
+
     private val viewModel: SearchViewModel by viewModel()
+    private lateinit var searchAdapter: SearchAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.search_fragment, container, false)
@@ -28,7 +31,17 @@ class SearchFragment : Fragment() {
 
     private fun init() {
         initView()
+        initAdapter()
         initObservers()
+    }
+
+    private fun initAdapter() {
+        searchAdapter = SearchAdapter()
+
+        searchList.apply {
+            adapter = searchAdapter
+            layoutManager = LinearLayoutManager(this@SearchFragment.context)
+        }
     }
 
     private fun initView() {
@@ -49,12 +62,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun handleQueryResult(searchResult: Search) {
-        Log.d("result query", searchResult.resultCount.toString())
-
-        if (searchResult.results.count() > 0) {
-            viewModel.getFeed(searchResult.results[0].feedUrl)
-
-        }
+        searchAdapter.add(searchResult.results)
     }
 
     private fun handleFeedResult(feedResult: Any) {
