@@ -23,9 +23,9 @@ public class Channel {
     public List<Item> itemList;
 
     @Element
-    String title;
+    public String title;
     @Element
-    String description;
+    public String description;
     @Element
     String language;
 
@@ -67,24 +67,26 @@ public class Channel {
 
         @Path("title")
         @Text(required=false)
-        String title;
+        public String title;
         @Element(name = "link", required = false)
         String link;
         @Path("description")
         @Text(required=false)
-        String description;
+        public String description;
         @Element(name = "category", required = false)
         String category;
         @Element(name = "comments", required = false)
         String comments;
         @Element(name = "enclosure", required = false)
-        Enclosure enclosure;
+        public Enclosure enclosure;
         @Element(name = "guid", required = false)
         String guid;
         @Element(name = "pubDate", required = false)
-        String pubDate;
+        public String pubDate;
         @Element(name = "source", required = false)
         String source;
+        @Element(name = "duration", required = false)
+        public int duration;
 
         @Override
         public String toString() {

@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.model.SearchItem
 
-class SearchAdapter : RecyclerView.Adapter<SearchViewHolder>() {
+class SearchAdapter(
+    private val onItemClickedListener: (SearchItem) -> Unit
+) : RecyclerView.Adapter<SearchViewHolder>() {
 
     private val items by lazy { mutableListOf<SearchItem>() }
 
@@ -24,6 +26,10 @@ class SearchAdapter : RecyclerView.Adapter<SearchViewHolder>() {
     override fun getItemCount(): Int = items.count()
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        holder.setSearchItem(items[position])
+        val item = items[position]
+        holder.apply {
+            setSearchItem(item)
+            setOnItemClickedListener(item, onItemClickedListener)
+        }
     }
 }

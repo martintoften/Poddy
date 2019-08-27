@@ -1,7 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.search
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.model.Search
+import com.bakkenbaeck.poddy.model.SearchItem
+import com.bakkenbaeck.poddy.presentation.feed.FEED_IMAGE
+import com.bakkenbaeck.poddy.presentation.feed.FEED_URL
 import com.bakkenbaeck.poddy.util.TextListener
 import kotlinx.android.synthetic.main.search_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -28,7 +31,6 @@ class SearchFragment : Fragment() {
         init()
     }
 
-
     private fun init() {
         initView()
         initAdapter()
@@ -36,12 +38,20 @@ class SearchFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        searchAdapter = SearchAdapter()
+        searchAdapter = SearchAdapter { goTo(it) }
 
         searchList.apply {
             adapter = searchAdapter
             layoutManager = LinearLayoutManager(this@SearchFragment.context)
         }
+    }
+
+    private fun goTo(searchItem: SearchItem) {
+        val bundle = Bundle().apply {
+            putString(FEED_URL, searchItem.feedUrl)
+            putString(FEED_IMAGE, searchItem.artworkUrl600)
+        }
+        navigate(R.id.to_details_fragment, bundle)
     }
 
     private fun initView() {
@@ -56,16 +66,9 @@ class SearchFragment : Fragment() {
         viewModel.queryResult.observe(this, Observer {
             handleQueryResult(it)
         })
-        viewModel.feedResult.observe(this, Observer {
-            handleFeedResult(it)
-        })
     }
 
     private fun handleQueryResult(searchResult: Search) {
         searchAdapter.add(searchResult.results)
-    }
-
-    private fun handleFeedResult(feedResult: Any) {
-        Log.d("result feed", feedResult.toString())
     }
 }

@@ -1,6 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.search
 
 import android.view.View
+import android.widget.AdapterView
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import coil.transform.RoundedCornersTransformation
@@ -22,5 +23,9 @@ class SearchViewHolder(override val containerView: View) : RecyclerView.ViewHold
             crossfade(true)
             transformations(roundedCorners)
         }
+    }
+
+    fun setOnItemClickedListener(searchItem: SearchItem, onItemClickListener: (SearchItem) -> Unit) {
+        containerView.setOnClickListener { onItemClickListener(searchItem) }
     }
 }

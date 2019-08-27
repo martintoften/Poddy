@@ -13,13 +13,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val searchRepository: SearchRepository,
-    private val feedRepository: FeedRepository
+    private val searchRepository: SearchRepository
 ) : ViewModel() {
 
     private val channel = BroadcastChannel<String>(Channel.CONFLATED)
     val queryResult = MutableLiveData<Search>()
-    val feedResult = MutableLiveData<Any>()
 
     init {
         initQueryObserver()
@@ -43,18 +41,5 @@ class SearchViewModel(
         viewModelScope.launch {
             channel.send(query)
         }
-    }
-
-    fun getFeed(feedUrl: String) {
-        viewModelScope.launch {
-            feedRepository.getFeed(feedUrl)
-                .flowOn(Dispatchers.IO)
-                .collect { handleFeedResult(it) }
-        }
-
-    }
-
-    private fun handleFeedResult(any: Any) {
-        feedResult.value = any
     }
 }

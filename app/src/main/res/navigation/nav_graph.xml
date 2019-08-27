@@ -9,7 +9,13 @@
     <fragment android:id="@+id/searchFragment"
         android:name="com.bakkenbaeck.poddy.presentation.search.SearchFragment"
         tools:layout="@layout/search_fragment">
+        <action android:id="@+id/to_details_fragment"
+            app:destination="@id/detailsFragment"/>
     </fragment>
 
+    <fragment android:id="@+id/detailsFragment"
+        android:name="com.bakkenbaeck.poddy.presentation.feed.FeedFragment"
+        tools:layout="@layout/feed_fragment">
+    </fragment>
 
 </navigation>
