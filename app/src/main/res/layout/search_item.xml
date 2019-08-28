@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/margin_three_quarters"
     android:paddingBottom="@dimen/margin_three_quarters"
     android:gravity="center_vertical"
-    android:background="@color/colorAccent">
+    android:background="?attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/image"
