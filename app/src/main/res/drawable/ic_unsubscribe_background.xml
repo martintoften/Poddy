@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FF224E"/>
+
+    <padding
+        android:left="@dimen/subscribe_margin_horizontal"
+        android:top="@dimen/subscribe_margin_vertical"
+        android:right="@dimen/subscribe_margin_horizontal"
+        android:bottom="@dimen/subscribe_margin_vertical" />
+
+    <corners
+        android:bottomRightRadius="@dimen/subscribe_radius"
+        android:bottomLeftRadius="@dimen/subscribe_radius"
+        android:topLeftRadius="@dimen/subscribe_radius"
+        android:topRightRadius="@dimen/subscribe_radius" />
+</shape>

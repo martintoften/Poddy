@@ -1,6 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
 import android.view.View
+import android.widget.AdapterView
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.model.Channel
 import com.bakkenbaeck.poddy.util.OUTPUT_DATE_FORMAT
@@ -14,5 +15,9 @@ class EpisodeViewHolder(override val containerView: View) : RecyclerView.ViewHol
         date.text = parseDateString(item.pubDate, OUTPUT_DATE_FORMAT)
         name.text = item.title
         length.text = parseSecondsToMinutes(item.duration)
+    }
+
+    fun setOnItemClickListener(item: Channel.Item, onItemClickListener: (Channel.Item) -> Unit) {
+        containerView.setOnClickListener { onItemClickListener(item) }
     }
 }

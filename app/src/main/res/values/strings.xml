@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Poddy</string>
     <string name="search">Search</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="download">Download</string>
+    <string name="queue">Queue</string>
 </resources>

@@ -25,7 +25,7 @@ class Header(
     val description: String
 )
 
-class EpisodeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class EpisodeAdapter(private val onItemClickListener: (Channel.Item) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items by lazy { mutableListOf<Any>() }
 
@@ -70,6 +70,7 @@ class EpisodeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 val castedItem = item as? Channel.Item ?: return
                 holder.apply {
                     setEpisode(castedItem)
+                    setOnItemClickListener(castedItem, onItemClickListener)
                 }
             }
         }

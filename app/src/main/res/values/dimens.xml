@@ -15,4 +15,8 @@
 
     <dimen name="toolbar_height">56dp</dimen>
 
+    <dimen name="subscribe_margin_horizontal">20dp</dimen>
+    <dimen name="subscribe_margin_vertical">3dp</dimen>
+    <dimen name="subscribe_radius">50dp</dimen>
+
 </resources>

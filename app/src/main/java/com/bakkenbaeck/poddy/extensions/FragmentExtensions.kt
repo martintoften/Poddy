@@ -1,6 +1,8 @@
 package com.bakkenbaeck.poddy.extensions
 
 import android.os.Bundle
+import android.view.View
+import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
@@ -14,7 +16,10 @@ fun Fragment.navigate(directions: NavDirections, navOptions: NavOptions? = null)
     findNavController().navigate(directions, navOptions)
 }
 
-
 fun Fragment.pop(): Boolean {
     return findNavController().popBackStack()
+}
+
+fun Fragment.getDimen(@DimenRes resource: Int): Float {
+    return resources.getDimension(resource)
 }
