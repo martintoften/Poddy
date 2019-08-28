@@ -6,5 +6,5 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
     single { SearchRepository(get()) }
-    single { FeedRepository(get()) }
+    single { FeedRepository(get(), get(), get()) }
 }

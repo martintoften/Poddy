@@ -80,7 +80,7 @@ public class Channel {
         @Element(name = "enclosure", required = false)
         public Enclosure enclosure;
         @Element(name = "guid", required = false)
-        String guid;
+        public String guid;
         @Element(name = "pubDate", required = false)
         public String pubDate;
         @Element(name = "source", required = false)

@@ -1,0 +1,25 @@
+CREATE TABLE episode (
+    id TEXT NOT NULL UNIQUE PRIMARY KEY,
+    channel_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    pub_date TEXT NOT NULL,
+    duration INTEGER NOT NULL
+);
+
+selectAll:
+SELECT * FROM episode;
+
+selectById:
+SELECT * FROM episode WHERE id = ?;
+
+selectByIds:
+SELECT * FROM episode WHERE id IN ?;
+
+selectByChannelId:
+SELECT * FROM episode WHERE channel_id = ?;
+
+insert:
+INSERT OR REPLACE INTO episode(
+    id, channel_id, title, description, pub_date, duration
+)VALUES?;

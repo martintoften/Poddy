@@ -1,0 +1,13 @@
+CREATE TABLE queue (
+    episode_id TEXT NOT NULL,
+    channel_id TEXT NOT NULL,
+    PRIMARY KEY (episode_id, channel_id)
+);
+
+insert:
+INSERT OR REPLACE INTO queue(
+    episode_id, channel_id
+)VALUES?;
+
+selectEpisodeIdAll:
+SELECT episode_id FROM queue;

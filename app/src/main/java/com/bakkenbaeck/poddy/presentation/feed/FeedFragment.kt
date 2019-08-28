@@ -51,7 +51,7 @@ class FeedFragment : Fragment() {
         sheetBehavior = BottomSheetBehavior.from(sheet)
         sheet.play.setOnClickListener { Log.d("FeedFragment", "Play") }
         sheet.download.setOnClickListener { Log.d("FeedFragment", "Download") }
-        sheet.queue.setOnClickListener { Log.d("FeedFragment", "Queue") }
+        sheet.queue.setOnClickListener { feedViewModel.addToQueue() }
     }
 
     private fun initAdapter() {
@@ -84,6 +84,7 @@ class FeedFragment : Fragment() {
         )
 
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        feedViewModel.setCurrentEpisode(episode)
     }
 
     private fun updateSheetStateToCollapsed() {

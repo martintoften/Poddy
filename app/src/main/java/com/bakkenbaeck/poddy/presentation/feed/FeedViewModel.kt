@@ -1,8 +1,10 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bakkenbaeck.poddy.model.Channel
 import com.bakkenbaeck.poddy.model.Rss
 import com.bakkenbaeck.poddy.repository.FeedRepository
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +17,14 @@ class FeedViewModel(
 ) : ViewModel() {
 
     val feedResult = MutableLiveData<Rss>()
+    var selectedEpisode: Channel.Item? = null
+
+    init {
+        viewModelScope.launch {
+            val queue = feedRepository.getQueue()
+            Log.d("FeedViewModel", queue.count().toString())
+        }
+    }
 
     fun getFeed(feedUrl: String) {
         viewModelScope.launch {
@@ -27,5 +37,18 @@ class FeedViewModel(
 
     private fun handleFeedResult(any: Rss) {
         feedResult.value = any
+    }
+
+    fun setCurrentEpisode(episode: Channel.Item) {
+        selectedEpisode = episode
+    }
+
+    fun addToQueue() {
+        val episode = selectedEpisode ?: return
+        val channel = feedResult.value?.channel ?: return
+
+        viewModelScope.launch {
+            feedRepository.addToQueue(episode, channel)
+        }
     }
 }
