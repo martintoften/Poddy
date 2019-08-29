@@ -7,4 +7,7 @@
     <color name="textColorPrimary">#FFF</color>
     <color name="textColorSecondary">#DDD</color>
     <color name="textColorHint">#DDD</color>
+
+    <color name="bottomNavigationItemTintPrimary">#DDD</color>
+    <color name="bottomNavigationItemTintSecondary">#999</color>
 </resources>
