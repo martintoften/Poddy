@@ -1,7 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.search
 
 import android.view.View
-import android.widget.AdapterView
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import coil.transform.RoundedCornersTransformation

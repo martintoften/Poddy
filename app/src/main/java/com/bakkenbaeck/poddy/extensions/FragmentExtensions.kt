@@ -1,7 +1,6 @@
 package com.bakkenbaeck.poddy.extensions
 
 import android.os.Bundle
-import android.view.View
 import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections

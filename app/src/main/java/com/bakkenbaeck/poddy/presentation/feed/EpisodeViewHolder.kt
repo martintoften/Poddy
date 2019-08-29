@@ -1,7 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
 import android.view.View
-import android.widget.AdapterView
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.model.Channel
 import com.bakkenbaeck.poddy.util.OUTPUT_DATE_FORMAT

@@ -6,7 +6,6 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.bakkenbaeck.poddy.presentation.queue.QueueFragment
-import com.bakkenbaeck.poddy.presentation.search.SearchFragment
 
 enum class MainScreen(
     @IdRes val menuItemId: Int,

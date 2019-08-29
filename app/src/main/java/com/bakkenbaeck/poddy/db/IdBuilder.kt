@@ -2,7 +2,6 @@ package com.bakkenbaeck.poddy.db
 
 import com.bakkenbaeck.poddy.model.Channel
 import com.bakkenbaeck.poddy.util.HashUtil
-import java.lang.IllegalStateException
 
 class IdBuilder {
     fun buildQueueId(episode: Channel.Item, channel: Channel): String {

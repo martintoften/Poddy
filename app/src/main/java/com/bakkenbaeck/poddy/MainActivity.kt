@@ -1,21 +1,12 @@
 package com.bakkenbaeck.poddy
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import androidx.activity.addCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
-import com.bakkenbaeck.poddy.model.Search
-import com.bakkenbaeck.poddy.presentation.search.SearchViewModel
-import com.bakkenbaeck.poddy.util.TextListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 

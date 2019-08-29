@@ -6,7 +6,6 @@ import com.bakkenbaeck.poddy.db.buildDatabase
 import com.bakkenbaeck.poddy.network.buildRssApi
 import com.bakkenbaeck.poddy.network.buildSearchApi
 import kotlinx.coroutines.Dispatchers
-import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
