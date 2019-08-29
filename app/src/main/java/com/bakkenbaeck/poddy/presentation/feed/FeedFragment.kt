@@ -5,27 +5,37 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
+import com.bakkenbaeck.poddy.extensions.isVisible
 import com.bakkenbaeck.poddy.model.Channel
 import com.bakkenbaeck.poddy.model.Rss
+import com.bakkenbaeck.poddy.presentation.BackableFragment
+import com.bakkenbaeck.poddy.util.Failure
+import com.bakkenbaeck.poddy.util.Loading
+import com.bakkenbaeck.poddy.util.Resource
+import com.bakkenbaeck.poddy.util.Success
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.detail_sheet.*
 import kotlinx.android.synthetic.main.detail_sheet.view.*
 import kotlinx.android.synthetic.main.feed_fragment.*
+import kotlinx.android.synthetic.main.view_spinner.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val FEED_URL = "FEED_URL"
 const val FEED_IMAGE = "FEED_IMAGE"
 
-class FeedFragment : Fragment() {
+class FeedFragment : BackableFragment() {
 
     private val feedViewModel: FeedViewModel by viewModel()
     private lateinit var episodeAdapter: EpisodeAdapter
@@ -59,7 +69,7 @@ class FeedFragment : Fragment() {
 
         episodeList.apply {
             adapter = episodeAdapter
-            layoutManager = LinearLayoutManager(this@FeedFragment.context)
+            layoutManager = LinearLayoutManager(context)
         }
     }
 
@@ -84,7 +94,7 @@ class FeedFragment : Fragment() {
         )
 
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        feedViewModel.setCurrentEpisode(episode)
+        feedViewModel.setCurrentEpisode(episode, getFeedImage())
     }
 
     private fun updateSheetStateToCollapsed() {
@@ -98,7 +108,14 @@ class FeedFragment : Fragment() {
 
     private fun initObservers() {
         feedViewModel.feedResult.observe(this, Observer {
-            handleFeedResult(it)
+            when (it) {
+                is Success<Rss> -> {
+                    spinnerOverlay.isOverlayVisible(false)
+                    handleFeedResult(it.data)
+                }
+                is Loading -> spinnerOverlay.isOverlayVisible(true)
+                is Failure -> spinnerOverlay.isOverlayVisible(false)
+            }
         })
     }
 

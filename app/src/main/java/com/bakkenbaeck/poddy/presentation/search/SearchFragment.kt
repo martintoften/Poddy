@@ -11,13 +11,14 @@ import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.model.Search
 import com.bakkenbaeck.poddy.model.SearchItem
+import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.feed.FEED_IMAGE
 import com.bakkenbaeck.poddy.presentation.feed.FEED_URL
 import com.bakkenbaeck.poddy.util.TextListener
 import kotlinx.android.synthetic.main.search_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchFragment : Fragment() {
+class SearchFragment : BackableFragment() {
 
     private val viewModel: SearchViewModel by viewModel()
     private lateinit var searchAdapter: SearchAdapter
@@ -42,7 +43,7 @@ class SearchFragment : Fragment() {
 
         searchList.apply {
             adapter = searchAdapter
-            layoutManager = LinearLayoutManager(this@SearchFragment.context)
+            layoutManager = LinearLayoutManager(context)
         }
     }
 

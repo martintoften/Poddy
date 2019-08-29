@@ -12,6 +12,7 @@ class DBReader(
 ) {
     suspend fun getQueue(): List<Episode> {
         return withContext(context) {
+            db.queueQueries.selectEpisodeIdAll()
             val queue = db.queueQueries.selectEpisodeIdAll().executeAsList()
             val episodes = db.episodeQueries.selectByIds(queue).executeAsList()
 

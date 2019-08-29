@@ -4,7 +4,8 @@ CREATE TABLE episode (
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     pub_date TEXT NOT NULL,
-    duration INTEGER NOT NULL
+    duration INTEGER NOT NULL,
+    image TEXT NOT NULL
 );
 
 selectAll:
@@ -21,5 +22,5 @@ SELECT * FROM episode WHERE channel_id = ?;
 
 insert:
 INSERT OR REPLACE INTO episode(
-    id, channel_id, title, description, pub_date, duration
+    id, channel_id, title, description, pub_date, duration, image
 )VALUES?;

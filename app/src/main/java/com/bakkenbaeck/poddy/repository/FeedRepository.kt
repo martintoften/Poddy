@@ -6,7 +6,9 @@ import com.bakkenbaeck.poddy.db.IdBuilder
 import com.bakkenbaeck.poddy.model.Channel
 import com.bakkenbaeck.poddy.model.Rss
 import com.bakkenbaeck.poddy.network.RssApi
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
 import org.db.Episode
 import org.db.Queue
@@ -18,6 +20,7 @@ class FeedRepository(
 ) {
 
     private val idBuilder by lazy { IdBuilder() }
+    private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
 
     fun getFeed(url: String): Flow<Rss> {
         return flow {
@@ -26,7 +29,7 @@ class FeedRepository(
         }
     }
 
-    suspend fun addToQueue(episode: Channel.Item, channel: Channel) {
+    suspend fun addToQueue(episode: Channel.Item, channel: Channel, channelImage: String?) {
         val episodeId = idBuilder.buildQueueId(episode, channel)
         val channelId = idBuilder.buildChannelId(channel)
         val dbQueueItem = Queue.Impl(episodeId, channelId)
@@ -36,12 +39,18 @@ class FeedRepository(
             title = episode.title,
             description = episode.description,
             pub_date = episode.pubDate,
-            duration = episode.duration.toLong()
+            duration = episode.duration.toLong(),
+            image = channelImage.orEmpty()
         )
         dbWriter.insertQueueItem(dbQueueItem, dbEpisode)
+
+        queueChannel.send(listOf(dbEpisode))
     }
 
-    suspend fun getQueue(): List<Episode> {
-        return dbReader.getQueue()
+    suspend fun getQueue(): Flow<List<Episode>> {
+        val queue = dbReader.getQueue()
+        queueChannel.send(queue)
+
+        return queueChannel.asFlow()
     }
 }

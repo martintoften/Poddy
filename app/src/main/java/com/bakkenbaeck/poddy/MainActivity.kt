@@ -3,9 +3,12 @@ package com.bakkenbaeck.poddy
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.activity.addCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.bakkenbaeck.poddy.model.Search
 import com.bakkenbaeck.poddy.presentation.search.SearchViewModel
@@ -35,8 +38,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this)
 
-        // Attach an adapter to the view pager and make it select the bottom navigation
-        // menu item and change the title to proper values when selected.
         viewPager.adapter = mainPagerAdapter
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
@@ -62,7 +63,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         getMainScreenForMenuItem(menuItem.itemId)?.let {
             scrollToScreen(it)
-            supportActionBar?.setTitle(it.titleStringId)
             return true
         }
         return false

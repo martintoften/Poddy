@@ -4,10 +4,16 @@
     <color name="colorPrimaryDark">#111</color>
     <color name="colorAccent">#333</color>
 
+    <color name="colorPrimaryContrast">#EEE</color>
+    <color name="colorPrimaryDarkContrast">#FFF</color>
+    <color name="colorAccentContrast">#DDD</color>
+
     <color name="textColorPrimary">#FFF</color>
     <color name="textColorSecondary">#DDD</color>
     <color name="textColorHint">#DDD</color>
 
     <color name="bottomNavigationItemTintPrimary">#DDD</color>
     <color name="bottomNavigationItemTintSecondary">#999</color>
+
+    <color name="semi_transparent_overlay">#99444444</color>
 </resources>

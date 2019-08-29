@@ -43,4 +43,10 @@
 
     <include layout="@layout/detail_sheet" />
 
+    <com.bakkenbaeck.poddy.presentation.custom.SpinnerOverlay
+        android:id="@+id/spinnerOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
