@@ -3,6 +3,7 @@ package com.bakkenbaeck.poddy.db
 import db.PoddyDB
 import kotlinx.coroutines.withContext
 import org.db.Episode
+import org.db.Podcast
 import org.db.Queue
 import kotlin.coroutines.CoroutineContext
 
@@ -28,6 +29,12 @@ class DBWriter(
             queueIds.forEachIndexed { index, id ->
                 db.queueQueries.updateIndex(index.toLong(), id)
             }
+        }
+    }
+
+    suspend fun insertPodcast(podcast: Podcast) {
+        return withContext(context) {
+            db.podcastQueries.insert(podcast)
         }
     }
 }

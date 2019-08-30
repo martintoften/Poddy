@@ -11,4 +11,10 @@
         android:icon="@drawable/ic_queue"
         android:title="Queue" />
 
+
+    <item
+        android:id="@+id/podcasts"
+        android:icon="@drawable/ic_queue"
+        android:title="Podcasts" />
+
 </menu>

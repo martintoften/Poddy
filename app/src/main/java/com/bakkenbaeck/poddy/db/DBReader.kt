@@ -3,6 +3,7 @@ package com.bakkenbaeck.poddy.db
 import db.PoddyDB
 import kotlinx.coroutines.withContext
 import org.db.Episode
+import org.db.Podcast
 import kotlin.coroutines.CoroutineContext
 
 class DBReader(
@@ -16,6 +17,12 @@ class DBReader(
             return@withContext queue
                 .map { episodeResult
                 .first { episode ->  it == episode.id } } // Query order is ignored for episodes
+        }
+    }
+
+    suspend fun getPodcasts(): List<Podcast> {
+        return withContext(context) {
+            return@withContext db.podcastQueries.selectAll().executeAsList()
         }
     }
 }

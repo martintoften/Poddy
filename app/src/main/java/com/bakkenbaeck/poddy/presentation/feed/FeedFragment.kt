@@ -58,7 +58,7 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun initAdapter() {
-        episodeAdapter = EpisodeAdapter { handleEpisodeClicked(it) }
+        episodeAdapter = EpisodeAdapter( { handleEpisodeClicked(it) }, { handleHeaderClicked(it) })
 
         episodeList.apply {
             adapter = episodeAdapter
@@ -72,6 +72,11 @@ class FeedFragment : BackableFragment() {
         } else {
             updateSheetStateToCollapsed()
         }
+    }
+
+    private fun handleHeaderClicked(header: Header) {
+        val imageUrl = getFeedImage()
+        feedViewModel.addPodcast(header, imageUrl)
     }
 
     private fun updateSheetStateToExpanded(episode: Channel.Item) {

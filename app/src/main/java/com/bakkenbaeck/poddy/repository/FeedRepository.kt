@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
 import org.db.Episode
+import org.db.Podcast
 import org.db.Queue
 
 class FeedRepository(
@@ -21,6 +22,7 @@ class FeedRepository(
 
     private val idBuilder by lazy { IdBuilder() }
     private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
+    private val podcastChannel = ConflatedBroadcastChannel<List<Podcast>>()
 
     fun getFeed(url: String): Flow<Rss> {
         return flow {
@@ -55,5 +57,24 @@ class FeedRepository(
         val queue = dbReader.getQueue()
         queueChannel.send(queue)
         return queueChannel.asFlow()
+    }
+
+    suspend fun addPodcast(channel: Channel, channelImage: String?) {
+        val channelId = idBuilder.buildChannelId(channel)
+        val podcast = Podcast.Impl(
+            id = channelId,
+            title = channel.title,
+            description = channel.description,
+            image = channelImage.orEmpty()
+        )
+        dbWriter.insertPodcast(podcast)
+
+        podcastChannel.send(listOf(podcast))
+    }
+
+    suspend fun getPodcasts(): Flow<List<Podcast>> {
+        val podcasts = dbReader.getPodcasts()
+        podcastChannel.send(podcasts)
+        return podcastChannel.asFlow()
     }
 }

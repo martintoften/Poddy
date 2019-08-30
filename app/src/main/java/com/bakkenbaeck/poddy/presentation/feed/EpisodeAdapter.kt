@@ -25,7 +25,10 @@ class Header(
     val description: String
 )
 
-class EpisodeAdapter(private val onItemClickListener: (Channel.Item) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class EpisodeAdapter(
+    private val onItemClickListener: (Channel.Item) -> Unit,
+    private val onHeaderItemClickListener: (Header) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items by lazy { mutableListOf<Any>() }
 
@@ -64,7 +67,10 @@ class EpisodeAdapter(private val onItemClickListener: (Channel.Item) -> Unit) : 
         when (holder) {
             is EpisodeHeaderViewHolder -> {
                 val castedItem = item as? Header ?: return
-                holder.setHeader(castedItem)
+                holder.apply {
+                    setHeader(castedItem)
+                    setOnItemClickListener(castedItem, onHeaderItemClickListener)
+                }
             }
             is EpisodeViewHolder -> {
                 val castedItem = item as? Channel.Item ?: return

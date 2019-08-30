@@ -49,6 +49,14 @@ class FeedViewModel(
         }
     }
 
+    fun addPodcast(header: Header, imageUrl: String?) {
+        val channel = getChannel() ?: return
+
+        viewModelScope.launch {
+            feedRepository.addPodcast(channel, imageUrl)
+        }
+    }
+
     private fun getChannel(): Channel? {
         return when (val rss = feedResult.value) {
             is Success -> rss.data.channel

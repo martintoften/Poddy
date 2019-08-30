@@ -1,0 +1,14 @@
+CREATE TABLE podcast (
+    id TEXT NOT NULL UNIQUE PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    image TEXT NOT NULL
+);
+
+insert:
+INSERT OR REPLACE INTO podcast(
+    id, title, description, image
+)VALUES?;
+
+selectAll:
+SELECT * FROM podcast;

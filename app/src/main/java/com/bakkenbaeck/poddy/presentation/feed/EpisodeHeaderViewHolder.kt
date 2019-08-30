@@ -6,6 +6,7 @@ import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
+import com.bakkenbaeck.poddy.model.Channel
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.episode_item_header.*
 
@@ -19,5 +20,9 @@ class EpisodeHeaderViewHolder(override val containerView: View) : RecyclerView.V
             crossfade(true)
             transformations(roundedCorners)
         }
+    }
+
+    fun setOnItemClickListener(item: Header, onItemClickListener: (Header) -> Unit) {
+        subscribe.setOnClickListener { onItemClickListener(item) }
     }
 }

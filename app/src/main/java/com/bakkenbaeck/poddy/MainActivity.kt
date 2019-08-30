@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private fun initBottomNav() {
         mainPagerAdapter = MainPagerAdapter(supportFragmentManager)
-        mainPagerAdapter.setItems(arrayListOf(MainScreen.Search, MainScreen.Queue))
+        mainPagerAdapter.setItems(arrayListOf(MainScreen.Search, MainScreen.Queue, MainScreen.Podcast))
 
         val defaultScreen = MainScreen.Search
         scrollToScreen(defaultScreen)
