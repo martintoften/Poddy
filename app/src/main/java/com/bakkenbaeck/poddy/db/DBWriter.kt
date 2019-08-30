@@ -14,6 +14,20 @@ class DBWriter(
         return withContext(context) {
             db.episodeQueries.insert(episode)
             db.queueQueries.insert(queue)
+            db.queueQueries
+                .selectAll()
+                .executeAsList()
+                .forEachIndexed { index, ep ->
+                    db.queueQueries.updateIndex(index.toLong() + 1, ep.episode_id)
+            }
+        }
+    }
+
+    suspend fun reorderQueue(queueIds: List<String>) {
+        return withContext(context) {
+            queueIds.forEachIndexed { index, id ->
+                db.queueQueries.updateIndex(index.toLong(), id)
+            }
         }
     }
 }

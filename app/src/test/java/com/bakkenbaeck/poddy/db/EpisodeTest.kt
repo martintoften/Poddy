@@ -15,7 +15,7 @@ class EpisodeTest {
 
     @Test
     fun episodeTest() {
-        val episode = Episode.Impl("1", "11", "Reply All", "Podcast about the internet", "1.1.1.1", 1000)
+        val episode = Episode.Impl("1", "11", "Reply All", "Podcast about the internet", "1.1.1.1", 1000, "url")
         queries.insert(episode)
         val episodes = queries.selectAll().executeAsList()
 

@@ -1,19 +1,19 @@
 package com.bakkenbaeck.poddy.presentation.queue
 
+import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
-import com.bakkenbaeck.poddy.util.OUTPUT_DATE_FORMAT
-import com.bakkenbaeck.poddy.util.parseDateString
-import com.bakkenbaeck.poddy.util.parseSecondsToMinutes
+import com.bakkenbaeck.poddy.util.*
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.queue_item.*
 import org.db.Episode
 
-class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+    LayoutContainer, ItemTouchHelperViewHolder {
 
     private val radius by lazy { containerView.getDimen(R.dimen.radius_small) }
     private val roundedCorners by lazy { RoundedCornersTransformation(radius) }
@@ -31,5 +31,22 @@ class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolde
 
     fun setOnItemClickListener(item: Episode, onItemClickListener: (Episode) -> Unit) {
         containerView.setOnClickListener { onItemClickListener(item) }
+    }
+
+    fun setOnItemDragListener(dragStartListener: OnStartDragListener) {
+        handle.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                dragStartListener.onStartDrag(this)
+            }
+            return@setOnTouchListener false
+        }
+    }
+
+    override fun onItemSelected() {
+        containerView.setBackgroundResource(R.color.colorPrimary)
+    }
+
+    override fun onItemClear() {
+        containerView.setBackgroundColor(0)
     }
 }

@@ -2,6 +2,7 @@ package com.bakkenbaeck.poddy
 
 import android.app.Application
 import com.bakkenbaeck.poddy.di.appModule
+import com.bakkenbaeck.poddy.di.dbModule
 import com.bakkenbaeck.poddy.di.repositoryModule
 import com.bakkenbaeck.poddy.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
@@ -15,7 +16,7 @@ class App : Application() {
         startKoin {
             androidContext(this@App)
             androidLogger()
-            modules(listOf(appModule, repositoryModule, viewModelModule))
+            modules(listOf(appModule, dbModule, repositoryModule, viewModelModule))
         }
     }
 }

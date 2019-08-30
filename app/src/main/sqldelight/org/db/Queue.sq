@@ -1,13 +1,20 @@
 CREATE TABLE queue (
     episode_id TEXT NOT NULL,
     channel_id TEXT NOT NULL,
+    queue_index INTEGER NOT NULL,
     PRIMARY KEY (episode_id, channel_id)
 );
 
 insert:
 INSERT OR REPLACE INTO queue(
-    episode_id, channel_id
+    episode_id, channel_id, queue_index
 )VALUES?;
 
+updateIndex:
+UPDATE queue SET queue_index = ? WHERE episode_id = ?;
+
 selectEpisodeIdAll:
-SELECT episode_id FROM queue;
+SELECT episode_id FROM queue ORDER BY queue_index ASC;
+
+selectAll:
+SELECT * FROM queue ORDER BY queue_index ASC;

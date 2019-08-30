@@ -36,4 +36,10 @@ class QueueViewModel(
 
         queue.value = newQueue
     }
+
+    fun reorderQueue(queue: List<Episode>) {
+        viewModelScope.launch {
+            feedRepository.reorderQueue(queue)
+        }
+    }
 }

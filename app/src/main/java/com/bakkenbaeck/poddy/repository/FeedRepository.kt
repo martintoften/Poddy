@@ -32,7 +32,7 @@ class FeedRepository(
     suspend fun addToQueue(episode: Channel.Item, channel: Channel, channelImage: String?) {
         val episodeId = idBuilder.buildQueueId(episode, channel)
         val channelId = idBuilder.buildChannelId(channel)
-        val dbQueueItem = Queue.Impl(episodeId, channelId)
+        val dbQueueItem = Queue.Impl(episodeId, channelId, -1) // FIRST / LAST?
         val dbEpisode = Episode.Impl(
             id = episodeId,
             channel_id = channelId,
@@ -47,10 +47,13 @@ class FeedRepository(
         queueChannel.send(listOf(dbEpisode))
     }
 
+    suspend fun reorderQueue(queue: List<Episode>) {
+        dbWriter.reorderQueue(queue.map { it.id })
+    }
+
     suspend fun getQueue(): Flow<List<Episode>> {
         val queue = dbReader.getQueue()
         queueChannel.send(queue)
-
         return queueChannel.asFlow()
     }
 }

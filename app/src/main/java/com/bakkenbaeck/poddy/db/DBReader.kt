@@ -1,6 +1,5 @@
 package com.bakkenbaeck.poddy.db
 
-import android.util.Log
 import db.PoddyDB
 import kotlinx.coroutines.withContext
 import org.db.Episode
@@ -12,13 +11,11 @@ class DBReader(
 ) {
     suspend fun getQueue(): List<Episode> {
         return withContext(context) {
-            db.queueQueries.selectEpisodeIdAll()
             val queue = db.queueQueries.selectEpisodeIdAll().executeAsList()
-            val episodes = db.episodeQueries.selectByIds(queue).executeAsList()
-
-            Log.d("Yo", episodes.size.toString())
-
-            return@withContext episodes
+            val episodeResult = db.episodeQueries.selectByIds(queue).executeAsList()
+            return@withContext queue
+                .map { episodeResult
+                .first { episode ->  it == episode.id } } // Query order is ignored for episodes
         }
     }
 }
