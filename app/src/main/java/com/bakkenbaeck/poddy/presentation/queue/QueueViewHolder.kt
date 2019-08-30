@@ -21,7 +21,7 @@ class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolde
     fun setItem(episode: Episode) {
         date.text = parseDateString(episode.pub_date, OUTPUT_DATE_FORMAT)
         name.text = episode.title
-        length.text = parseSecondsToMinutes(episode.duration.toInt())
+        length.text = parseSecondsToMinutes(episode.duration)
 
         image.load(episode.image) {
             crossfade(true)

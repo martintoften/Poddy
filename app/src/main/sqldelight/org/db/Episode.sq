@@ -4,7 +4,7 @@ CREATE TABLE episode (
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     pub_date TEXT NOT NULL,
-    duration INTEGER NOT NULL,
+    duration TEXT NOT NULL,
     image TEXT NOT NULL
 );
 

@@ -86,7 +86,7 @@ public class Channel {
         @Element(name = "source", required = false)
         String source;
         @Element(name = "duration", required = false)
-        public int duration;
+        public String duration;
 
         @Override
         public String toString() {

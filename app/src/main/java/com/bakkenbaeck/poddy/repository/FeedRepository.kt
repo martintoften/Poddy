@@ -39,7 +39,7 @@ class FeedRepository(
             title = episode.title,
             description = episode.description,
             pub_date = episode.pubDate,
-            duration = 0L,
+            duration = episode.duration,
             image = channelImage.orEmpty()
         )
         dbWriter.insertQueueItem(dbQueueItem, dbEpisode)
