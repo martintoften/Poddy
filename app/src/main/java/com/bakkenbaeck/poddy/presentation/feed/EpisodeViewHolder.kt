@@ -13,7 +13,7 @@ class EpisodeViewHolder(override val containerView: View) : RecyclerView.ViewHol
     fun setEpisode(item: Channel.Item) {
         date.text = parseDateString(item.pubDate, OUTPUT_DATE_FORMAT)
         name.text = item.title
-        length.text = parseSecondsToMinutes(item.duration)
+        //length.text = parseSecondsToMinutes(item.duration)
     }
 
     fun setOnItemClickListener(item: Channel.Item, onItemClickListener: (Channel.Item) -> Unit) {
