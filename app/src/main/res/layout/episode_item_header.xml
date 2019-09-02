@@ -27,16 +27,18 @@
         app:layout_constraintBottom_toBottomOf="@id/image"
         tools:text="Reply all"/>
 
-    <TextView
+    <Button
         android:id="@+id/subscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/textColorPrimary"
         android:textStyle="bold"
+        android:textAllCaps="false"
         android:textSize="@dimen/text_medium"
         android:background="@drawable/ic_subscribe_background"
         android:text="@string/subscribe"
         android:layout_marginTop="10dp"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintEnd_toEndOf="@id/title"
         app:layout_constraintStart_toStartOf="@id/title"/>

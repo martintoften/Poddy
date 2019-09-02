@@ -1,7 +1,7 @@
 package com.bakkenbaeck.poddy.network
 
-import com.bakkenbaeck.poddy.model.PodcastResponse
-import com.bakkenbaeck.poddy.model.SearchResponse
+import com.bakkenbaeck.poddy.network.model.PodcastResponse
+import com.bakkenbaeck.poddy.network.model.SearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path

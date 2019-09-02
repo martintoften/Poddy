@@ -3,7 +3,7 @@ package com.bakkenbaeck.poddy.presentation.search
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bakkenbaeck.poddy.model.SearchResponse
+import com.bakkenbaeck.poddy.network.model.SearchResponse
 import com.bakkenbaeck.poddy.repository.SearchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BroadcastChannel

@@ -8,8 +8,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
-import com.bakkenbaeck.poddy.model.SearchItem
-import com.bakkenbaeck.poddy.model.SearchResponse
+import com.bakkenbaeck.poddy.network.model.SearchItem
+import com.bakkenbaeck.poddy.network.model.SearchResponse
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_DESCRIPTION
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID

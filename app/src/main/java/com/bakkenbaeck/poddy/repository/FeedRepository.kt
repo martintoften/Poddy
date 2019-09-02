@@ -2,8 +2,8 @@ package com.bakkenbaeck.poddy.repository
 
 import com.bakkenbaeck.poddy.db.DBReader
 import com.bakkenbaeck.poddy.db.DBWriter
-import com.bakkenbaeck.poddy.model.EpisodeItem
-import com.bakkenbaeck.poddy.model.PodcastResponse
+import com.bakkenbaeck.poddy.network.model.EpisodeItem
+import com.bakkenbaeck.poddy.network.model.PodcastResponse
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow

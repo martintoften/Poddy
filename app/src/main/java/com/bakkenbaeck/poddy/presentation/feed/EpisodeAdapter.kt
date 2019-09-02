@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.layoutInflater
-import com.bakkenbaeck.poddy.model.EpisodeItem
+import com.bakkenbaeck.poddy.network.model.EpisodeItem
 
 sealed class EpisodeViewType(val type: Int) {
     companion object {

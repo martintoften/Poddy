@@ -1,7 +1,7 @@
 package com.bakkenbaeck.poddy.repository
 
-import com.bakkenbaeck.poddy.model.PodcastResponse
-import com.bakkenbaeck.poddy.model.SearchResponse
+import com.bakkenbaeck.poddy.network.model.PodcastResponse
+import com.bakkenbaeck.poddy.network.model.SearchResponse
 import com.bakkenbaeck.poddy.network.SearchApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

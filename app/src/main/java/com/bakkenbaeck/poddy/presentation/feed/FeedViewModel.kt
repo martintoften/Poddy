@@ -3,8 +3,8 @@ package com.bakkenbaeck.poddy.presentation.feed
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bakkenbaeck.poddy.model.EpisodeItem
-import com.bakkenbaeck.poddy.model.PodcastResponse
+import com.bakkenbaeck.poddy.network.model.EpisodeItem
+import com.bakkenbaeck.poddy.network.model.PodcastResponse
 import com.bakkenbaeck.poddy.repository.FeedRepository
 import com.bakkenbaeck.poddy.repository.SearchRepository
 import com.bakkenbaeck.poddy.util.Loading

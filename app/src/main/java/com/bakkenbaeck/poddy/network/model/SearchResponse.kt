@@ -1,4 +1,4 @@
-package com.bakkenbaeck.poddy.model
+package com.bakkenbaeck.poddy.network.model
 
 data class SearchResponse(
     val took: Double,
