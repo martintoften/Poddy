@@ -1,15 +1,14 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
-import kotlinx.android.extensions.LayoutContainer
+import com.bakkenbaeck.poddy.presentation.custom.ClickableViewHolder
 import kotlinx.android.synthetic.main.episode_item_header.*
 
-class EpisodeHeaderViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+class EpisodeHeaderViewHolder(override val containerView: View) : ClickableViewHolder<Header>(containerView) {
     private val radius by lazy { containerView.getDimen(R.dimen.radius_default) }
     private val roundedCorners by lazy { RoundedCornersTransformation(radius) }
 
@@ -19,9 +18,5 @@ class EpisodeHeaderViewHolder(override val containerView: View) : RecyclerView.V
             crossfade(true)
             transformations(roundedCorners)
         }
-    }
-
-    fun setOnItemClickListener(item: Header, onItemClickListener: (Header) -> Unit) {
-        subscribe.setOnClickListener { onItemClickListener(item) }
     }
 }

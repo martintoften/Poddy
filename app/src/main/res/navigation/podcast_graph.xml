@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/podcast_graph"
+    app:startDestination="@id/podcastFragment">
+
+    <fragment android:id="@+id/podcastFragment"
+        android:name="com.bakkenbaeck.poddy.presentation.podcast.PodcastFragment"
+        tools:layout="@layout/podcast_fragment">
+        <action android:id="@+id/to_details_fragment"
+            app:destination="@id/detailsFragment"/>
+    </fragment>
+
+    <fragment android:id="@+id/detailsFragment"
+        android:name="com.bakkenbaeck.poddy.presentation.feed.FeedFragment"
+        tools:layout="@layout/feed_fragment">
+    </fragment>
+
+</navigation>

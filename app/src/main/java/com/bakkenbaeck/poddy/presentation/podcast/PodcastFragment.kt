@@ -7,7 +7,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_DESCRIPTION
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_NAME
 import kotlinx.android.synthetic.main.podcast_fragment.*
 import org.db.Podcast
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,12 +37,22 @@ class PodcastFragment : BackableFragment() {
     }
 
     private fun initAdapter() {
-        podcastAdapter = PodcastAdapter()
+        podcastAdapter = PodcastAdapter { goTo(it) }
 
         podcastList.apply {
             adapter = podcastAdapter
             layoutManager = GridLayoutManager(context, 4)
         }
+    }
+
+    private fun goTo(podcastItem: Podcast) {
+        val bundle = Bundle().apply {
+            putString(PODCAST_ID, podcastItem.id)
+            putString(PODCAST_NAME, podcastItem.title)
+            putString(PODCAST_IMAGE, podcastItem.image)
+            putString(PODCAST_DESCRIPTION, podcastItem.description)
+        }
+        navigate(R.id.to_details_fragment, bundle)
     }
 
     private fun initObservers() {

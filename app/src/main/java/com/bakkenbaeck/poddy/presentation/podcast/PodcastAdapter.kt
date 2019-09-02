@@ -6,7 +6,9 @@ import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.layoutInflater
 import org.db.Podcast
 
-class PodcastAdapter : RecyclerView.Adapter<PodcastViewHolder>() {
+class PodcastAdapter(
+    private val onItemClickedListener: (Podcast) -> Unit
+) : RecyclerView.Adapter<PodcastViewHolder>() {
 
     private val items by lazy { mutableListOf<Podcast>() }
 
@@ -25,6 +27,9 @@ class PodcastAdapter : RecyclerView.Adapter<PodcastViewHolder>() {
 
     override fun onBindViewHolder(holder: PodcastViewHolder, position: Int) {
         val item = items[position]
-        holder.setPodcast(item)
+        holder.apply {
+            setPodcast(item)
+            setOnItemClickedListener(item, onItemClickedListener)
+        }
     }
 }

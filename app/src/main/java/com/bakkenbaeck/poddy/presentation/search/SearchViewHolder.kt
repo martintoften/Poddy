@@ -7,10 +7,11 @@ import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
 import com.bakkenbaeck.poddy.model.SearchItem
+import com.bakkenbaeck.poddy.presentation.custom.ClickableViewHolder
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.search_item.*
 
-class SearchViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+class SearchViewHolder(override val containerView: View) : ClickableViewHolder<SearchItem>(containerView) {
 
     private val radius by lazy { containerView.getDimen(R.dimen.radius_small) }
     private val roundedCorners by lazy { RoundedCornersTransformation(radius) }
@@ -22,9 +23,5 @@ class SearchViewHolder(override val containerView: View) : RecyclerView.ViewHold
             crossfade(true)
             transformations(roundedCorners)
         }
-    }
-
-    fun setOnItemClickedListener(searchItem: SearchItem, onItemClickListener: (SearchItem) -> Unit) {
-        containerView.setOnClickListener { onItemClickListener(searchItem) }
     }
 }
