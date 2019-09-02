@@ -8,11 +8,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
-import com.bakkenbaeck.poddy.model.Search
 import com.bakkenbaeck.poddy.model.SearchItem
+import com.bakkenbaeck.poddy.model.SearchResponse
 import com.bakkenbaeck.poddy.presentation.BackableFragment
-import com.bakkenbaeck.poddy.presentation.feed.FEED_IMAGE
-import com.bakkenbaeck.poddy.presentation.feed.FEED_URL
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_DESCRIPTION
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_NAME
 import com.bakkenbaeck.poddy.util.TextListener
 import kotlinx.android.synthetic.main.search_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -48,8 +50,10 @@ class SearchFragment : BackableFragment() {
 
     private fun goTo(searchItem: SearchItem) {
         val bundle = Bundle().apply {
-            putString(FEED_URL, searchItem.feedUrl)
-            putString(FEED_IMAGE, searchItem.artworkUrl600)
+            putString(PODCAST_ID, searchItem.id)
+            putString(PODCAST_NAME, searchItem.title_original)
+            putString(PODCAST_IMAGE, searchItem.image)
+            putString(PODCAST_DESCRIPTION, searchItem.description_original)
         }
         navigate(R.id.to_details_fragment, bundle)
     }
@@ -68,7 +72,7 @@ class SearchFragment : BackableFragment() {
         })
     }
 
-    private fun handleQueryResult(searchResult: Search) {
+    private fun handleQueryResult(searchResult: SearchResponse) {
         searchAdapter.add(searchResult.results)
     }
 }

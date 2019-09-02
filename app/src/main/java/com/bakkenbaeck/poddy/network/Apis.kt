@@ -9,22 +9,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.util.concurrent.TimeUnit
 
-private const val BASE_RSS_URL = "https://itunes.apple.com/"
-private const val BASE_SEARCH_URL = "https://itunes.apple.com/"
-
-fun buildRssApi(): RssApi {
-    val client = getHttpClient()
-
-    val xmlFactory = SimpleXmlConverterFactory.createNonStrict(Persister(AnnotationStrategy()))
-
-    val retrofit = Retrofit.Builder()
-        .client(client)
-        .baseUrl(BASE_RSS_URL)
-        .addConverterFactory(xmlFactory)
-        .build()
-
-    return retrofit.create(RssApi::class.java)
-}
+private const val BASE_SEARCH_URL = "https://listen-api.listennotes.com/api/v2/"
 
 fun buildSearchApi(): SearchApi {
     val client = getHttpClient()

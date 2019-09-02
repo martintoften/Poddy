@@ -6,7 +6,6 @@ import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
-import com.bakkenbaeck.poddy.model.Channel
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.episode_item_header.*
 

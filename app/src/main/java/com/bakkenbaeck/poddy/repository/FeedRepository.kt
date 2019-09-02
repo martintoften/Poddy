@@ -2,55 +2,43 @@ package com.bakkenbaeck.poddy.repository
 
 import com.bakkenbaeck.poddy.db.DBReader
 import com.bakkenbaeck.poddy.db.DBWriter
-import com.bakkenbaeck.poddy.db.IdBuilder
-import com.bakkenbaeck.poddy.model.Channel
-import com.bakkenbaeck.poddy.model.Rss
-import com.bakkenbaeck.poddy.network.RssApi
+import com.bakkenbaeck.poddy.model.EpisodeItem
+import com.bakkenbaeck.poddy.model.EpisodeResponse
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flow
 import org.db.Episode
 import org.db.Podcast
 import org.db.Queue
 
 class FeedRepository(
-    private val rssApi: RssApi,
     private val dbWriter: DBWriter,
     private val dbReader: DBReader
 ) {
 
-    private val idBuilder by lazy { IdBuilder() }
     private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
     private val podcastChannel = ConflatedBroadcastChannel<List<Podcast>>()
 
-    fun getFeed(url: String): Flow<Rss> {
-        return flow {
-            val result = rssApi.getFeed(url)
-            emit(result)
-        }
-    }
-
-    suspend fun addToQueue(episode: Channel.Item, channel: Channel, channelImage: String?) {
-        val episodeId = idBuilder.buildQueueId(episode, channel)
-        val channelId = idBuilder.buildChannelId(channel)
-        val dbQueueItem = Queue.Impl(episodeId, channelId, -1) // FIRST / LAST?
+    suspend fun addToQueue(channel: EpisodeResponse, episode: EpisodeItem) {
+        val episodeId = episode.id
+        val channelId = channel.id
+        val dbQueueItem = Queue.Impl(episodeId, channelId, -1)
         val dbEpisode = Episode.Impl(
             id = episodeId,
             channel_id = channelId,
             title = episode.title,
             description = episode.description,
-            pub_date = episode.pubDate,
-            duration = episode.duration,
-            image = channelImage.orEmpty()
+            pub_date = episode.pub_date_ms,
+            duration = episode.audio_length_sec.toLong(),
+            image = episode.image
         )
-        dbWriter.insertQueueItem(dbQueueItem, dbEpisode)
 
-        queueChannel.send(listOf(dbEpisode))
-    }
+        val doesAlreadyExist = dbReader.doesAlreadyExist(episodeId)
 
-    suspend fun reorderQueue(queue: List<Episode>) {
-        dbWriter.reorderQueue(queue.map { it.id })
+        if (!doesAlreadyExist) {
+            dbWriter.insertQueueItem(dbQueueItem, dbEpisode)
+            queueChannel.send(listOf(dbEpisode))
+        }
     }
 
     suspend fun getQueue(): Flow<List<Episode>> {
@@ -59,13 +47,16 @@ class FeedRepository(
         return queueChannel.asFlow()
     }
 
-    suspend fun addPodcast(channel: Channel, channelImage: String?) {
-        val channelId = idBuilder.buildChannelId(channel)
+    suspend fun reorderQueue(queue: List<Episode>) {
+        dbWriter.reorderQueue(queue.map { it.id })
+    }
+
+    suspend fun addPodcast(channel: EpisodeResponse) {
         val podcast = Podcast.Impl(
-            id = channelId,
+            id = channel.id,
             title = channel.title,
             description = channel.description,
-            image = channelImage.orEmpty()
+            image = channel.image
         )
         dbWriter.insertPodcast(podcast)
 

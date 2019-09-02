@@ -16,9 +16,9 @@ class SearchViewHolder(override val containerView: View) : RecyclerView.ViewHold
     private val roundedCorners by lazy { RoundedCornersTransformation(radius) }
 
     fun setSearchItem(searchItem: SearchItem) {
-        showName.text = searchItem.collectionName
-        author.text = searchItem.artistName
-        image.load(searchItem.artworkUrl600) {
+        showName.text = searchItem.title_original
+        author.text = searchItem.publisher_original
+        image.load(searchItem.image) {
             crossfade(true)
             transformations(roundedCorners)
         }

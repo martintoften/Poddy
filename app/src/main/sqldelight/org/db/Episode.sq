@@ -3,8 +3,8 @@ CREATE TABLE episode (
     channel_id TEXT NOT NULL,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
-    pub_date TEXT NOT NULL,
-    duration TEXT NOT NULL,
+    pub_date INTEGER NOT NULL,
+    duration INTEGER NOT NULL,
     image TEXT NOT NULL
 );
 

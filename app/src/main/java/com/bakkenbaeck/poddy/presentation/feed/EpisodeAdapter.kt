@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.layoutInflater
-import com.bakkenbaeck.poddy.model.Channel
+import com.bakkenbaeck.poddy.model.EpisodeItem
 
 sealed class EpisodeViewType(val type: Int) {
     companion object {
@@ -26,13 +26,13 @@ class Header(
 )
 
 class EpisodeAdapter(
-    private val onItemClickListener: (Channel.Item) -> Unit,
+    private val onItemClickListener: (EpisodeItem) -> Unit,
     private val onHeaderItemClickListener: (Header) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items by lazy { mutableListOf<Any>() }
 
-    fun add(header: Header, episodeItems: List<Channel.Item>) {
+    fun add(header: Header, episodeItems: List<EpisodeItem>) {
         items.clear()
         items.add(header)
         items.addAll(episodeItems)
@@ -73,7 +73,7 @@ class EpisodeAdapter(
                 }
             }
             is EpisodeViewHolder -> {
-                val castedItem = item as? Channel.Item ?: return
+                val castedItem = item as? EpisodeItem ?: return
                 holder.apply {
                     setEpisode(castedItem)
                     setOnItemClickListener(castedItem, onItemClickListener)

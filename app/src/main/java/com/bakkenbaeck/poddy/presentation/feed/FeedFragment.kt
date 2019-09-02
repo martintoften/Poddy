@@ -13,8 +13,8 @@ import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
-import com.bakkenbaeck.poddy.model.Channel
-import com.bakkenbaeck.poddy.model.Rss
+import com.bakkenbaeck.poddy.model.EpisodeItem
+import com.bakkenbaeck.poddy.model.EpisodeResponse
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
@@ -25,10 +25,17 @@ import kotlinx.android.synthetic.main.detail_sheet.view.*
 import kotlinx.android.synthetic.main.feed_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-const val FEED_URL = "FEED_URL"
-const val FEED_IMAGE = "FEED_IMAGE"
+const val PODCAST_ID = "PODCAST_ID"
+const val PODCAST_NAME = "PODCAST_NAME"
+const val PODCAST_IMAGE = "PODCAST_IMAGE"
+const val PODCAST_DESCRIPTION = "PODCAST_DESCRIPTION"
 
 class FeedFragment : BackableFragment() {
+
+    private fun getPodcastName(arguments: Bundle?): String? = arguments?.getString(PODCAST_NAME)
+    private fun getPodcastImage(arguments: Bundle?): String? = arguments?.getString(PODCAST_IMAGE)
+    private fun getPodcastDescription(arguments: Bundle?): String? = arguments?.getString(PODCAST_DESCRIPTION)
+    private fun getPodcastId(arguments: Bundle?): String? = arguments?.getString(PODCAST_ID)
 
     private val feedViewModel: FeedViewModel by viewModel()
     private lateinit var episodeAdapter: EpisodeAdapter
@@ -46,7 +53,7 @@ class FeedFragment : BackableFragment() {
     private fun init(arguments: Bundle?) {
         initSheetView()
         initAdapter()
-        getFeed(arguments)
+        getEpisodes(arguments)
         initObservers()
     }
 
@@ -58,7 +65,7 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun initAdapter() {
-        episodeAdapter = EpisodeAdapter( { handleEpisodeClicked(it) }, { handleHeaderClicked(it) })
+        episodeAdapter = EpisodeAdapter( { handleEpisodeClicked(it) }, { handleHeaderClicked() })
 
         episodeList.apply {
             adapter = episodeAdapter
@@ -66,7 +73,7 @@ class FeedFragment : BackableFragment() {
         }
     }
 
-    private fun handleEpisodeClicked(episode: Channel.Item) {
+    private fun handleEpisodeClicked(episode: EpisodeItem) {
         if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             updateSheetStateToExpanded(episode)
         } else {
@@ -74,40 +81,39 @@ class FeedFragment : BackableFragment() {
         }
     }
 
-    private fun handleHeaderClicked(header: Header) {
-        val imageUrl = getFeedImage()
-        feedViewModel.addPodcast(header, imageUrl)
+    private fun handleHeaderClicked() {
+        feedViewModel.addPodcast()
     }
 
-    private fun updateSheetStateToExpanded(episode: Channel.Item) {
-        val imageUrl = getFeedImage()
+    private fun updateSheetStateToExpanded(episode: EpisodeItem) {
+        val imageUrl = getPodcastImage(arguments)
         val radius by lazy { getDimen(R.dimen.radius_default) }
         val roundedCorners by lazy { RoundedCornersTransformation(radius) }
 
         sheet.image.load(imageUrl) { transformations(roundedCorners) }
-        sheet.episodeName.text = episode.title.orEmpty()
+        sheet.episodeName.text = episode.title
         sheet.description.text = HtmlCompat.fromHtml(
-            episode.description.orEmpty(),
+            episode.description,
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
 
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        feedViewModel.setCurrentEpisode(episode, getFeedImage())
+        feedViewModel.setCurrentEpisode(episode)
     }
 
     private fun updateSheetStateToCollapsed() {
         sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    private fun getFeed(arguments: Bundle?) {
-        val feedUrl = arguments?.getString(FEED_URL) ?: return
-        feedViewModel.getFeed(feedUrl)
+    private fun getEpisodes(arguments: Bundle?) {
+        val podcastId = getPodcastId(arguments) ?: return
+        feedViewModel.getFeed(podcastId)
     }
 
     private fun initObservers() {
         feedViewModel.feedResult.observe(this, Observer {
             when (it) {
-                is Success<Rss> -> {
+                is Success<EpisodeResponse> -> {
                     spinnerOverlay.isOverlayVisible(false)
                     handleFeedResult(it.data)
                 }
@@ -117,18 +123,15 @@ class FeedFragment : BackableFragment() {
         })
     }
 
-    private fun handleFeedResult(feed: Rss) {
-        val channel = feed.channel
-        val imageUrl = getFeedImage()
+    private fun handleFeedResult(feed: EpisodeResponse) {
+        val imageUrl = getPodcastImage(arguments)
+        val description = getPodcastDescription(arguments)
+        val name = getPodcastName(arguments)
         val header = Header(
-            title = channel.title,
-            description = channel.description,
+            title = name.orEmpty(),
+            description = description.orEmpty(),
             image = imageUrl.orEmpty()
         )
-        episodeAdapter.add(header, channel.itemList)
-    }
-
-    private fun getFeedImage(): String? {
-        return arguments?.getString(FEED_IMAGE)
+        episodeAdapter.add(header, feed.episodes)
     }
 }

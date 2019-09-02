@@ -7,6 +7,8 @@ import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
+import com.bakkenbaeck.poddy.extensions.toDate
+import com.bakkenbaeck.poddy.extensions.toSeconds
 import com.bakkenbaeck.poddy.util.*
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.queue_item.*
@@ -19,9 +21,9 @@ class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolde
     private val roundedCorners by lazy { RoundedCornersTransformation(radius) }
 
     fun setItem(episode: Episode) {
-        date.text = parseDateString(episode.pub_date, OUTPUT_DATE_FORMAT)
+        date.text = episode.pub_date.toDate()
         name.text = episode.title
-        length.text = parseSecondsToMinutes(episode.duration)
+        length.text = "${episode.duration.toSeconds()} min"
 
         image.load(episode.image) {
             crossfade(true)

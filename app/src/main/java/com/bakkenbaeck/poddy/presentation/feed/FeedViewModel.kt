@@ -3,9 +3,10 @@ package com.bakkenbaeck.poddy.presentation.feed
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bakkenbaeck.poddy.model.Channel
-import com.bakkenbaeck.poddy.model.Rss
+import com.bakkenbaeck.poddy.model.EpisodeItem
+import com.bakkenbaeck.poddy.model.EpisodeResponse
 import com.bakkenbaeck.poddy.repository.FeedRepository
+import com.bakkenbaeck.poddy.repository.SearchRepository
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
@@ -15,29 +16,28 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
+    private val searchRepository: SearchRepository,
     private val feedRepository: FeedRepository
 ) : ViewModel() {
 
-    val feedResult = MutableLiveData<Resource<Rss>>()
-    var selectedEpisode: Channel.Item? = null
-    var channelImage: String? = null
+    val feedResult = MutableLiveData<Resource<EpisodeResponse>>()
+    var selectedEpisode: EpisodeItem? = null
 
-    fun getFeed(feedUrl: String) {
+    fun getFeed(id: String) {
         viewModelScope.launch {
             feedResult.value = Loading()
-            feedRepository.getFeed(feedUrl)
+            searchRepository.getEpisodes(id)
                 .flowOn(Dispatchers.IO)
                 .collect { handleFeedResult(it) }
         }
     }
 
-    private fun handleFeedResult(rss: Rss) {
+    private fun handleFeedResult(rss: EpisodeResponse) {
         feedResult.value = Success(rss)
     }
 
-    fun setCurrentEpisode(episode: Channel.Item, imageUrl: String?) {
+    fun setCurrentEpisode(episode: EpisodeItem) {
         selectedEpisode = episode
-        channelImage = imageUrl
     }
 
     fun addToQueue() {
@@ -45,21 +45,23 @@ class FeedViewModel(
         val channel = getChannel() ?: return
 
         viewModelScope.launch {
-            feedRepository.addToQueue(episode, channel, channelImage)
+            feedRepository.addToQueue(channel, episode)
         }
     }
 
-    fun addPodcast(header: Header, imageUrl: String?) {
+    fun addPodcast() {
         val channel = getChannel() ?: return
 
         viewModelScope.launch {
-            feedRepository.addPodcast(channel, imageUrl)
+            feedRepository.addPodcast(channel)
         }
     }
 
-    private fun getChannel(): Channel? {
-        return when (val rss = feedResult.value) {
-            is Success -> rss.data.channel
+    private fun getChannel(): EpisodeResponse? {
+        val channel = feedResult.value
+
+        return when (channel) {
+            is Success -> channel.data
             else -> null
         }
     }

@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.db
 
+import com.squareup.sqldelight.Query
 import db.PoddyDB
 import kotlinx.coroutines.withContext
 import org.db.Episode
@@ -23,6 +24,13 @@ class DBReader(
     suspend fun getPodcasts(): List<Podcast> {
         return withContext(context) {
             return@withContext db.podcastQueries.selectAll().executeAsList()
+        }
+    }
+
+    suspend fun doesAlreadyExist(id: String): Boolean {
+        return withContext(context) {
+            val result = db.queueQueries.doesAlreadyExist(id).executeAsOne()
+            return@withContext result > 0
         }
     }
 }

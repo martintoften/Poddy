@@ -1,9 +1,9 @@
 package com.bakkenbaeck.poddy.presentation.search
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.layoutInflater
 import com.bakkenbaeck.poddy.model.SearchItem
 
 class SearchAdapter(
@@ -19,7 +19,7 @@ class SearchAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.search_item, parent, false)
+        val view = parent.layoutInflater().inflate(R.layout.search_item, parent, false)
         return SearchViewHolder(view)
     }
 
