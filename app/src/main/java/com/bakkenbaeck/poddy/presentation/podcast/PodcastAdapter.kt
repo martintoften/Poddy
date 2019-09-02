@@ -4,15 +4,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.layoutInflater
-import org.db.Podcast
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 
 class PodcastAdapter(
-    private val onItemClickedListener: (Podcast) -> Unit
+    private val onItemClickedListener: (ViewPodcast) -> Unit
 ) : RecyclerView.Adapter<PodcastViewHolder>() {
 
-    private val items by lazy { mutableListOf<Podcast>() }
+    private val items by lazy { mutableListOf<ViewPodcast>() }
 
-    fun addItem(item: List<Podcast>) {
+    fun addItem(item: List<ViewPodcast>) {
         items.clear()
         items.addAll(item)
         notifyDataSetChanged()

@@ -4,20 +4,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.layoutInflater
+import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.util.ItemTouchHelperAdapter
 import com.bakkenbaeck.poddy.util.OnStartDragListener
-import org.db.Episode
 import java.util.*
 
 class QueueAdapter(
     private val dragStartListener: OnStartDragListener,
-    private val onQueueUpdated: (List<Episode>) -> Unit,
-    private val onItemClickListener: (Episode) -> Unit
+    private val onQueueUpdated: (List<ViewEpisode>) -> Unit,
+    private val onItemClickListener: (ViewEpisode) -> Unit
 ) : RecyclerView.Adapter<QueueViewHolder>(), ItemTouchHelperAdapter {
 
-    private val items by lazy { mutableListOf<Episode>() }
+    private val items by lazy { mutableListOf<ViewEpisode>() }
 
-    fun addItems(episodes: List<Episode>) {
+    fun addItems(episodes: List<ViewEpisode>) {
         items.clear()
         items.addAll(episodes)
         notifyDataSetChanged()

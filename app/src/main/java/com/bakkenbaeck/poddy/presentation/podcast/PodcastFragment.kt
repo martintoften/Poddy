@@ -13,8 +13,8 @@ import com.bakkenbaeck.poddy.presentation.feed.PODCAST_DESCRIPTION
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_NAME
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import kotlinx.android.synthetic.main.podcast_fragment.*
-import org.db.Podcast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PodcastFragment : BackableFragment() {
@@ -45,12 +45,12 @@ class PodcastFragment : BackableFragment() {
         }
     }
 
-    private fun goTo(podcastItem: Podcast) {
+    private fun goTo(podcast: ViewPodcast) {
         val bundle = Bundle().apply {
-            putString(PODCAST_ID, podcastItem.id)
-            putString(PODCAST_NAME, podcastItem.title)
-            putString(PODCAST_IMAGE, podcastItem.image)
-            putString(PODCAST_DESCRIPTION, podcastItem.description)
+            putString(PODCAST_ID, podcast.id)
+            putString(PODCAST_NAME, podcast.title)
+            putString(PODCAST_IMAGE, podcast.image)
+            putString(PODCAST_DESCRIPTION, podcast.description)
         }
         navigate(R.id.to_details_fragment, bundle)
     }
@@ -61,7 +61,7 @@ class PodcastFragment : BackableFragment() {
         })
     }
 
-    private fun handlePodcasts(podcasts: List<Podcast>) {
+    private fun handlePodcasts(podcasts: List<ViewPodcast>) {
         podcastAdapter.addItem(podcasts)
     }
 }

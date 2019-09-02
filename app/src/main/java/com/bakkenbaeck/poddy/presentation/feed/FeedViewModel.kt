@@ -3,8 +3,9 @@ package com.bakkenbaeck.poddy.presentation.feed
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bakkenbaeck.poddy.network.model.EpisodeItem
-import com.bakkenbaeck.poddy.network.model.PodcastResponse
+import com.bakkenbaeck.poddy.presentation.mappers.mapFromNetworkToView
+import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.repository.FeedRepository
 import com.bakkenbaeck.poddy.repository.SearchRepository
 import com.bakkenbaeck.poddy.util.Loading
@@ -13,6 +14,7 @@ import com.bakkenbaeck.poddy.util.Success
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
@@ -20,23 +22,24 @@ class FeedViewModel(
     private val feedRepository: FeedRepository
 ) : ViewModel() {
 
-    val feedResult = MutableLiveData<Resource<PodcastResponse>>()
-    var selectedEpisode: EpisodeItem? = null
+    val feedResult = MutableLiveData<Resource<ViewPodcast>>()
+    var selectedEpisode: ViewEpisode? = null
 
     fun getFeed(id: String) {
         viewModelScope.launch {
             feedResult.value = Loading()
             searchRepository.getEpisodes(id)
                 .flowOn(Dispatchers.IO)
+                .map { mapFromNetworkToView(it) }
                 .collect { handleFeedResult(it) }
         }
     }
 
-    private fun handleFeedResult(rss: PodcastResponse) {
-        feedResult.value = Success(rss)
+    private fun handleFeedResult(podcast: ViewPodcast) {
+        feedResult.value = Success(podcast)
     }
 
-    fun setCurrentEpisode(episode: EpisodeItem) {
+    fun setCurrentEpisode(episode: ViewEpisode) {
         selectedEpisode = episode
     }
 
@@ -57,7 +60,7 @@ class FeedViewModel(
         }
     }
 
-    private fun getChannel(): PodcastResponse? {
+    private fun getChannel(): ViewPodcast? {
         val channel = feedResult.value
 
         return when (channel) {

@@ -3,7 +3,8 @@ package com.bakkenbaeck.poddy.repository
 import com.bakkenbaeck.poddy.db.DBReader
 import com.bakkenbaeck.poddy.db.DBWriter
 import com.bakkenbaeck.poddy.network.model.EpisodeItem
-import com.bakkenbaeck.poddy.network.model.PodcastResponse
+import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -19,17 +20,17 @@ class FeedRepository(
     private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
     private val podcastChannel = ConflatedBroadcastChannel<List<Podcast>>()
 
-    suspend fun addToQueue(channel: PodcastResponse, episode: EpisodeItem) {
+    suspend fun addToQueue(podcast: ViewPodcast, episode: ViewEpisode) {
         val episodeId = episode.id
-        val channelId = channel.id
+        val channelId = podcast.id
         val dbQueueItem = Queue.Impl(episodeId, channelId, -1)
         val dbEpisode = Episode.Impl(
             id = episodeId,
             channel_id = channelId,
             title = episode.title,
             description = episode.description,
-            pub_date = episode.pub_date_ms,
-            duration = episode.audio_length_sec.toLong(),
+            pub_date = episode.pubDate,
+            duration = episode.duration.toLong(),
             image = episode.image
         )
 
@@ -47,19 +48,19 @@ class FeedRepository(
         return queueChannel.asFlow()
     }
 
-    suspend fun reorderQueue(queue: List<Episode>) {
+    suspend fun reorderQueue(queue: List<ViewEpisode>) {
         dbWriter.reorderQueue(queue.map { it.id })
     }
 
-    suspend fun addPodcast(podcastResponse: PodcastResponse) {
+    suspend fun addPodcast(podcast: ViewPodcast) {
         val podcast = Podcast.Impl(
-            id = podcastResponse.id,
-            title = podcastResponse.title,
-            description = podcastResponse.description,
-            image = podcastResponse.image
+            id = podcast.id,
+            title = podcast.title,
+            description = podcast.description,
+            image = podcast.image
         )
 
-        val doesAlreadyExist = dbReader.doesPodcastAlreadyExist(podcastResponse.id)
+        val doesAlreadyExist = dbReader.doesPodcastAlreadyExist(podcast.id)
 
         if (!doesAlreadyExist) {
             dbWriter.insertPodcast(podcast)

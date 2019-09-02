@@ -11,12 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.presentation.BackableFragment
+import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.util.OnStartDragListener
 import com.bakkenbaeck.poddy.util.SimpleItemTouchHelperCallback
 import kotlinx.android.synthetic.main.queue_fragment.*
-import org.db.Episode
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class QueueFragment : BackableFragment(), OnStartDragListener {
 
@@ -52,7 +51,7 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
         }
     }
 
-    private fun handleEpisodeClicked(episodes: Episode) {
+    private fun handleEpisodeClicked(episodes: ViewEpisode) {
         Log.d("QueueFragment", episodes.toString())
     }
 
@@ -62,7 +61,7 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
         })
     }
 
-    private fun handleQueue(episodes: List<Episode>) {
+    private fun handleQueue(episodes: List<ViewEpisode>) {
         queueAdapter.addItems(episodes)
     }
 

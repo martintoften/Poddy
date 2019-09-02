@@ -13,9 +13,9 @@ import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
-import com.bakkenbaeck.poddy.network.model.EpisodeItem
-import com.bakkenbaeck.poddy.network.model.PodcastResponse
 import com.bakkenbaeck.poddy.presentation.BackableFragment
+import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Success
@@ -73,7 +73,7 @@ class FeedFragment : BackableFragment() {
         }
     }
 
-    private fun handleEpisodeClicked(episode: EpisodeItem) {
+    private fun handleEpisodeClicked(episode: ViewEpisode) {
         if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             updateSheetStateToExpanded(episode)
         } else {
@@ -85,7 +85,7 @@ class FeedFragment : BackableFragment() {
         feedViewModel.addPodcast()
     }
 
-    private fun updateSheetStateToExpanded(episode: EpisodeItem) {
+    private fun updateSheetStateToExpanded(episode: ViewEpisode) {
         val imageUrl = getPodcastImage(arguments)
         val radius by lazy { getDimen(R.dimen.radius_default) }
         val roundedCorners by lazy { RoundedCornersTransformation(radius) }
@@ -113,7 +113,7 @@ class FeedFragment : BackableFragment() {
     private fun initObservers() {
         feedViewModel.feedResult.observe(this, Observer {
             when (it) {
-                is Success<PodcastResponse> -> {
+                is Success<ViewPodcast> -> {
                     spinnerOverlay.isOverlayVisible(false)
                     handleFeedResult(it.data)
                 }
@@ -123,7 +123,7 @@ class FeedFragment : BackableFragment() {
         })
     }
 
-    private fun handleFeedResult(feed: PodcastResponse) {
+    private fun handleFeedResult(feed: ViewPodcast) {
         val imageUrl = getPodcastImage(arguments)
         val description = getPodcastDescription(arguments)
         val name = getPodcastName(arguments)

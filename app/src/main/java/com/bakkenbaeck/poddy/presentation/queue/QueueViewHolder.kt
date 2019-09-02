@@ -9,19 +9,19 @@ import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
 import com.bakkenbaeck.poddy.extensions.toDate
 import com.bakkenbaeck.poddy.extensions.toSeconds
-import com.bakkenbaeck.poddy.util.*
+import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
+import com.bakkenbaeck.poddy.util.ItemTouchHelperViewHolder
+import com.bakkenbaeck.poddy.util.OnStartDragListener
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.queue_item.*
-import org.db.Episode
 
-class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
-    LayoutContainer, ItemTouchHelperViewHolder {
+class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer, ItemTouchHelperViewHolder {
 
     private val radius by lazy { containerView.getDimen(R.dimen.radius_small) }
     private val roundedCorners by lazy { RoundedCornersTransformation(radius) }
 
-    fun setItem(episode: Episode) {
-        date.text = episode.pub_date.toDate()
+    fun setItem(episode: ViewEpisode) {
+        date.text = episode.pubDate.toDate()
         name.text = episode.title
         length.text = "${episode.duration.toSeconds()} min"
 
@@ -31,7 +31,7 @@ class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolde
         }
     }
 
-    fun setOnItemClickListener(item: Episode, onItemClickListener: (Episode) -> Unit) {
+    fun setOnItemClickListener(item: ViewEpisode, onItemClickListener: (ViewEpisode) -> Unit) {
         containerView.setOnClickListener { onItemClickListener(item) }
     }
 

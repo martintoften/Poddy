@@ -4,15 +4,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.layoutInflater
-import com.bakkenbaeck.poddy.network.model.SearchItem
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearchItem
 
 class SearchAdapter(
-    private val onItemClickedListener: (SearchItem) -> Unit
+    private val onItemClickedListener: (ViewPodcastSearchItem) -> Unit
 ) : RecyclerView.Adapter<SearchViewHolder>() {
 
-    private val items by lazy { mutableListOf<SearchItem>() }
+    private val items by lazy { mutableListOf<ViewPodcastSearchItem>() }
 
-    fun add(searchItems: List<SearchItem>) {
+    fun add(searchItems: List<ViewPodcastSearchItem>) {
         items.clear()
         items.addAll(searchItems)
         notifyDataSetChanged()
