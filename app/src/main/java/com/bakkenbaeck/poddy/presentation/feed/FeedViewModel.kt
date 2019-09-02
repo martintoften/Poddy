@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.model.EpisodeItem
-import com.bakkenbaeck.poddy.model.EpisodeResponse
+import com.bakkenbaeck.poddy.model.PodcastResponse
 import com.bakkenbaeck.poddy.repository.FeedRepository
 import com.bakkenbaeck.poddy.repository.SearchRepository
 import com.bakkenbaeck.poddy.util.Loading
@@ -20,7 +20,7 @@ class FeedViewModel(
     private val feedRepository: FeedRepository
 ) : ViewModel() {
 
-    val feedResult = MutableLiveData<Resource<EpisodeResponse>>()
+    val feedResult = MutableLiveData<Resource<PodcastResponse>>()
     var selectedEpisode: EpisodeItem? = null
 
     fun getFeed(id: String) {
@@ -32,7 +32,7 @@ class FeedViewModel(
         }
     }
 
-    private fun handleFeedResult(rss: EpisodeResponse) {
+    private fun handleFeedResult(rss: PodcastResponse) {
         feedResult.value = Success(rss)
     }
 
@@ -57,7 +57,7 @@ class FeedViewModel(
         }
     }
 
-    private fun getChannel(): EpisodeResponse? {
+    private fun getChannel(): PodcastResponse? {
         val channel = feedResult.value
 
         return when (channel) {

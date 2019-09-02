@@ -26,9 +26,16 @@ class DBReader(
         }
     }
 
-    suspend fun doesAlreadyExist(id: String): Boolean {
+    suspend fun doesEpisodeAlreadyExist(id: String): Boolean {
         return withContext(context) {
             val result = db.queueQueries.doesAlreadyExist(id).executeAsOne()
+            return@withContext result > 0
+        }
+    }
+
+    suspend fun doesPodcastAlreadyExist(id: String): Boolean {
+        return withContext(context) {
+            val result = db.podcastQueries.doesAlreadyExist(id).executeAsOne()
             return@withContext result > 0
         }
     }

@@ -14,7 +14,7 @@ import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
 import com.bakkenbaeck.poddy.model.EpisodeItem
-import com.bakkenbaeck.poddy.model.EpisodeResponse
+import com.bakkenbaeck.poddy.model.PodcastResponse
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
@@ -113,7 +113,7 @@ class FeedFragment : BackableFragment() {
     private fun initObservers() {
         feedViewModel.feedResult.observe(this, Observer {
             when (it) {
-                is Success<EpisodeResponse> -> {
+                is Success<PodcastResponse> -> {
                     spinnerOverlay.isOverlayVisible(false)
                     handleFeedResult(it.data)
                 }
@@ -123,7 +123,7 @@ class FeedFragment : BackableFragment() {
         })
     }
 
-    private fun handleFeedResult(feed: EpisodeResponse) {
+    private fun handleFeedResult(feed: PodcastResponse) {
         val imageUrl = getPodcastImage(arguments)
         val description = getPodcastDescription(arguments)
         val name = getPodcastName(arguments)

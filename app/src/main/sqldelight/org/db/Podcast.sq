@@ -12,3 +12,6 @@ INSERT OR REPLACE INTO podcast(
 
 selectAll:
 SELECT * FROM podcast;
+
+doesAlreadyExist:
+SELECT COUNT(1) FROM podcast WHERE id = ?;

@@ -20,8 +20,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     private fun initBottomNav() {
+        val tabs = listOf(MainScreen.Search, MainScreen.Queue, MainScreen.Podcast)
         mainPagerAdapter = MainPagerAdapter(supportFragmentManager)
-        mainPagerAdapter.setItems(arrayListOf(MainScreen.Search, MainScreen.Queue, MainScreen.Podcast))
+        mainPagerAdapter.setItems(tabs)
 
         val defaultScreen = MainScreen.Search
         scrollToScreen(defaultScreen)
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         bottomNavigationView.setOnNavigationItemSelectedListener(this)
 
         viewPager.adapter = mainPagerAdapter
+        viewPager.offscreenPageLimit = tabs.count()
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 val selectedScreen = mainPagerAdapter.getItems()[position]

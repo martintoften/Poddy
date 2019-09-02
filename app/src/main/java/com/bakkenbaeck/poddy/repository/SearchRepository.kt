@@ -1,6 +1,6 @@
 package com.bakkenbaeck.poddy.repository
 
-import com.bakkenbaeck.poddy.model.EpisodeResponse
+import com.bakkenbaeck.poddy.model.PodcastResponse
 import com.bakkenbaeck.poddy.model.SearchResponse
 import com.bakkenbaeck.poddy.network.SearchApi
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,7 @@ class SearchRepository(
         }
     }
 
-    suspend fun getEpisodes(id: String): Flow<EpisodeResponse> {
+    suspend fun getEpisodes(id: String): Flow<PodcastResponse> {
         return flow {
             val result = searchApi.getEpisodes(id, EPISODE)
             emit(result)

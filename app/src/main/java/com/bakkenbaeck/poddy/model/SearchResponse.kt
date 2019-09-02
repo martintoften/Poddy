@@ -29,7 +29,7 @@ data class SearchItem(
     val explicit_content: Boolean
 )
 
-data class EpisodeResponse(
+data class PodcastResponse(
     val id: String,
     val title: String,
     val publisher: String,

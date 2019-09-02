@@ -3,7 +3,7 @@ package com.bakkenbaeck.poddy.repository
 import com.bakkenbaeck.poddy.db.DBReader
 import com.bakkenbaeck.poddy.db.DBWriter
 import com.bakkenbaeck.poddy.model.EpisodeItem
-import com.bakkenbaeck.poddy.model.EpisodeResponse
+import com.bakkenbaeck.poddy.model.PodcastResponse
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -19,7 +19,7 @@ class FeedRepository(
     private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
     private val podcastChannel = ConflatedBroadcastChannel<List<Podcast>>()
 
-    suspend fun addToQueue(channel: EpisodeResponse, episode: EpisodeItem) {
+    suspend fun addToQueue(channel: PodcastResponse, episode: EpisodeItem) {
         val episodeId = episode.id
         val channelId = channel.id
         val dbQueueItem = Queue.Impl(episodeId, channelId, -1)
@@ -33,7 +33,7 @@ class FeedRepository(
             image = episode.image
         )
 
-        val doesAlreadyExist = dbReader.doesAlreadyExist(episodeId)
+        val doesAlreadyExist = dbReader.doesEpisodeAlreadyExist(episodeId)
 
         if (!doesAlreadyExist) {
             dbWriter.insertQueueItem(dbQueueItem, dbEpisode)
@@ -51,16 +51,20 @@ class FeedRepository(
         dbWriter.reorderQueue(queue.map { it.id })
     }
 
-    suspend fun addPodcast(channel: EpisodeResponse) {
+    suspend fun addPodcast(podcastResponse: PodcastResponse) {
         val podcast = Podcast.Impl(
-            id = channel.id,
-            title = channel.title,
-            description = channel.description,
-            image = channel.image
+            id = podcastResponse.id,
+            title = podcastResponse.title,
+            description = podcastResponse.description,
+            image = podcastResponse.image
         )
-        dbWriter.insertPodcast(podcast)
 
-        podcastChannel.send(listOf(podcast))
+        val doesAlreadyExist = dbReader.doesPodcastAlreadyExist(podcastResponse.id)
+
+        if (!doesAlreadyExist) {
+            dbWriter.insertPodcast(podcast)
+            podcastChannel.send(listOf(podcast))
+        }
     }
 
     suspend fun getPodcasts(): Flow<List<Podcast>> {

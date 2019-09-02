@@ -1,6 +1,6 @@
 package com.bakkenbaeck.poddy.network
 
-import com.bakkenbaeck.poddy.model.EpisodeResponse
+import com.bakkenbaeck.poddy.model.PodcastResponse
 import com.bakkenbaeck.poddy.model.SearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -20,5 +20,5 @@ interface SearchApi {
     suspend fun getEpisodes(
         @Path("id") id: String,
         @Query("sort") sort: String = "recent_first"
-    ): EpisodeResponse
+    ): PodcastResponse
 }

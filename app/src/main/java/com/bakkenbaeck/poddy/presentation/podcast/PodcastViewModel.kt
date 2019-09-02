@@ -28,7 +28,12 @@ class PodcastViewModel(
         }
     }
 
-    private fun handlePodcasts(podcastsResult: List<Podcast>) {
-        podcasts.value = podcastsResult
+    private fun handlePodcasts(podcastResult: List<Podcast>) {
+        val newPodcast = mutableListOf<Podcast>().apply {
+            addAll(podcastResult)
+            addAll(podcasts.value ?: emptyList())
+        }
+
+        podcasts.value = newPodcast
     }
 }
