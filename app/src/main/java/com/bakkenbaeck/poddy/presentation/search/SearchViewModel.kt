@@ -12,6 +12,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+const val DEBOUNCE_DELAY = 500L
+const val MIN_QUERY_LENGTH = 2
+
 class SearchViewModel(
     private val searchRepository: SearchRepository
 ) : ViewModel() {
@@ -26,7 +29,8 @@ class SearchViewModel(
     private fun initQueryObserver() {
         viewModelScope.launch {
             channel.asFlow()
-                .debounce(300)
+                .filter { it.length > MIN_QUERY_LENGTH }
+                .debounce(DEBOUNCE_DELAY)
                 .flatMapMerge { searchRepository.search(it) }
                 .map { mapFromNetworkToView(it) }
                 .flowOn(Dispatchers.IO)
