@@ -2,13 +2,14 @@ package com.bakkenbaeck.poddy.repository
 
 import com.bakkenbaeck.poddy.db.DBReader
 import com.bakkenbaeck.poddy.db.DBWriter
-import com.bakkenbaeck.poddy.network.model.SearchResponse
 import com.bakkenbaeck.poddy.network.SearchApi
-import com.bakkenbaeck.poddy.presentation.mappers.mapFromNetworkToView
+import com.bakkenbaeck.poddy.network.model.SearchResponse
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flow
 import org.db.Episode
 import org.db.Podcast
 import org.db.Queue
@@ -24,7 +25,7 @@ class PodcastRepository(
 
     private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
     private val podcastChannel = ConflatedBroadcastChannel<List<Podcast>>()
-    private val singlePodcastChannel = ConflatedBroadcastChannel<ViewPodcast>()
+    private val singlePodcastChannel = ConflatedBroadcastChannel<Podcast>()
 
     suspend fun search(query: String): Flow<SearchResponse> {
         return flow {
@@ -33,13 +34,24 @@ class PodcastRepository(
         }
     }
 
-    suspend fun getPodcast(id: String): Flow<ViewPodcast> {
+    suspend fun getPodcast(id: String): Flow<Podcast> {
         val podcastResponse = searchApi.getEpisodes(id, EPISODE)
-        val hasSubscribed = dbReader.doesPodcastAlreadyExist(podcastResponse.id)
-        val podcast = mapFromNetworkToView(podcastResponse, hasSubscribed)
+        val podcast = Podcast.Impl(
+            id = podcastResponse.id,
+            title = podcastResponse.title,
+            description = podcastResponse.description,
+            image = podcastResponse.image
+        )
 
         singlePodcastChannel.send(podcast)
         return singlePodcastChannel.asFlow()
+    }
+
+    suspend fun hasSubscribed(podcast: Podcast): Flow<Boolean> {
+        return flow {
+            val result = dbReader.doesPodcastAlreadyExist(podcast.id)
+            emit(result)
+        }
     }
 
     suspend fun subscribeOrUnsubscribeToPodcast(podcast: ViewPodcast) {
@@ -59,14 +71,12 @@ class PodcastRepository(
         val dbPodcasts = dbReader.getPodcasts()
         podcastChannel.send(dbPodcasts)
 
-        val targetPodcast = dbPodcasts.find { it.id == podcast.id }
-        val hasSubscribed = targetPodcast != null
-
-        if (hasSubscribed) {
-            singlePodcastChannel.send(podcast.copy(hasSubscribed = true))
-        } else {
-            singlePodcastChannel.send(podcast.copy(hasSubscribed = false))
-        }
+        singlePodcastChannel.send(Podcast.Impl(
+            id = podcast.id,
+            title = podcast.title,
+            description = podcast.description,
+            image = podcast.image
+        ))
     }
 
     suspend fun addToQueue(podcast: ViewPodcast, episode: ViewEpisode) {

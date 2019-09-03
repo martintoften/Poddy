@@ -67,16 +67,18 @@ fun mapToViewEpisodeFromNetwork(network: List<EpisodeItem>): List<ViewEpisode> {
 }
 
 fun mapToViewPodcastFromDB(db: List<Podcast>): List<ViewPodcast> {
-    return db.map {
-        ViewPodcast(
-            id = it.id,
-            title = it.title,
-            description = it.description,
-            image = it.image,
-            episodes = emptyList(),
-            hasSubscribed = true
-        )
-    }
+    return db.map { mapToViewPodcastFromDB(it, true) }
+}
+
+fun mapToViewPodcastFromDB(db: Podcast, hasSubscribed: Boolean): ViewPodcast {
+    return ViewPodcast(
+        id = db.id,
+        title = db.title,
+        description = db.description,
+        image = db.image,
+        episodes = emptyList(),
+        hasSubscribed = hasSubscribed
+    )
 }
 
 fun mapToViewEpisodeFromDB(db: List<Episode>): List<ViewEpisode> {
