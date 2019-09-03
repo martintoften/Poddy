@@ -136,6 +136,8 @@ class PodcastRepository(
 
     suspend fun deleteEpisodeFromQueue(episode: ViewEpisode) {
         dbWriter.deleteEpisode(episode.id)
+        val queue = dbReader.getQueue()
+        queueChannel.send(queue)
     }
 
     suspend fun getPodcasts(): Flow<List<Podcast>> {

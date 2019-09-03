@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.layoutInflater
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
+import com.bakkenbaeck.poddy.util.Diffable
 
 sealed class EpisodeViewType(val type: Int) {
     companion object {

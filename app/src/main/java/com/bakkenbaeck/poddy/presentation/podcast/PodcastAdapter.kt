@@ -1,10 +1,12 @@
 package com.bakkenbaeck.poddy.presentation.podcast
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.layoutInflater
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
+import com.bakkenbaeck.poddy.util.Differ
 
 class PodcastAdapter(
     private val onItemClickedListener: (ViewPodcast) -> Unit
@@ -12,10 +14,11 @@ class PodcastAdapter(
 
     private val items by lazy { mutableListOf<ViewPodcast>() }
 
-    fun addItems(item: List<ViewPodcast>) {
+    fun addItems(podcasts: List<ViewPodcast>) {
+        val diffResult = DiffUtil.calculateDiff(Differ(items, podcasts))
         items.clear()
-        items.addAll(item)
-        notifyDataSetChanged()
+        items.addAll(podcasts)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PodcastViewHolder {

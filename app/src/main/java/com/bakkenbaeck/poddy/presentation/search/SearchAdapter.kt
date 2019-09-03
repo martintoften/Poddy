@@ -1,10 +1,12 @@
 package com.bakkenbaeck.poddy.presentation.search
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.layoutInflater
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearchItem
+import com.bakkenbaeck.poddy.util.Differ
 
 class SearchAdapter(
     private val onItemClickedListener: (ViewPodcastSearchItem) -> Unit
@@ -13,9 +15,10 @@ class SearchAdapter(
     private val items by lazy { mutableListOf<ViewPodcastSearchItem>() }
 
     fun add(searchItems: List<ViewPodcastSearchItem>) {
+        val diffResult = DiffUtil.calculateDiff(Differ(items, searchItems))
         items.clear()
         items.addAll(searchItems)
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {

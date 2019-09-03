@@ -1,5 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.model
 
+import com.bakkenbaeck.poddy.util.Diffable
+
 data class ViewPodcastSearch(
     val took: Double,
     val count: Int,
@@ -9,7 +11,7 @@ data class ViewPodcastSearch(
 )
 
 data class ViewPodcastSearchItem(
-    val id: String,
+    override val id: String,
     val rss: String,
     val description: String,
     val title: String,
@@ -19,4 +21,4 @@ data class ViewPodcastSearchItem(
     val genreIds: List<Int>,
     val totalEpisodes: Int,
     val email: String?
-)
+) : Diffable
