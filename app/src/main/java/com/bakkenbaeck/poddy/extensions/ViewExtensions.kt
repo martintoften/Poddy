@@ -7,6 +7,9 @@ import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.feed_fragment.*
 
 fun View.getDimen(@DimenRes resource: Int): Float {
     return this.resources.getDimension(resource)
@@ -38,4 +41,16 @@ fun View.isVisible(bool: Boolean?, nonVisibleState: Int = View.GONE) {
 
 fun View.isVisible(): Boolean {
     return visibility == View.VISIBLE
+}
+
+fun RecyclerView.findLastCompletelyVisibleItemPosition(): Int {
+    val layoutManager = layoutManager as? LinearLayoutManager ?: return -1
+    return layoutManager.findLastCompletelyVisibleItemPosition()
+}
+
+fun RecyclerView.isLastVisible(): Boolean {
+    val layoutManager = layoutManager as? LinearLayoutManager ?: return false
+    val pos = layoutManager.findLastCompletelyVisibleItemPosition()
+    val numItems = adapter?.itemCount ?: return false
+    return pos >= numItems - 1
 }

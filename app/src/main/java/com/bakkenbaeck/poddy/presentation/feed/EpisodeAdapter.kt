@@ -63,6 +63,10 @@ class EpisodeAdapter(
 
     override fun getItemCount() = items.count()
 
+    fun getLastItem(): ViewEpisode? {
+        return items.last() as? ViewEpisode ?: return null
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
 

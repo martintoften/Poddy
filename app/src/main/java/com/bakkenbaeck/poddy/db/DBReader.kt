@@ -25,6 +25,12 @@ class DBReader(
         }
     }
 
+    suspend fun getEpisodes(podcastId: String): List<Episode> {
+        return withContext(context) {
+            return@withContext db.episodeQueries.selectByPodcastId(podcastId).executeAsList()
+        }
+    }
+
     suspend fun doesEpisodeAlreadyExist(id: String): Boolean {
         return withContext(context) {
             val result = db.queueQueries.doesAlreadyExist(id).executeAsOne()

@@ -12,10 +12,7 @@ import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
@@ -25,10 +22,12 @@ class FeedViewModel(
     private var selectedEpisode: ViewEpisode? = null
     val feedResult = MutableLiveData<Resource<ViewPodcast>>()
 
-    fun getFeed(id: String) {
+    fun getFeed(id: String, lastTimestamp: Long? = null) {
+        if (feedResult.value is Loading) return
+
         viewModelScope.launch {
             feedResult.value = Loading()
-            podcastRepository.getPodcast(id)
+            podcastRepository.getPodcast(id, lastTimestamp)
                 .flowOn(Dispatchers.IO)
                 .flatMapMerge { podcast -> podcastRepository.hasSubscribed(podcast.first)
                     .map { hasSubscribed -> mapToViewPodcastFromDB(podcast.first, podcast.second, hasSubscribed) }

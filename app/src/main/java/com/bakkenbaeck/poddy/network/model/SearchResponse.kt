@@ -47,7 +47,7 @@ data class PodcastResponse(
     val country: String,
     val website: String,
     val email: String,
-    val next_episode_pub_date: Long,
+    val next_episode_pub_date: Long?,
     val episodes: List<EpisodeItem>
 )
 

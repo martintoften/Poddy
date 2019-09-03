@@ -7,6 +7,7 @@ data class ViewPodcast(
     val title: String,
     val description: String,
     val image: String,
+    val nextEpisodePubDate: Long?,
     val episodes: List<ViewEpisode>,
     val hasSubscribed: Boolean
 ) : Diffable

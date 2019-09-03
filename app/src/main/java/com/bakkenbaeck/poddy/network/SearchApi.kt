@@ -19,6 +19,7 @@ interface SearchApi {
     @GET("podcasts/{id}")
     suspend fun getEpisodes(
         @Path("id") id: String,
-        @Query("sort") sort: String = "recent_first"
+        @Query("sort") sort: String = "recent_first",
+        @Query("next_episode_pub_date") nextDate: Long? = null
     ): PodcastResponse
 }

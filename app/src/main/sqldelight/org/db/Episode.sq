@@ -1,6 +1,6 @@
 CREATE TABLE episode (
     id TEXT NOT NULL UNIQUE PRIMARY KEY,
-    channel_id TEXT NOT NULL,
+    podcast_id TEXT NOT NULL,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     pub_date INTEGER NOT NULL,
@@ -17,12 +17,12 @@ SELECT * FROM episode WHERE id = ?;
 selectByIds:
 SELECT * FROM episode WHERE id IN ?;
 
-selectByChannelId:
-SELECT * FROM episode WHERE channel_id = ?;
+selectByPodcastId:
+SELECT * FROM episode WHERE podcast_id = ? ORDER BY pub_date DESC;
 
 insert:
 INSERT OR REPLACE INTO episode(
-    id, channel_id, title, description, pub_date, duration, image
+    id, podcast_id, title, description, pub_date, duration, image
 )VALUES?;
 
 delete:

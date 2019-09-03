@@ -34,8 +34,8 @@ class PodcastRepository(
         }
     }
 
-    suspend fun getPodcast(id: String): Flow<Pair<Podcast, List<Episode>>> {
-        val podcastResponse = searchApi.getEpisodes(id, EPISODE)
+    suspend fun getPodcast(id: String, nextDate: Long? = null): Flow<Pair<Podcast, List<Episode>>> {
+        val podcastResponse = searchApi.getEpisodes(id, EPISODE, nextDate)
         val podcast = Podcast.Impl(
             id = podcastResponse.id,
             title = podcastResponse.title,
@@ -45,7 +45,7 @@ class PodcastRepository(
 
         val episodes = podcastResponse.episodes.map { Episode.Impl(
             id = it.id,
-            channel_id = podcast.id,
+            podcast_id = podcast.id,
             title = it.title,
             description = it.description,
             pub_date = it.pub_date_ms,
@@ -53,7 +53,10 @@ class PodcastRepository(
             image = it.image
         ) }
 
-        singlePodcastChannel.send(Pair(podcast, episodes))
+        dbWriter.insertEpisodes(episodes)
+        val dbEpisodes = dbReader.getEpisodes(podcast.id)
+
+        singlePodcastChannel.send(Pair(podcast, dbEpisodes))
         return singlePodcastChannel.asFlow()
     }
 
@@ -90,7 +93,7 @@ class PodcastRepository(
 
         val dbEpisodes = podcast.episodes.map { Episode.Impl(
             id = it.id,
-            channel_id = podcast.id,
+            podcast_id = podcast.id,
             title = it.title,
             description = it.description,
             pub_date = it.pubDate,
@@ -107,7 +110,7 @@ class PodcastRepository(
         val dbQueueItem = Queue.Impl(episodeId, channelId, -1)
         val dbEpisode = Episode.Impl(
             id = episodeId,
-            channel_id = channelId,
+            podcast_id = channelId,
             title = episode.title,
             description = episode.description,
             pub_date = episode.pubDate,
@@ -144,5 +147,12 @@ class PodcastRepository(
         val podcasts = dbReader.getPodcasts()
         podcastChannel.send(podcasts)
         return podcastChannel.asFlow()
+    }
+
+    suspend fun getEpisodes(podcastId: String): Flow<List<Episode>> {
+        return flow {
+            val episodes = dbReader.getEpisodes(podcastId)
+            emit(episodes)
+        }
     }
 }

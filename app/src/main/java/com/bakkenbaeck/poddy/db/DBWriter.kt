@@ -38,6 +38,14 @@ class DBWriter(
         }
     }
 
+    suspend fun insertEpisodes(episodes: List<Episode>) {
+        return withContext(context) {
+            episodes.forEach {
+                db.episodeQueries.insert(it)
+            }
+        }
+    }
+
     suspend fun deletePodcast(podcastId: String) {
         return withContext(context) {
             db.podcastQueries.delete(podcastId)

@@ -48,6 +48,7 @@ fun mapFromNetworkToView(network: PodcastResponse, hasSubscribed: Boolean): View
         title = network.title,
         description = network.description,
         image = network.image,
+        nextEpisodePubDate = network.next_episode_pub_date,
         episodes = items,
         hasSubscribed = hasSubscribed
     )
@@ -76,6 +77,7 @@ fun mapToViewPodcastFromDB(db: Podcast, episodes: List<Episode>, hasSubscribed: 
         title = db.title,
         description = db.description,
         image = db.image,
+        nextEpisodePubDate = 0L,
         episodes = mapToViewEpisodeFromDB(episodes),
         hasSubscribed = hasSubscribed
     )
