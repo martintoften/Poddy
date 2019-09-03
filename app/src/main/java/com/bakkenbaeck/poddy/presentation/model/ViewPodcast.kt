@@ -5,7 +5,8 @@ data class ViewPodcast(
     val title: String,
     val description: String,
     val image: String,
-    val episodes: List<ViewEpisode>
+    val episodes: List<ViewEpisode>,
+    val hasSubscribed: Boolean
 )
 
 data class ViewEpisode(

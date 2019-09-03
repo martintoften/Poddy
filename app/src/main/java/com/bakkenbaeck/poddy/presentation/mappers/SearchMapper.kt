@@ -40,7 +40,7 @@ fun mapToViewPodcastSearchFromNetworkToView(network: List<SearchItem>): List<Vie
     }
 }
 
-fun mapFromNetworkToView(network: PodcastResponse): ViewPodcast {
+fun mapFromNetworkToView(network: PodcastResponse, hasSubscribed: Boolean): ViewPodcast {
     val items = mapToViewEpisodeFromNetwork(network.episodes)
 
     return ViewPodcast(
@@ -48,7 +48,8 @@ fun mapFromNetworkToView(network: PodcastResponse): ViewPodcast {
         title = network.title,
         description = network.description,
         image = network.image,
-        episodes = items
+        episodes = items,
+        hasSubscribed = hasSubscribed
     )
 }
 
@@ -72,7 +73,8 @@ fun mapToViewPodcastFromDB(db: List<Podcast>): List<ViewPodcast> {
             title = it.title,
             description = it.description,
             image = it.image,
-            episodes = emptyList()
+            episodes = emptyList(),
+            hasSubscribed = true
         )
     }
 }

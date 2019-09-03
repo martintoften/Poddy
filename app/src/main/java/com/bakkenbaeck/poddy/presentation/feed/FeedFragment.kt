@@ -26,15 +26,11 @@ import kotlinx.android.synthetic.main.feed_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val PODCAST_ID = "PODCAST_ID"
-const val PODCAST_NAME = "PODCAST_NAME"
 const val PODCAST_IMAGE = "PODCAST_IMAGE"
-const val PODCAST_DESCRIPTION = "PODCAST_DESCRIPTION"
 
 class FeedFragment : BackableFragment() {
 
-    private fun getPodcastName(arguments: Bundle?): String? = arguments?.getString(PODCAST_NAME)
     private fun getPodcastImage(arguments: Bundle?): String? = arguments?.getString(PODCAST_IMAGE)
-    private fun getPodcastDescription(arguments: Bundle?): String? = arguments?.getString(PODCAST_DESCRIPTION)
     private fun getPodcastId(arguments: Bundle?): String? = arguments?.getString(PODCAST_ID)
 
     private val feedViewModel: FeedViewModel by viewModel()
@@ -123,15 +119,13 @@ class FeedFragment : BackableFragment() {
         })
     }
 
-    private fun handleFeedResult(feed: ViewPodcast) {
-        val imageUrl = getPodcastImage(arguments)
-        val description = getPodcastDescription(arguments)
-        val name = getPodcastName(arguments)
+    private fun handleFeedResult(podcast: ViewPodcast) {
         val header = Header(
-            title = name.orEmpty(),
-            description = description.orEmpty(),
-            image = imageUrl.orEmpty()
+            title = podcast.title,
+            description = podcast.description,
+            image = podcast.image,
+            hasSubscribed = podcast.hasSubscribed
         )
-        episodeAdapter.add(header, feed.episodes)
+        episodeAdapter.add(header, podcast.episodes)
     }
 }

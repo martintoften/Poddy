@@ -22,7 +22,8 @@ sealed class EpisodeViewType(val type: Int) {
 class Header(
     val image: String,
     val title: String,
-    val description: String
+    val description: String,
+    val hasSubscribed: Boolean
 )
 
 class EpisodeAdapter(

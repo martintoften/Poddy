@@ -13,6 +13,7 @@ import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -28,9 +29,11 @@ class FeedViewModel(
     fun getFeed(id: String) {
         viewModelScope.launch {
             feedResult.value = Loading()
-            searchRepository.getEpisodes(id)
+            searchRepository.getPodcast(id)
                 .flowOn(Dispatchers.IO)
-                .map { mapFromNetworkToView(it) }
+                .flatMapMerge { podcast -> feedRepository.hasSubscribedToPodcast(podcast.id)
+                    .map { hasSubscribed -> mapFromNetworkToView(podcast, hasSubscribed) }
+                }
                 .collect { handleFeedResult(it) }
         }
     }

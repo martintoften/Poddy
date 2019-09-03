@@ -8,6 +8,7 @@ import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flow
 import org.db.Episode
 import org.db.Podcast
 import org.db.Queue
@@ -72,5 +73,12 @@ class FeedRepository(
         val podcasts = dbReader.getPodcasts()
         podcastChannel.send(podcasts)
         return podcastChannel.asFlow()
+    }
+
+    suspend fun hasSubscribedToPodcast(id: String): Flow<Boolean> {
+        return flow {
+            val result = dbReader.doesPodcastAlreadyExist(id)
+            emit(result)
+        }
     }
 }

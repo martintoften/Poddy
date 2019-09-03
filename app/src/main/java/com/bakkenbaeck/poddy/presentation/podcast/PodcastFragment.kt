@@ -9,10 +9,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
-import com.bakkenbaeck.poddy.presentation.feed.PODCAST_DESCRIPTION
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
-import com.bakkenbaeck.poddy.presentation.feed.PODCAST_NAME
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import kotlinx.android.synthetic.main.podcast_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -48,9 +46,7 @@ class PodcastFragment : BackableFragment() {
     private fun goTo(podcast: ViewPodcast) {
         val bundle = Bundle().apply {
             putString(PODCAST_ID, podcast.id)
-            putString(PODCAST_NAME, podcast.title)
             putString(PODCAST_IMAGE, podcast.image)
-            putString(PODCAST_DESCRIPTION, podcast.description)
         }
         navigate(R.id.to_details_fragment, bundle)
     }

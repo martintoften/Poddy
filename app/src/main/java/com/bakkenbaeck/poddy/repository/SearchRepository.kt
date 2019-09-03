@@ -19,7 +19,7 @@ class SearchRepository(
         }
     }
 
-    suspend fun getEpisodes(id: String): Flow<PodcastResponse> {
+    suspend fun getPodcast(id: String): Flow<PodcastResponse> {
         return flow {
             val result = searchApi.getEpisodes(id, EPISODE)
             emit(result)
