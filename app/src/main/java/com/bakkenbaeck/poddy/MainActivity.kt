@@ -1,22 +1,34 @@
 package com.bakkenbaeck.poddy
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.NestedScrollView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.detail_sheet.*
+import kotlinx.android.synthetic.main.detail_sheet.view.*
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var mainPagerAdapter: MainPagerAdapter
+    private lateinit var sheetBehavior: BottomSheetBehavior<NestedScrollView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         initBottomNav()
+        initSheetView()
+    }
+
+    private fun initSheetView() {
+        sheetBehavior = BottomSheetBehavior.from(sheet)
+        sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private fun initBottomNav() {

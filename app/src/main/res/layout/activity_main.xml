@@ -25,4 +25,6 @@
        app:labelVisibilityMode="unlabeled"
        app:menu="@menu/bottom_nav"/>
 
+   <include layout="@layout/player_sheet" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

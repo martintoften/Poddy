@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#111</color>
     <color name="colorAccent">#333</color>
 
+    <color name="colorProgressBackground">#AAA</color>
+    <color name="colorProgress">#EEE</color>
+
     <color name="colorPrimaryContrast">#EEE</color>
     <color name="colorPrimaryDarkContrast">#FFF</color>
     <color name="colorAccentContrast">#DDD</color>
