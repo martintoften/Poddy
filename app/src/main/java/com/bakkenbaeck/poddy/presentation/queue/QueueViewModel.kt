@@ -40,4 +40,10 @@ class QueueViewModel(
             podcastRepository.reorderQueue(queue)
         }
     }
+
+    fun deleteEpisode(episode: ViewEpisode) {
+        viewModelScope.launch {
+            podcastRepository.deleteEpisodeFromQueue(episode)
+        }
+    }
 }

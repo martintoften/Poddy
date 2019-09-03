@@ -25,7 +25,7 @@ class PodcastRepository(
 
     private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
     private val podcastChannel = ConflatedBroadcastChannel<List<Podcast>>()
-    private val singlePodcastChannel = ConflatedBroadcastChannel<Podcast>()
+    private val singlePodcastChannel = ConflatedBroadcastChannel<Pair<Podcast, List<Episode>>>()
 
     suspend fun search(query: String): Flow<SearchResponse> {
         return flow {
@@ -34,7 +34,7 @@ class PodcastRepository(
         }
     }
 
-    suspend fun getPodcast(id: String): Flow<Podcast> {
+    suspend fun getPodcast(id: String): Flow<Pair<Podcast, List<Episode>>> {
         val podcastResponse = searchApi.getEpisodes(id, EPISODE)
         val podcast = Podcast.Impl(
             id = podcastResponse.id,
@@ -43,7 +43,17 @@ class PodcastRepository(
             image = podcastResponse.image
         )
 
-        singlePodcastChannel.send(podcast)
+        val episodes = podcastResponse.episodes.map { Episode.Impl(
+            id = it.id,
+            channel_id = podcast.id,
+            title = it.title,
+            description = it.description,
+            pub_date = it.pub_date_ms,
+            duration = it.audio_length_sec.toLong(),
+            image = it.image
+        ) }
+
+        singlePodcastChannel.send(Pair(podcast, episodes))
         return singlePodcastChannel.asFlow()
     }
 
@@ -71,12 +81,24 @@ class PodcastRepository(
         val dbPodcasts = dbReader.getPodcasts()
         podcastChannel.send(dbPodcasts)
 
-        singlePodcastChannel.send(Podcast.Impl(
+        val dbPodcast = Podcast.Impl(
             id = podcast.id,
             title = podcast.title,
             description = podcast.description,
             image = podcast.image
-        ))
+        )
+
+        val dbEpisodes = podcast.episodes.map { Episode.Impl(
+            id = it.id,
+            channel_id = podcast.id,
+            title = it.title,
+            description = it.description,
+            pub_date = it.pubDate,
+            duration = it.duration.toLong(),
+            image = it.image
+        ) }
+
+        singlePodcastChannel.send(Pair(dbPodcast, dbEpisodes))
     }
 
     suspend fun addToQueue(podcast: ViewPodcast, episode: ViewEpisode) {
@@ -110,6 +132,10 @@ class PodcastRepository(
 
     suspend fun reorderQueue(queue: List<ViewEpisode>) {
         dbWriter.reorderQueue(queue.map { it.id })
+    }
+
+    suspend fun deleteEpisodeFromQueue(episode: ViewEpisode) {
+        dbWriter.deleteEpisode(episode.id)
     }
 
     suspend fun getPodcasts(): Flow<List<Podcast>> {

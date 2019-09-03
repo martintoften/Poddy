@@ -24,3 +24,6 @@ insert:
 INSERT OR REPLACE INTO episode(
     id, channel_id, title, description, pub_date, duration, image
 )VALUES?;
+
+delete:
+DELETE FROM episode WHERE id = ?;

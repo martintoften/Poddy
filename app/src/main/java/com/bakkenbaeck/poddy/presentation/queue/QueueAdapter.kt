@@ -12,6 +12,7 @@ import java.util.*
 class QueueAdapter(
     private val dragStartListener: OnStartDragListener,
     private val onQueueUpdated: (List<ViewEpisode>) -> Unit,
+    private val onEpisodeRemoved: (ViewEpisode) -> Unit,
     private val onItemClickListener: (ViewEpisode) -> Unit
 ) : RecyclerView.Adapter<QueueViewHolder>(), ItemTouchHelperAdapter {
 
@@ -48,7 +49,8 @@ class QueueAdapter(
     }
 
     override fun onItemDismiss(position: Int) {
-        items.removeAt(position)
+        val episode = items.removeAt(position)
         notifyItemRemoved(position)
+        onEpisodeRemoved(episode)
     }
 }

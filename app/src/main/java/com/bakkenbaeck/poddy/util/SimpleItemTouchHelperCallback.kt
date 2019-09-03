@@ -1,13 +1,12 @@
 package com.bakkenbaeck.poddy.util
 
 import android.graphics.Canvas
-import androidx.core.view.ViewCompat.setAlpha
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.GridLayoutManager
 
 
-class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter) :
+class SimpleItemTouchHelperCallback(private val adapter: ItemTouchHelperAdapter) :
     ItemTouchHelper.Callback() {
 
     override fun isLongPressDragEnabled(): Boolean {
@@ -23,15 +22,15 @@ class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter
         viewHolder: RecyclerView.ViewHolder
     ): Int {
         // Set movement flags based on the layout manager
-        if (recyclerView.layoutManager is GridLayoutManager) {
+        return if (recyclerView.layoutManager is GridLayoutManager) {
             val dragFlags =
                 ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
             val swipeFlags = 0
-            return ItemTouchHelper.Callback.makeMovementFlags(dragFlags, swipeFlags)
+            makeMovementFlags(dragFlags, swipeFlags)
         } else {
             val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
             val swipeFlags = ItemTouchHelper.START or ItemTouchHelper.END
-            return ItemTouchHelper.Callback.makeMovementFlags(dragFlags, swipeFlags)
+            makeMovementFlags(dragFlags, swipeFlags)
         }
     }
 
@@ -45,13 +44,13 @@ class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter
         }
 
         // Notify the adapter of the move
-        mAdapter.onItemMove(source.adapterPosition, target.adapterPosition)
+        adapter.onItemMove(source.adapterPosition, target.adapterPosition)
         return true
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
         // Notify the adapter of the dismissal
-        mAdapter.onItemDismiss(viewHolder.adapterPosition)
+        adapter.onItemDismiss(viewHolder.adapterPosition)
     }
 
     override fun onChildDraw(
@@ -99,7 +98,6 @@ class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter
     }
 
     companion object {
-
-        val ALPHA_FULL = 1.0f
+        const val ALPHA_FULL = 1.0f
     }
 }

@@ -21,3 +21,6 @@ SELECT * FROM queue ORDER BY queue_index ASC;
 
 doesAlreadyExist:
 SELECT COUNT(1) FROM queue WHERE episode_id = ?;
+
+delete:
+DELETE FROM queue WHERE episode_id = ?;

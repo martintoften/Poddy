@@ -43,4 +43,11 @@ class DBWriter(
             db.podcastQueries.delete(podcastId)
         }
     }
+
+    suspend fun deleteEpisode(episodeId: String) {
+        return withContext(context) {
+            db.episodeQueries.delete(episodeId)
+            db.queueQueries.delete(episodeId)
+        }
+    }
 }

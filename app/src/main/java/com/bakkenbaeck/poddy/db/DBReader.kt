@@ -15,8 +15,7 @@ class DBReader(
             val queue = db.queueQueries.selectEpisodeIdAll().executeAsList()
             val episodeResult = db.episodeQueries.selectByIds(queue).executeAsList()
             return@withContext queue
-                .map { episodeResult
-                .first { episode ->  it == episode.id } } // Query order is ignored for episodes
+                .map { episodeResult.first { episode ->  it == episode.id } } // Query order is ignored for episodes
         }
     }
 
