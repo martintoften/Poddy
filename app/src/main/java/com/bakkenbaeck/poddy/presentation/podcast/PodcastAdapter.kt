@@ -12,7 +12,7 @@ class PodcastAdapter(
 
     private val items by lazy { mutableListOf<ViewPodcast>() }
 
-    fun addItem(item: List<ViewPodcast>) {
+    fun addItems(item: List<ViewPodcast>) {
         items.clear()
         items.addAll(item)
         notifyDataSetChanged()

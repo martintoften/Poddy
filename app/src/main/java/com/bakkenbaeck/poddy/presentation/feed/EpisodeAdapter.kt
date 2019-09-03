@@ -70,7 +70,7 @@ class EpisodeAdapter(
                 val castedItem = item as? Header ?: return
                 holder.apply {
                     setHeader(castedItem)
-                    setOnItemClickedListener(castedItem, onHeaderItemClickListener)
+                    setOnSubscribedClicked(castedItem, onHeaderItemClickListener)
                 }
             }
             is EpisodeViewHolder -> {

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.presentation.mappers.mapFromNetworkToView
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearch
-import com.bakkenbaeck.poddy.repository.SearchRepository
+import com.bakkenbaeck.poddy.repository.PodcastRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
@@ -16,7 +16,7 @@ const val DEBOUNCE_DELAY = 500L
 const val MIN_QUERY_LENGTH = 2
 
 class SearchViewModel(
-    private val searchRepository: SearchRepository
+    private val podcastRepository: PodcastRepository
 ) : ViewModel() {
 
     private val channel = BroadcastChannel<String>(Channel.CONFLATED)
@@ -31,7 +31,7 @@ class SearchViewModel(
             channel.asFlow()
                 .filter { it.length > MIN_QUERY_LENGTH }
                 .debounce(DEBOUNCE_DELAY)
-                .flatMapMerge { searchRepository.search(it) }
+                .flatMapMerge { podcastRepository.search(it) }
                 .map { mapFromNetworkToView(it) }
                 .flowOn(Dispatchers.IO)
                 .collect { handleSearchResult(it) }

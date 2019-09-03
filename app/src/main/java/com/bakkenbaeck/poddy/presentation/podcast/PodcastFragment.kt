@@ -58,6 +58,6 @@ class PodcastFragment : BackableFragment() {
     }
 
     private fun handlePodcasts(podcasts: List<ViewPodcast>) {
-        podcastAdapter.addItem(podcasts)
+        podcastAdapter.addItems(podcasts)
     }
 }

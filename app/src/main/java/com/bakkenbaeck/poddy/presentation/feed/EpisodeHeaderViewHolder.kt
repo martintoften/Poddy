@@ -29,4 +29,8 @@ class EpisodeHeaderViewHolder(override val containerView: View) : ClickableViewH
             transformations(roundedCorners)
         }
     }
+
+    fun setOnSubscribedClicked(header: Header, onItemClickedListener: (Header) -> Unit) {
+        subscribe.setOnClickListener { onItemClickedListener(header) }
+    }
 }

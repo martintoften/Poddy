@@ -5,16 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
-import com.bakkenbaeck.poddy.repository.FeedRepository
+import com.bakkenbaeck.poddy.repository.PodcastRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.db.Episode
 
 class QueueViewModel(
-    private val feedRepository: FeedRepository
+    private val podcastRepository: PodcastRepository
 ) : ViewModel() {
 
     init {
@@ -25,7 +24,7 @@ class QueueViewModel(
 
     private fun getQueue() {
         viewModelScope.launch {
-            feedRepository.getQueue()
+            podcastRepository.getQueue()
                 .flowOn(Dispatchers.IO)
                 .map { mapToViewEpisodeFromDB(it) }
                 .collect { handleQueue(it) }
@@ -33,17 +32,12 @@ class QueueViewModel(
     }
 
     private fun handleQueue(queueResult: List<ViewEpisode>) {
-        val newQueue = mutableListOf<ViewEpisode>().apply {
-            addAll(queueResult)
-            addAll(queue.value ?: emptyList())
-        }
-
-        queue.value = newQueue
+        queue.value = queueResult
     }
 
     fun reorderQueue(queue: List<ViewEpisode>) {
         viewModelScope.launch {
-            feedRepository.reorderQueue(queue)
+            podcastRepository.reorderQueue(queue)
         }
     }
 }

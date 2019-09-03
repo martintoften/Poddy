@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
-import com.bakkenbaeck.poddy.repository.FeedRepository
+import com.bakkenbaeck.poddy.repository.PodcastRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class PodcastViewModel(
-    private val feedRepository: FeedRepository
+    private val podcastRepository: PodcastRepository
 ) : ViewModel() {
 
     val podcasts = MutableLiveData<List<ViewPodcast>>()
@@ -24,7 +24,7 @@ class PodcastViewModel(
 
     private fun getPodcast() {
         viewModelScope.launch {
-            feedRepository.getPodcasts()
+            podcastRepository.getPodcasts()
                 .flowOn(Dispatchers.IO)
                 .map { mapToViewPodcastFromDB(it) }
                 .collect { handlePodcasts(it) }
@@ -32,11 +32,6 @@ class PodcastViewModel(
     }
 
     private fun handlePodcasts(podcastResult: List<ViewPodcast>) {
-        val newPodcast = mutableListOf<ViewPodcast>().apply {
-            addAll(podcastResult)
-            addAll(podcasts.value ?: emptyList())
-        }
-
-        podcasts.value = newPodcast
+        podcasts.value = podcastResult
     }
 }

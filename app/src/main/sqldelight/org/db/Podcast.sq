@@ -10,6 +10,9 @@ INSERT OR REPLACE INTO podcast(
     id, title, description, image
 )VALUES?;
 
+delete:
+DELETE FROM podcast WHERE id = ?;
+
 selectAll:
 SELECT * FROM podcast;
 
