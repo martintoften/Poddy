@@ -9,7 +9,8 @@ data class ViewPodcast(
     val image: String,
     val nextEpisodePubDate: Long?,
     val episodes: List<ViewEpisode>,
-    val hasSubscribed: Boolean
+    val hasSubscribed: Boolean,
+    val totalEpisodes: Int
 ) : Diffable
 
 data class ViewEpisode(

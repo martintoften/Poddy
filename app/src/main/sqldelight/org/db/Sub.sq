@@ -1,0 +1,15 @@
+CREATE TABLE subscription (
+    channel_id TEXT UNIQUE PRIMARY KEY NOT NULL
+);
+
+insert:
+INSERT OR REPLACE INTO subscription(channel_id)VALUES?;
+
+selectAll:
+SELECT channel_id FROM subscription;
+
+doesAlreadyExist:
+SELECT COUNT() FROM subscription WHERE channel_id = ?;
+
+delete:
+DELETE FROM subscription WHERE channel_id = ?;

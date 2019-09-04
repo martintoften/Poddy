@@ -24,17 +24,24 @@ class FeedViewModel(
     private var selectedEpisode: ViewEpisode? = null
     val feedResult = MutableLiveData<Resource<ViewPodcast>>()
 
+    init {
+        viewModelScope.launch {
+            podcastRepository.listenForPodcastUpdates()
+                .filterNotNull()
+                .flatMapMerge { podcast -> podcastRepository.hasSubscribed(podcast.first)
+                    .map { hasSubscribed -> mapToViewPodcastFromDB(podcast.first, podcast.second, hasSubscribed) }
+                }
+                .flowOn(Dispatchers.IO)
+                .collect { handleFeedResult(it) }
+        }
+    }
+
     fun getFeed(id: String, lastTimestamp: Long? = null) {
         if (feedResult.value is Loading) return
 
         viewModelScope.launch {
             feedResult.value = Loading()
             podcastRepository.getPodcast(id, lastTimestamp)
-                .flowOn(Dispatchers.IO)
-                .flatMapMerge { podcast -> podcastRepository.hasSubscribed(podcast.first)
-                    .map { hasSubscribed -> mapToViewPodcastFromDB(podcast.first, podcast.second, hasSubscribed) }
-                }
-                .collect { handleFeedResult(it) }
         }
     }
 

@@ -130,12 +130,7 @@ class FeedFragment : BackableFragment() {
     private fun initObservers() {
         feedViewModel.feedResult.observe(this, Observer {
             when (it) {
-                is Success<ViewPodcast> -> {
-                    spinnerOverlay.isOverlayVisible(false)
-                    handleFeedResult(it.data)
-                }
-                is Loading -> spinnerOverlay.isOverlayVisible(true)
-                is Failure -> spinnerOverlay.isOverlayVisible(false)
+                is Success<ViewPodcast> -> handleFeedResult(it.data)
             }
         })
     }

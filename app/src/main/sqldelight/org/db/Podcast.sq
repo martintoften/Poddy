@@ -2,12 +2,13 @@ CREATE TABLE podcast (
     id TEXT NOT NULL UNIQUE PRIMARY KEY,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
-    image TEXT NOT NULL
+    image TEXT NOT NULL,
+    total_episodes INTEGER NOT NULL
 );
 
 insert:
 INSERT OR REPLACE INTO podcast(
-    id, title, description, image
+    id, title, description, image, total_episodes
 )VALUES?;
 
 delete:
@@ -16,5 +17,11 @@ DELETE FROM podcast WHERE id = ?;
 selectAll:
 SELECT * FROM podcast;
 
+selectById:
+SELECT * FROM podcast WHERE id = ?;
+
+selectByIds:
+SELECT * FROM podcast WHERE id IN ?;
+
 doesAlreadyExist:
-SELECT COUNT(1) FROM podcast WHERE id = ?;
+SELECT COUNT() FROM podcast WHERE id = ?;

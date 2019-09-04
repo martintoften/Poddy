@@ -5,6 +5,7 @@ import kotlinx.coroutines.withContext
 import org.db.Episode
 import org.db.Podcast
 import org.db.Queue
+import org.db.Subscription
 import kotlin.coroutines.CoroutineContext
 
 class DBWriter(
@@ -32,9 +33,17 @@ class DBWriter(
         }
     }
 
-    suspend fun insertPodcast(podcast: Podcast) {
+    suspend fun insertSubscribedPodcast(podcast: Podcast) {
+        return withContext(context) {
+            db.subQueries.insert(Subscription.Impl(podcast.id))
+            db.podcastQueries.insert(podcast)
+        }
+    }
+
+    suspend fun insertPodcast(podcast: Podcast, episodes: List<Episode>) {
         return withContext(context) {
             db.podcastQueries.insert(podcast)
+            episodes.forEach { db.episodeQueries.insert(it) }
         }
     }
 
@@ -46,6 +55,13 @@ class DBWriter(
         }
     }
 
+    suspend fun deleteSubscribedPodcast(podcastId: String) {
+        return withContext(context) {
+            db.podcastQueries.delete(podcastId)
+            db.subQueries.delete(podcastId)
+        }
+    }
+
     suspend fun deletePodcast(podcastId: String) {
         return withContext(context) {
             db.podcastQueries.delete(podcastId)
@@ -54,8 +70,14 @@ class DBWriter(
 
     suspend fun deleteEpisode(episodeId: String) {
         return withContext(context) {
-            db.episodeQueries.delete(episodeId)
+            db.episodeQueries.deleteByEpisodeId(episodeId)
             db.queueQueries.delete(episodeId)
+        }
+    }
+
+    suspend fun deletePodcastEpisodes(podcastId: String) {
+        return withContext(context) {
+            db.episodeQueries.deleteByPodcastId(podcastId)
         }
     }
 }

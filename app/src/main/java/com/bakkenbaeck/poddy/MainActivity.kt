@@ -1,7 +1,6 @@
 package com.bakkenbaeck.poddy
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +10,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.detail_sheet.*
-import kotlinx.android.synthetic.main.detail_sheet.view.*
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 

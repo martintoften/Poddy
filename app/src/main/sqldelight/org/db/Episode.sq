@@ -5,7 +5,8 @@ CREATE TABLE episode (
     description TEXT NOT NULL,
     pub_date INTEGER NOT NULL,
     duration INTEGER NOT NULL,
-    image TEXT NOT NULL
+    image TEXT NOT NULL,
+    timestamp INTEGER NOT NULL
 );
 
 selectAll:
@@ -22,8 +23,14 @@ SELECT * FROM episode WHERE podcast_id = ? ORDER BY pub_date DESC;
 
 insert:
 INSERT OR REPLACE INTO episode(
-    id, podcast_id, title, description, pub_date, duration, image
+    id, podcast_id, title, description, pub_date, duration, image, timestamp
 )VALUES?;
 
-delete:
+deleteByEpisodeId:
 DELETE FROM episode WHERE id = ?;
+
+deleteByPodcastId:
+DELETE FROM episode WHERE podcast_id = ?;
+
+alreadyExists:
+SELECT COUNT() FROM episode WHERE id IN ?;

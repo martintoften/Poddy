@@ -50,7 +50,8 @@ fun mapFromNetworkToView(network: PodcastResponse, hasSubscribed: Boolean): View
         image = network.image,
         nextEpisodePubDate = network.next_episode_pub_date,
         episodes = items,
-        hasSubscribed = hasSubscribed
+        hasSubscribed = hasSubscribed,
+        totalEpisodes = network.total_episodes
     )
 }
 
@@ -79,7 +80,8 @@ fun mapToViewPodcastFromDB(db: Podcast, episodes: List<Episode>, hasSubscribed: 
         image = db.image,
         nextEpisodePubDate = 0L,
         episodes = mapToViewEpisodeFromDB(episodes),
-        hasSubscribed = hasSubscribed
+        hasSubscribed = hasSubscribed,
+        totalEpisodes = db.total_episodes.toInt()
     )
 }
 

@@ -24,7 +24,7 @@ class PodcastViewModel(
 
     private fun getPodcast() {
         viewModelScope.launch {
-            podcastRepository.getPodcasts()
+            podcastRepository.getSubscribedPodcasts()
                 .flowOn(Dispatchers.IO)
                 .map { mapToViewPodcastFromDB(it) }
                 .collect { handlePodcasts(it) }
