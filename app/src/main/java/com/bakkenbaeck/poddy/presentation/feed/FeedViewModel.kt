@@ -3,7 +3,6 @@ package com.bakkenbaeck.poddy.presentation.feed
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromNetwork
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
@@ -25,6 +24,10 @@ class FeedViewModel(
     val feedResult = MutableLiveData<Resource<ViewPodcast>>()
 
     init {
+        listenForPodcastUpdates()
+    }
+
+    private fun listenForPodcastUpdates() {
         viewModelScope.launch {
             podcastRepository.listenForPodcastUpdates()
                 .filterNotNull()

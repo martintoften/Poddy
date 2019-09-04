@@ -1,7 +1,7 @@
 package com.bakkenbaeck.poddy.repository
 
-import com.bakkenbaeck.poddy.db.DBReader
-import com.bakkenbaeck.poddy.db.DBWriter
+import com.bakkenbaeck.poddy.db.handlers.EpisodeDBHandler
+import com.bakkenbaeck.poddy.db.handlers.QueueDBHandler
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.repository.mappers.mapEpisodeFromViewToDB
@@ -12,8 +12,8 @@ import org.db.Episode
 import org.db.Queue
 
 class QueueRepository(
-    private val dbWriter: DBWriter,
-    private val dbReader: DBReader
+    private val queueDBHandler: QueueDBHandler,
+    private val episodeDBHandler: EpisodeDBHandler
 ) {
     private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
 
@@ -23,28 +23,28 @@ class QueueRepository(
         val dbQueueItem = Queue.Impl(episodeId, channelId, -1)
         val dbEpisode = mapEpisodeFromViewToDB(podcast, episode)
 
-        val doesAlreadyExist = dbReader.doesEpisodeAlreadyExist(episodeId)
+        val doesAlreadyExist = episodeDBHandler.doesEpisodeAlreadyExist(episodeId)
 
         if (!doesAlreadyExist) {
-            dbWriter.insertQueueItem(dbQueueItem, dbEpisode)
-            val queue = dbReader.getQueue()
+            queueDBHandler.insertQueueItem(dbQueueItem, dbEpisode)
+            val queue = queueDBHandler.getQueue()
             queueChannel.send(queue)
         }
     }
 
     suspend fun getQueue(): Flow<List<Episode>> {
-        val queue = dbReader.getQueue()
+        val queue = queueDBHandler.getQueue()
         queueChannel.send(queue)
         return queueChannel.asFlow()
     }
 
     suspend fun reorderQueue(queue: List<ViewEpisode>) {
-        dbWriter.reorderQueue(queue.map { it.id })
+        queueDBHandler.reorderQueue(queue.map { it.id })
     }
 
     suspend fun deleteEpisodeFromQueue(episode: ViewEpisode) {
-        dbWriter.deleteEpisode(episode.id)
-        val queue = dbReader.getQueue()
+        episodeDBHandler.deleteEpisode(episode.id)
+        val queue = queueDBHandler.getQueue()
         queueChannel.send(queue)
     }
 }
