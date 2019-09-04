@@ -3,10 +3,9 @@ package com.bakkenbaeck.poddy.presentation.queue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.DiffUtil
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
-import com.bakkenbaeck.poddy.repository.PodcastRepository
+import com.bakkenbaeck.poddy.repository.QueueRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
@@ -14,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class QueueViewModel(
-    private val podcastRepository: PodcastRepository
+    private val queueRepository: QueueRepository
 ) : ViewModel() {
 
     init {
@@ -25,7 +24,7 @@ class QueueViewModel(
 
     private fun getQueue() {
         viewModelScope.launch {
-            podcastRepository.getQueue()
+            queueRepository.getQueue()
                 .flowOn(Dispatchers.IO)
                 .map { mapToViewEpisodeFromDB(it) }
                 .collect { handleQueue(it) }
@@ -38,13 +37,13 @@ class QueueViewModel(
 
     fun reorderQueue(queue: List<ViewEpisode>) {
         viewModelScope.launch {
-            podcastRepository.reorderQueue(queue)
+            queueRepository.reorderQueue(queue)
         }
     }
 
     fun deleteEpisode(episode: ViewEpisode) {
         viewModelScope.launch {
-            podcastRepository.deleteEpisodeFromQueue(episode)
+            queueRepository.deleteEpisodeFromQueue(episode)
         }
     }
 }

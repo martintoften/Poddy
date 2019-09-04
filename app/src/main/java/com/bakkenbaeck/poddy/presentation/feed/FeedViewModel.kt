@@ -8,6 +8,7 @@ import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.repository.PodcastRepository
+import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
@@ -16,7 +17,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class FeedViewModel(
-    private val podcastRepository: PodcastRepository
+    private val podcastRepository: PodcastRepository,
+    private val queueRepository: QueueRepository
 ) : ViewModel() {
 
     private var selectedEpisode: ViewEpisode? = null
@@ -49,7 +51,7 @@ class FeedViewModel(
         val channel = getPodcast() ?: return
 
         viewModelScope.launch {
-            podcastRepository.addToQueue(channel, episode)
+            queueRepository.addToQueue(channel, episode)
         }
     }
 

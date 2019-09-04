@@ -9,7 +9,7 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
     viewModel { SearchViewModel(get()) }
-    viewModel { FeedViewModel(get()) }
+    viewModel { FeedViewModel(get(), get()) }
     viewModel { QueueViewModel(get()) }
     viewModel { PodcastViewModel(get()) }
 }
