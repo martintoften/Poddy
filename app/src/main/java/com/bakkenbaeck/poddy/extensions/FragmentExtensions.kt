@@ -1,5 +1,7 @@
 package com.bakkenbaeck.poddy.extensions
 
+import android.app.DownloadManager
+import android.content.Context
 import android.os.Bundle
 import androidx.annotation.DimenRes
 import androidx.fragment.app.Fragment
@@ -21,4 +23,8 @@ fun Fragment.pop(): Boolean {
 
 fun Fragment.getDimen(@DimenRes resource: Int): Float {
     return resources.getDimension(resource)
+}
+
+fun Fragment.getDownloadService(): DownloadManager? {
+    return activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
 }

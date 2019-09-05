@@ -34,7 +34,7 @@
 
     </LinearLayout>-->
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.bakkenbaeck.poddy.presentation.custom.EpisodeRecyclerView
         android:id="@+id/episodeList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

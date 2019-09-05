@@ -4,6 +4,7 @@ CREATE TABLE episode (
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     pub_date INTEGER NOT NULL,
+    audio TEXT NOT NULL,
     duration INTEGER NOT NULL,
     image TEXT NOT NULL,
     timestamp INTEGER NOT NULL
@@ -23,7 +24,7 @@ SELECT * FROM episode WHERE podcast_id = ? ORDER BY pub_date DESC;
 
 insert:
 INSERT OR REPLACE INTO episode(
-    id, podcast_id, title, description, pub_date, duration, image, timestamp
+    id, podcast_id, title, description, pub_date, audio, duration, image, timestamp
 )VALUES?;
 
 deleteByEpisodeId:

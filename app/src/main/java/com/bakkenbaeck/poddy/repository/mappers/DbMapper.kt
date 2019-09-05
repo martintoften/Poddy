@@ -27,7 +27,8 @@ fun mapEpisodesFromNetworkToDB(podcast: PodcastResponse): List<Episode.Impl> {
         pub_date = it.pub_date_ms,
         duration = it.audio_length_sec.toLong(),
         image = it.image,
-        timestamp = timestamp
+        timestamp = timestamp,
+        audio = it.audio
     ) }
 }
 
@@ -56,6 +57,7 @@ fun mapEpisodeFromViewToDB(podcast: ViewPodcast, episode: ViewEpisode, timestamp
         pub_date = episode.pubDate,
         duration = episode.duration.toLong(),
         image = episode.image,
-        timestamp = timestamp
+        timestamp = timestamp,
+        audio = episode.audio
     )
 }

@@ -63,7 +63,8 @@ fun mapToViewEpisodeFromNetwork(network: List<EpisodeItem>): List<ViewEpisode> {
             title = it.title,
             image = it.image,
             duration = it.audio_length_sec,
-            pubDate = it.pub_date_ms
+            pubDate = it.pub_date_ms,
+            audio = it.audio
         )
     }
 }
@@ -93,7 +94,8 @@ fun mapToViewEpisodeFromDB(db: List<Episode>): List<ViewEpisode> {
             description = it.description,
             pubDate = it.pub_date,
             duration = it.duration.toInt(),
-            image = it.image
+            image = it.image,
+            audio = it.audio
         )
     }
 }

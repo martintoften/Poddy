@@ -9,25 +9,22 @@ import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import coil.transform.RoundedCornersTransformation
+import com.bakkenbaeck.poddy.App
 import com.bakkenbaeck.poddy.R
-import com.bakkenbaeck.poddy.extensions.findLastCompletelyVisibleItemPosition
 import com.bakkenbaeck.poddy.extensions.getDimen
+import com.bakkenbaeck.poddy.extensions.getPodcastDir
+import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
-import com.bakkenbaeck.poddy.util.Failure
-import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Success
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.detail_sheet.*
 import kotlinx.android.synthetic.main.detail_sheet.view.*
 import kotlinx.android.synthetic.main.feed_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.bakkenbaeck.poddy.extensions.isLastVisible
-
 
 const val PODCAST_ID = "PODCAST_ID"
 const val PODCAST_IMAGE = "PODCAST_IMAGE"
@@ -40,8 +37,6 @@ class FeedFragment : BackableFragment() {
     private val feedViewModel: FeedViewModel by viewModel()
     private lateinit var episodeAdapter: EpisodeAdapter
     private lateinit var sheetBehavior: BottomSheetBehavior<NestedScrollView>
-
-    private var lastSeenPosition: Int = -1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.feed_fragment, container, false)
@@ -62,8 +57,14 @@ class FeedFragment : BackableFragment() {
     private fun initSheetView() {
         sheetBehavior = BottomSheetBehavior.from(sheet)
         sheet.play.setOnClickListener { Log.d("FeedFragment", "Play") }
-        sheet.download.setOnClickListener { Log.d("FeedFragment", "Download") }
+        sheet.download.setOnClickListener { handleDownloadClicked() }
         sheet.queue.setOnClickListener { feedViewModel.addToQueue() }
+    }
+
+    private fun handleDownloadClicked() {
+        val selectedEpisode = feedViewModel.selectedEpisode ?: return
+        val dir = context?.getPodcastDir() ?: return
+        feedViewModel.downloadFile(selectedEpisode.id, selectedEpisode.audio, dir)
     }
 
     private fun initAdapter() {
@@ -75,23 +76,14 @@ class FeedFragment : BackableFragment() {
         episodeList.apply {
             adapter = episodeAdapter
             layoutManager = LinearLayoutManager(context)
+            onLastElementListener = { handleOnLastElement() }
         }
+    }
 
-        episodeList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                val currentPosition = episodeList.findLastCompletelyVisibleItemPosition()
-                if (lastSeenPosition == currentPosition) return
-
-                lastSeenPosition = episodeList.findLastCompletelyVisibleItemPosition()
-                val isLastVisible = episodeList.isLastVisible()
-
-                if (isLastVisible) {
-                    val podcastId = getPodcastId(arguments) ?: return
-                    val episode = episodeAdapter.getLastItem() ?: return
-                    feedViewModel.getFeed(podcastId, episode.pubDate)
-                }
-            }
-        })
+    private fun handleOnLastElement() {
+        val podcastId = getPodcastId(arguments) ?: return
+        val episode = episodeAdapter.getLastItem() ?: return
+        feedViewModel.getFeed(podcastId, episode.pubDate)
     }
 
     private fun handleEpisodeClicked(episode: ViewEpisode) {
@@ -113,6 +105,7 @@ class FeedFragment : BackableFragment() {
             episode.description,
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
+        sheet.downloadProgress.text = ""
 
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         feedViewModel.setCurrentEpisode(episode)
@@ -120,6 +113,7 @@ class FeedFragment : BackableFragment() {
 
     private fun updateSheetStateToCollapsed() {
         sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        sheet.downloadProgress.text = ""
     }
 
     private fun getEpisodes(arguments: Bundle?) {
@@ -133,6 +127,9 @@ class FeedFragment : BackableFragment() {
                 is Success<ViewPodcast> -> handleFeedResult(it.data)
             }
         })
+        feedViewModel.downloadUpdates.observe(this, Observer {
+            handleDownloadUpdates(it)
+        })
     }
 
     private fun handleFeedResult(podcast: ViewPodcast) {
@@ -143,5 +140,14 @@ class FeedFragment : BackableFragment() {
             hasSubscribed = podcast.hasSubscribed
         )
         episodeAdapter.add(header, podcast.episodes)
+    }
+
+    private fun handleDownloadUpdates(progressEvent: ProgressEvent) {
+        val selectedEpisode = feedViewModel.selectedEpisode ?: return
+
+        if (selectedEpisode.id == progressEvent.identifier) {
+            sheet.downloadProgress.visibility = View.VISIBLE
+            sheet.downloadProgress.text = progressEvent.getFormattedProgress()
+        }
     }
 }

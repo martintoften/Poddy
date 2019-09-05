@@ -1,0 +1,35 @@
+package com.bakkenbaeck.poddy.download
+
+import android.util.Log
+import com.bakkenbaeck.poddy.network.DownloadApi
+import kotlinx.coroutines.withContext
+import okio.buffer
+import okio.sink
+import java.io.File
+import kotlin.coroutines.CoroutineContext
+
+class DownloadHandler(
+    private val downloadApi: DownloadApi,
+    private val context: CoroutineContext
+) {
+    suspend fun downloadPodcast(id: String, url: String, file: File) {
+        return withContext(context) {
+            download(id, url, file)
+        }
+    }
+
+    private suspend fun download(id: String, url: String, file: File) {
+        val response = downloadApi.download(url, id)
+
+        if (response.isSuccessful) {
+            val body = response.body() ?: return
+            try {
+                file.sink()
+                    .buffer()
+                    .use { sink -> sink.writeAll(body.source()) }
+            } catch (io: Exception) {
+                Log.e("ERROR", io.toString())
+            }
+        }
+    }
+}

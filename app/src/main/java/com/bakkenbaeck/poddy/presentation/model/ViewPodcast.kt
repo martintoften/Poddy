@@ -19,5 +19,6 @@ data class ViewEpisode(
     val description: String,
     val pubDate: Long,
     val duration: Int,
-    val image: String
+    val image: String,
+    val audio: String
 ) : Diffable
