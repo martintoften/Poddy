@@ -7,7 +7,8 @@ CREATE TABLE episode (
     audio TEXT NOT NULL,
     duration INTEGER NOT NULL,
     image TEXT NOT NULL,
-    timestamp INTEGER NOT NULL
+    timestamp INTEGER NOT NULL,
+    is_downloaded INTEGER NOT NULL
 );
 
 selectAll:
@@ -24,7 +25,7 @@ SELECT * FROM episode WHERE podcast_id = ? ORDER BY pub_date DESC;
 
 insert:
 INSERT OR REPLACE INTO episode(
-    id, podcast_id, title, description, pub_date, audio, duration, image, timestamp
+    id, podcast_id, title, description, pub_date, audio, duration, image, timestamp, is_downloaded
 )VALUES?;
 
 deleteByEpisodeId:
@@ -35,3 +36,6 @@ DELETE FROM episode WHERE podcast_id = ?;
 
 alreadyExists:
 SELECT COUNT() FROM episode WHERE id IN ?;
+
+updateDownloadState:
+UPDATE episode SET is_downloaded = ? WHERE id = ?;

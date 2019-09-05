@@ -8,5 +8,5 @@ import org.koin.dsl.module
 val repositoryModule = module {
     single { PodcastRepository(get(), get(), get(), get()) }
     single { QueueRepository(get(), get()) }
-    single { DownloadRepository(get()) }
+    single { DownloadRepository(get(), get()) }
 }

@@ -5,8 +5,8 @@ data class ProgressEvent(
     val contentLength: Long,
     val bytesRead: Long
 ) {
-    fun getProgress(): Float {
-        return (bytesRead / (contentLength / 100f))
+    fun getProgress(): Int {
+        return (bytesRead / (contentLength / 100f)).toInt()
     }
 
     fun getFormattedProgress(): String {

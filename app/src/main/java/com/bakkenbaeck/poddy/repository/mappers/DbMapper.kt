@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.repository.mappers
 
+import com.bakkenbaeck.poddy.db.boolToLong
 import com.bakkenbaeck.poddy.network.model.PodcastResponse
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
@@ -28,7 +29,8 @@ fun mapEpisodesFromNetworkToDB(podcast: PodcastResponse): List<Episode.Impl> {
         duration = it.audio_length_sec.toLong(),
         image = it.image,
         timestamp = timestamp,
-        audio = it.audio
+        audio = it.audio,
+        is_downloaded = 0
     ) }
 }
 
@@ -58,6 +60,7 @@ fun mapEpisodeFromViewToDB(podcast: ViewPodcast, episode: ViewEpisode, timestamp
         duration = episode.duration.toLong(),
         image = episode.image,
         timestamp = timestamp,
-        audio = episode.audio
+        audio = episode.audio,
+        is_downloaded = boolToLong(episode.isDownloaded)
     )
 }

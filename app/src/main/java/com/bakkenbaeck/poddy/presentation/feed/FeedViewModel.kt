@@ -101,11 +101,11 @@ class FeedViewModel(
         }
     }
 
-    fun downloadFile(id: String, url: String, dir: File) {
+    /*fun downloadFile(id: String, url: String, dir: File) {
         viewModelScope.launch {
             val name = id.plus(".mp3")
             val podcastFile = createNewFile(dir, name)
             downloadRepository.downloadPodcast(id, url, podcastFile)
         }
-    }
+    }*/
 }

@@ -1,10 +1,13 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
+import android.content.ContextWrapper
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
@@ -19,6 +22,7 @@ import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
+import com.bakkenbaeck.poddy.service.DownloadService
 import com.bakkenbaeck.poddy.util.Success
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.detail_sheet.*
@@ -62,9 +66,16 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun handleDownloadClicked() {
+        val context = context ?: return
         val selectedEpisode = feedViewModel.selectedEpisode ?: return
-        val dir = context?.getPodcastDir() ?: return
-        feedViewModel.downloadFile(selectedEpisode.id, selectedEpisode.audio, dir)
+
+        val intent = Intent(context, DownloadService::class.java).apply {
+            putExtra(DownloadService.ID, selectedEpisode.id)
+            putExtra(DownloadService.URL, selectedEpisode.audio)
+            putExtra(DownloadService.NAME, selectedEpisode.title)
+        }
+
+        ContextCompat.startForegroundService(context, intent)
     }
 
     private fun initAdapter() {
