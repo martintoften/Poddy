@@ -39,7 +39,8 @@ class DownloadProgressInterceptor(
         override fun update(identifier: String, bytesRead: Long, contentLength: Long, done: Boolean) {
             val progress =  (bytesRead / (contentLength / 100f))
             val lasProgress = progressMap[identifier] ?: 0f
-            if (progress - lasProgress > 5 || done) {
+
+            if (progress != lasProgress && progress - lasProgress > 5 || done) {
                 progressMap[identifier] = progress
                 GlobalScope.launch {
                     channel.send(ProgressEvent(identifier, contentLength, bytesRead))

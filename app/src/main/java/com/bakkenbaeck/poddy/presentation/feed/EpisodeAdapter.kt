@@ -29,7 +29,8 @@ class Header(
 
 class EpisodeAdapter(
     private val onItemClickListener: (ViewEpisode) -> Unit,
-    private val onHeaderItemClickListener: (Header) -> Unit
+    private val onHeaderItemClickListener: (Header) -> Unit,
+    private val onDownloadClickListener: (ViewEpisode) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items by lazy { mutableListOf<Any>() }
@@ -83,6 +84,7 @@ class EpisodeAdapter(
                 holder.apply {
                     setEpisode(castedItem)
                     setOnItemClickedListener(castedItem, onItemClickListener)
+                    setOnDownloadClickListener(castedItem, onDownloadClickListener)
                 }
             }
         }

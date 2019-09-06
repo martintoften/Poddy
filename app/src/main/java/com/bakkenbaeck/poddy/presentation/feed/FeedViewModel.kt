@@ -13,12 +13,10 @@ import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
-import com.bakkenbaeck.poddy.util.createNewFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.io.File
 
 class FeedViewModel(
     private val podcastRepository: PodcastRepository,
@@ -33,6 +31,7 @@ class FeedViewModel(
 
     init {
         listenForDownloadUpdates()
+        listenForFinishedDownloads()
         listenForPodcastUpdates()
     }
 
@@ -41,6 +40,14 @@ class FeedViewModel(
             progressChannel
                 .asFlow()
                 .collect { handleDownloadResult(it) }
+        }
+    }
+
+    private fun listenForFinishedDownloads() {
+        viewModelScope.launch {
+            downloadRepository.listenForDownloadStateUpdates()
+                .filterNotNull()
+                .collect { podcastRepository.updatePodcast(it) }
         }
     }
 
@@ -100,12 +107,4 @@ class FeedViewModel(
             else -> null
         }
     }
-
-    /*fun downloadFile(id: String, url: String, dir: File) {
-        viewModelScope.launch {
-            val name = id.plus(".mp3")
-            val podcastFile = createNewFile(dir, name)
-            downloadRepository.downloadPodcast(id, url, podcastFile)
-        }
-    }*/
 }

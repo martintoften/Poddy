@@ -1,15 +1,10 @@
 package com.bakkenbaeck.poddy.presentation.mappers
 
-import com.bakkenbaeck.poddy.db.intToBool
-import com.bakkenbaeck.poddy.db.longToBool
 import com.bakkenbaeck.poddy.network.model.EpisodeItem
 import com.bakkenbaeck.poddy.network.model.PodcastResponse
 import com.bakkenbaeck.poddy.network.model.SearchItem
 import com.bakkenbaeck.poddy.network.model.SearchResponse
-import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
-import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
-import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearch
-import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearchItem
+import com.bakkenbaeck.poddy.presentation.model.*
 import org.db.Episode
 import org.db.Podcast
 
@@ -67,7 +62,7 @@ fun mapToViewEpisodeFromNetwork(network: List<EpisodeItem>): List<ViewEpisode> {
             duration = it.audio_length_sec,
             pubDate = it.pub_date_ms,
             audio = it.audio,
-            isDownloaded = false
+            isDownloaded = DownloadState.NOT_DOWNLOADED
         )
     }
 }
@@ -99,7 +94,7 @@ fun mapToViewEpisodeFromDB(db: List<Episode>): List<ViewEpisode> {
             duration = it.duration.toInt(),
             image = it.image,
             audio = it.audio,
-            isDownloaded = longToBool(it.is_downloaded)
+            isDownloaded = DownloadState.intToEnum(it.is_downloaded.toInt())
         )
     }
 }

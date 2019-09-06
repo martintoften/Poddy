@@ -24,7 +24,7 @@ selectByPodcastId:
 SELECT * FROM episode WHERE podcast_id = ? ORDER BY pub_date DESC;
 
 insert:
-INSERT OR REPLACE INTO episode(
+INSERT OR IGNORE INTO episode(
     id, podcast_id, title, description, pub_date, audio, duration, image, timestamp, is_downloaded
 )VALUES?;
 

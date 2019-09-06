@@ -86,12 +86,14 @@ class DownloadService : Service() {
         else stopSelf()
     }
 
-    private fun downloadFile(id: String, url: String, name: String, dir: File) {
-        val podcastFile = createNewFile(dir, id.plus(".mp3"))
+    private fun downloadFile(episodeId: String, url: String, name: String, dir: File) {
+        val podcastFile = createNewFile(dir, episodeId.plus(".mp3"))
 
         scope.launch {
-            workQueue.addTask(DownloadTask(id, name, url))
-            val downloadedPodcastId = async(Dispatchers.IO) { downloadRepository.downloadPodcast(id, url, podcastFile) }
+            workQueue.addTask(DownloadTask(episodeId, name, url))
+            val downloadedPodcastId = async(Dispatchers.IO) {
+                downloadRepository.downloadPodcast(episodeId, url, podcastFile)
+            }
             workQueue.removeTask(downloadedPodcastId.await())
 
             if (workQueue.isEmpty()) stopSelf()

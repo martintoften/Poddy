@@ -37,4 +37,10 @@ class PodcastDBHandler(
             episodes.forEach { db.episodeQueries.insert(it) }
         }
     }
+
+    suspend fun getPodcastFromEpisodeId(episodeId: String): Podcast? {
+        return withContext(context) {
+            return@withContext db.podcastQueries.selectByEpisodeId(episodeId).executeAsOneOrNull()
+        }
+    }
 }

@@ -13,4 +13,6 @@ data class ProgressEvent(
         val progress = (bytesRead / (contentLength / 100f))
         return "%.0f".format(progress).plus("%")
     }
+
+    fun isDone(): Boolean = (bytesRead / (contentLength / 100f)).toInt() == 100
 }

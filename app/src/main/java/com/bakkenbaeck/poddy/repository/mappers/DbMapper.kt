@@ -1,6 +1,5 @@
 package com.bakkenbaeck.poddy.repository.mappers
 
-import com.bakkenbaeck.poddy.db.boolToLong
 import com.bakkenbaeck.poddy.network.model.PodcastResponse
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
@@ -61,6 +60,6 @@ fun mapEpisodeFromViewToDB(podcast: ViewPodcast, episode: ViewEpisode, timestamp
         image = episode.image,
         timestamp = timestamp,
         audio = episode.audio,
-        is_downloaded = boolToLong(episode.isDownloaded)
+        is_downloaded = episode.isDownloaded.value.toLong()
     )
 }

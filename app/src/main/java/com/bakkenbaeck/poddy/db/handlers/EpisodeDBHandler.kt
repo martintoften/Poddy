@@ -1,6 +1,6 @@
 package com.bakkenbaeck.poddy.db.handlers
 
-import com.bakkenbaeck.poddy.db.boolToLong
+import com.bakkenbaeck.poddy.presentation.model.DownloadState
 import db.PoddyDB
 import kotlinx.coroutines.withContext
 import org.db.Episode
@@ -53,13 +53,7 @@ class EpisodeDBHandler(
 
     suspend fun updateDownloadState(id: String, downloadState: DownloadState) {
         return withContext(context) {
-            val state = boolToLong(downloadState == DownloadState.DOWNLOADED)
-            db.episodeQueries.updateDownloadState(state, id)
+            db.episodeQueries.updateDownloadState(downloadState.value.toLong(), id)
         }
     }
-}
-
-enum class DownloadState {
-    DOWNLOADED,
-    NOT_DOWNLOADED
 }

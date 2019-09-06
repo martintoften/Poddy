@@ -21,5 +21,23 @@ data class ViewEpisode(
     val duration: Int,
     val image: String,
     val audio: String,
-    val isDownloaded: Boolean
+    val isDownloaded: DownloadState
 ) : Diffable
+
+
+enum class DownloadState(val value: Int) {
+    NOT_DOWNLOADED(0),
+    IN_PROGRESS(1),
+    DOWNLOADED(2);
+
+    companion object {
+        fun intToEnum(value: Int): DownloadState {
+            return when (value) {
+                0 -> NOT_DOWNLOADED
+                1 -> IN_PROGRESS
+                2 -> DOWNLOADED
+                else -> NOT_DOWNLOADED
+            }
+        }
+    }
+}

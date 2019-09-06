@@ -42,6 +42,13 @@ class PodcastRepository(
         return singlePodcastChannel.asFlow()
     }
 
+    suspend fun updatePodcast(episodeId: String) {
+        val podcast = podcastDBHandler.getPodcastFromEpisodeId(episodeId) ?: return
+        val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcast.id)
+        if (dbPodcast == null) return
+        singlePodcastChannel.send(Pair(dbPodcast, dbEpisodes))
+    }
+
     suspend fun getPodcast(podcastId: String, nextDate: Long? = null) {
         val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcastId)
 
@@ -55,11 +62,8 @@ class PodcastRepository(
 
         val isFirstRequest = nextDate == null
 
-        if (isFirstRequest) {
-            updateEpisodes(podcast, episodes, dbEpisodes)
-        } else {
-            podcastDBHandler.insertPodcast(podcast, episodes)
-        }
+        if (isFirstRequest) updateEpisodes(podcast, episodes, dbEpisodes)
+        else podcastDBHandler.insertPodcast(podcast, episodes)
 
         val updatedDbEpisodes = episodeDBHandler.getEpisodes(podcast.id)
 

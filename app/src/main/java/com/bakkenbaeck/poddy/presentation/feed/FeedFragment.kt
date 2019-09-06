@@ -1,23 +1,20 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
-import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.api.load
 import coil.transform.RoundedCornersTransformation
-import com.bakkenbaeck.poddy.App
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
-import com.bakkenbaeck.poddy.extensions.getPodcastDir
+import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
@@ -66,22 +63,15 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun handleDownloadClicked() {
-        val context = context ?: return
         val selectedEpisode = feedViewModel.selectedEpisode ?: return
-
-        val intent = Intent(context, DownloadService::class.java).apply {
-            putExtra(DownloadService.ID, selectedEpisode.id)
-            putExtra(DownloadService.URL, selectedEpisode.audio)
-            putExtra(DownloadService.NAME, selectedEpisode.title)
-        }
-
-        ContextCompat.startForegroundService(context, intent)
+        handleDownloadClicked(selectedEpisode)
     }
 
     private fun initAdapter() {
         episodeAdapter = EpisodeAdapter(
             { handleEpisodeClicked(it) },
-            { feedViewModel.addPodcast() }
+            { feedViewModel.addPodcast() },
+            { handleDownloadClicked(it) }
         )
 
         episodeList.apply {
@@ -89,6 +79,16 @@ class FeedFragment : BackableFragment() {
             layoutManager = LinearLayoutManager(context)
             onLastElementListener = { handleOnLastElement() }
         }
+    }
+
+    private fun handleDownloadClicked(episode: ViewEpisode) {
+        val intent = Intent(context, DownloadService::class.java).apply {
+            putExtra(DownloadService.ID, episode.id)
+            putExtra(DownloadService.URL, episode.audio)
+            putExtra(DownloadService.NAME, episode.title)
+        }
+
+        startForegroundService(intent)
     }
 
     private fun handleOnLastElement() {
@@ -135,7 +135,7 @@ class FeedFragment : BackableFragment() {
     private fun initObservers() {
         feedViewModel.feedResult.observe(this, Observer {
             when (it) {
-                is Success<ViewPodcast> -> handleFeedResult(it.data)
+                is Success -> handleFeedResult(it.data)
             }
         })
         feedViewModel.downloadUpdates.observe(this, Observer {

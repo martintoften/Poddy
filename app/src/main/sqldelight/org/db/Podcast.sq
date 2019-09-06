@@ -20,6 +20,13 @@ SELECT * FROM podcast;
 selectById:
 SELECT * FROM podcast WHERE id = ?;
 
+selectByEpisodeId:
+SELECT * FROM podcast WHERE id = (
+   SELECT podcast_id
+   FROM episode
+   WHERE id = ?
+);
+
 selectByIds:
 SELECT * FROM podcast WHERE id IN ?;
 
