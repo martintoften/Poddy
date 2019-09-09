@@ -26,15 +26,13 @@ import java.io.File
 const val NOTIFICATION_ID = 1
 const val DEFAULT_NOTIFICATION_TITLE = "Downloading..."
 const val DOWNLOAD_CHANNEL_ID = "101"
-const val DOWNLOAD_CHANNEL_NAME = "Foreground Service Channel"
+const val DOWNLOAD_CHANNEL_NAME = "Download Channel"
+
+const val URL = "URL"
+const val ID = "ID"
+const val NAME = "NAME"
 
 class DownloadService : Service() {
-
-    companion object {
-        const val URL = "URL"
-        const val ID = "ID"
-        const val NAME = "NAME"
-    }
 
     private val downloadRepository: DownloadRepository by inject()
     private val progressChannel: ConflatedBroadcastChannel<ProgressEvent> by inject(named("progressChannel"))

@@ -14,12 +14,13 @@ import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
+import com.bakkenbaeck.poddy.extensions.getPodcastDir
 import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
-import com.bakkenbaeck.poddy.service.DownloadService
+import com.bakkenbaeck.poddy.service.*
 import com.bakkenbaeck.poddy.util.Success
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.detail_sheet.*
@@ -57,7 +58,7 @@ class FeedFragment : BackableFragment() {
 
     private fun initSheetView() {
         sheetBehavior = BottomSheetBehavior.from(sheet)
-        sheet.play.setOnClickListener { Log.d("FeedFragment", "Play") }
+        sheet.play.setOnClickListener { handlePlayClicked() }
         sheet.download.setOnClickListener { handleDownloadClicked() }
         sheet.queue.setOnClickListener { feedViewModel.addToQueue() }
     }
@@ -82,13 +83,20 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun handleDownloadClicked(episode: ViewEpisode) {
-        val intent = Intent(context, DownloadService::class.java).apply {
-            putExtra(DownloadService.ID, episode.id)
-            putExtra(DownloadService.URL, episode.audio)
-            putExtra(DownloadService.NAME, episode.title)
+        startForegroundService<DownloadService> {
+            putExtra(ID, episode.id)
+            putExtra(URL, episode.audio)
+            putExtra(NAME, episode.title)
         }
+    }
 
-        startForegroundService(intent)
+    private fun handlePlayClicked() {
+        val episode = feedViewModel.selectedEpisode ?: return
+
+        startForegroundService<PlayerService> {
+            action = ACTION_START
+            putExtra(EPISODE, episode)
+        }
     }
 
     private fun handleOnLastElement() {

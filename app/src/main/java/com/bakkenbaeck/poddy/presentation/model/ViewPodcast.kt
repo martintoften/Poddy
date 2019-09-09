@@ -1,6 +1,8 @@
 package com.bakkenbaeck.poddy.presentation.model
 
+import android.os.Parcelable
 import com.bakkenbaeck.poddy.util.Diffable
+import kotlinx.android.parcel.Parcelize
 
 data class ViewPodcast(
     override val id: String,
@@ -13,6 +15,7 @@ data class ViewPodcast(
     val totalEpisodes: Int
 ) : Diffable
 
+@Parcelize
 data class ViewEpisode(
     override val id: String,
     val title: String,
@@ -22,7 +25,7 @@ data class ViewEpisode(
     val image: String,
     val audio: String,
     val isDownloaded: DownloadState
-) : Diffable
+) : Diffable, Parcelable
 
 
 enum class DownloadState(val value: Int) {
