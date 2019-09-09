@@ -40,7 +40,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:srcCompat="@drawable/ic_play" />
+                app:srcCompat="@drawable/ic_player_play" />
 
         </FrameLayout>
 
@@ -91,7 +91,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/episodeName"
-            app:srcCompat="@drawable/ic_play" />
+            app:srcCompat="@drawable/ic_player_play" />
 
         <ImageView
             android:id="@+id/forward"
