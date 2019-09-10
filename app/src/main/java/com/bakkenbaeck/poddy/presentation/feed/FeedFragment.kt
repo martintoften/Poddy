@@ -1,8 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +12,11 @@ import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
-import com.bakkenbaeck.poddy.extensions.getPodcastDir
 import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
+import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.service.*
 import com.bakkenbaeck.poddy.util.Success
@@ -37,6 +35,7 @@ class FeedFragment : BackableFragment() {
     private fun getPodcastId(arguments: Bundle?): String? = arguments?.getString(PODCAST_ID)
 
     private val feedViewModel: FeedViewModel by viewModel()
+
     private lateinit var episodeAdapter: EpisodeAdapter
     private lateinit var sheetBehavior: BottomSheetBehavior<NestedScrollView>
 
@@ -106,16 +105,13 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun handleEpisodeClicked(episode: ViewEpisode) {
-        if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-            updateSheetStateToExpanded(episode)
-        } else {
-            updateSheetStateToCollapsed()
-        }
+        if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) updateSheetStateToExpanded(episode)
+        else updateSheetStateToCollapsed()
     }
 
     private fun updateSheetStateToExpanded(episode: ViewEpisode) {
         val imageUrl = getPodcastImage(arguments)
-        val radius by lazy { getDimen(R.dimen.radius_default) }
+        val radius = getDimen(R.dimen.radius_default)
         val roundedCorners by lazy { RoundedCornersTransformation(radius) }
 
         sheet.image.load(imageUrl) { transformations(roundedCorners) }
@@ -125,6 +121,10 @@ class FeedFragment : BackableFragment() {
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         sheet.downloadProgress.text = ""
+
+        val isSelectedEpisodePlaying = feedViewModel.isEpisodePlaying(episode)
+        val playResource = if (isSelectedEpisodePlaying) R.drawable.ic_player_pause else R.drawable.ic_player_play
+        sheet.play.setImageResource(playResource)
 
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         feedViewModel.setCurrentEpisode(episode)
@@ -149,6 +149,9 @@ class FeedFragment : BackableFragment() {
         feedViewModel.downloadUpdates.observe(this, Observer {
             handleDownloadUpdates(it)
         })
+        feedViewModel.playerUpdates.observe(this, Observer {
+            handlePlayerUpdates(it)
+        })
     }
 
     private fun handleFeedResult(podcast: ViewPodcast) {
@@ -168,5 +171,15 @@ class FeedFragment : BackableFragment() {
             sheet.downloadProgress.visibility = View.VISIBLE
             sheet.downloadProgress.text = progressEvent.getFormattedProgress()
         }
+    }
+
+    private fun handlePlayerUpdates(action: ViewPlayerAction) {
+        val drawable = when (action) {
+            is ViewPlayerAction.Start -> R.drawable.ic_player_pause
+            is ViewPlayerAction.Play -> R.drawable.ic_player_pause
+            is ViewPlayerAction.Pause -> R.drawable.ic_player_play
+        }
+
+        sheet.play.setImageResource(drawable)
     }
 }

@@ -8,12 +8,16 @@ import android.util.Log
 import com.bakkenbaeck.poddy.notification.PlayerNotificationHandler
 import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
-
-
-const val PLAYER_NOTIFICATION_ID = 2
-const val PLAYER_DEFAULT_NOTIFICATION_TITLE = "Player"
-const val PLAYER_CHANNEL_ID = "102"
-const val PLAYER_CHANNEL_NAME = "Player channel"
+import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
+import java.lang.IllegalStateException
 
 const val EPISODE = "EPISODE"
 
@@ -31,8 +35,31 @@ class PlayerService : Service() {
 
     private val queue = mutableListOf<ViewEpisode>()
 
+    private val scope by lazy { CoroutineScope(Dispatchers.Main) }
+    private val playerChannel by inject<ConflatedBroadcastChannel<ViewPlayerAction>>(named("playerChannel"))
+
     override fun onBind(p0: Intent?): IBinder? {
         return null
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        listenForPlayerAction()
+    }
+
+    private fun listenForPlayerAction() {
+        scope.launch {
+            playerChannel.asFlow()
+                .collect { handlePlayerAction(it) }
+        }
+    }
+
+    private fun handlePlayerAction(playerAction: ViewPlayerAction) {
+        when (playerAction) {
+            is ViewPlayerAction.Start -> initPlayerAndNotifications(playerAction.episode)
+            is ViewPlayerAction.Play -> onPlay()
+            is ViewPlayerAction.Pause -> onPause()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -41,22 +68,51 @@ class PlayerService : Service() {
     }
 
     private fun handleIntent(intent: Intent) {
-        when (intent.action) {
-            ACTION_START -> {
-                val episode = intent.getParcelableExtra<ViewEpisode?>(EPISODE) ?: return
-                initPlayerAndNotifications(episode)
+        val action = intent.action ?: return
+        val episode = intent.getParcelableExtra<ViewEpisode?>(EPISODE)
+
+        broadcastAction(action, episode)
+    }
+
+    private fun broadcastAction(action: String, episode: ViewEpisode?) {
+        scope.launch {
+            when (action) {
+                ACTION_START -> broadcastStartAction(episode)
+                ACTION_PLAY -> broadcastPlayAction()
+                ACTION_PAUSE -> broadcastPauseAction()
+                else -> Log.d("PlayerService", "Invalid intent action")
             }
-            ACTION_PLAY -> onPlay()
-            ACTION_PAUSE -> onPause()
-            else -> Log.d("PlayerService", "Invalid intent action")
         }
+    }
+
+    private suspend fun broadcastStartAction(episode: ViewEpisode?) {
+        if (episode == null) throw IllegalStateException("Must pass an episode with the start action")
+
+        val lastPlayerAction = playerChannel.valueOrNull
+        if (episode.id == lastPlayerAction?.episode?.id) {
+            val action = if (lastPlayerAction is ViewPlayerAction.Play) ViewPlayerAction.Pause(episode)
+            else ViewPlayerAction.Play(episode)
+            playerChannel.send(action)
+        } else {
+            queue.add(episode)
+            playerChannel.send(ViewPlayerAction.Start(episode))
+        }
+    }
+
+    private suspend fun broadcastPauseAction() {
+        val episode = queue.firstOrNull() ?: return
+        playerChannel.send(ViewPlayerAction.Pause(episode))
+    }
+
+    private suspend fun broadcastPlayAction() {
+        val episode = queue.firstOrNull() ?: return
+        playerChannel.send(ViewPlayerAction.Play(episode))
     }
 
     private fun initPlayerAndNotifications(episode: ViewEpisode) {
         val podcastPath = episode.getEpisodePath(this)
         initMediaPlayer(podcastPath) {
-            queue.add(episode)
-            val action = playerNotificationHandler.generateAction(android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE)
+            val action = playerNotificationHandler.generatePauseAction()
             playerNotificationHandler.buildNotification(episode.title, action)
         }
         playerNotificationHandler.createChannel()
@@ -64,14 +120,14 @@ class PlayerService : Service() {
 
     private fun onPlay() {
         val episode = queue.firstOrNull() ?: return
-        val action = playerNotificationHandler.generateAction(android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE)
+        val action = playerNotificationHandler.generatePauseAction()
         playerNotificationHandler.buildNotification(episode.title, action)
         mediaPlayer?.start()
     }
 
     private fun onPause() {
         val episode = queue.firstOrNull() ?: return
-        val action = playerNotificationHandler.generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY)
+        val action = playerNotificationHandler.generatePlayAction()
         playerNotificationHandler.buildNotification(episode.title, action)
         mediaPlayer?.pause()
     }

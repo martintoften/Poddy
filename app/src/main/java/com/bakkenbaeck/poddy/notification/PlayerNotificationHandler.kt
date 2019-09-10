@@ -13,6 +13,10 @@ import com.bakkenbaeck.poddy.extensions.createNotificationChannel
 import com.bakkenbaeck.poddy.extensions.notifyNotification
 import com.bakkenbaeck.poddy.service.*
 
+const val PLAYER_NOTIFICATION_ID = 2
+const val PLAYER_CHANNEL_ID = "102"
+const val PLAYER_CHANNEL_NAME = "Player channel"
+
 class PlayerNotificationHandler(
     private val context: Service
 ) {
@@ -34,6 +38,14 @@ class PlayerNotificationHandler(
             .addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Forward", ACTION_FAST_FORWARD))
 
         context.notifyNotification(PLAYER_NOTIFICATION_ID, builder.build())
+    }
+
+    fun generatePauseAction(): NotificationCompat.Action {
+        return generateAction(android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE)
+    }
+
+    fun generatePlayAction(): NotificationCompat.Action {
+        return generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY)
     }
 
     fun generateAction(icon: Int, title: String, intentAction: String): NotificationCompat.Action {
