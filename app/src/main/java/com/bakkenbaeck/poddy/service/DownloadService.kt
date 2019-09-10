@@ -110,6 +110,8 @@ class DownloadService : Service() {
             .setSmallIcon(R.drawable.ic_queue)
             .setContentIntent(getPendingIntent())
             .setProgress(100, progress, false)
+            .setSound(null)
+            .setOnlyAlertOnce(true)
             .build()
     }
 
@@ -124,7 +126,9 @@ class DownloadService : Service() {
                 DOWNLOAD_CHANNEL_ID,
                 DOWNLOAD_CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
-            )
+            ).apply {
+                setSound(null, null)
+            }
 
             createNotificationChannel(channel)
         }

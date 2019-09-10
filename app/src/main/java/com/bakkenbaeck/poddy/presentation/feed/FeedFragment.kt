@@ -12,6 +12,8 @@ import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getDimen
+import com.bakkenbaeck.poddy.extensions.getPlayIcon
+import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
 import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.BackableFragment
@@ -111,10 +113,7 @@ class FeedFragment : BackableFragment() {
 
     private fun updateSheetStateToExpanded(episode: ViewEpisode) {
         val imageUrl = getPodcastImage(arguments)
-        val radius = getDimen(R.dimen.radius_default)
-        val roundedCorners by lazy { RoundedCornersTransformation(radius) }
-
-        sheet.image.load(imageUrl) { transformations(roundedCorners) }
+        sheet.image.loadWithRoundCorners(imageUrl)
         sheet.episodeName.text = episode.title
         sheet.description.text = HtmlCompat.fromHtml(
             episode.description,
@@ -174,12 +173,7 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun handlePlayerUpdates(action: ViewPlayerAction) {
-        val drawable = when (action) {
-            is ViewPlayerAction.Start -> R.drawable.ic_player_pause
-            is ViewPlayerAction.Play -> R.drawable.ic_player_pause
-            is ViewPlayerAction.Pause -> R.drawable.ic_player_play
-        }
-
+        val drawable = action.getPlayIcon()
         sheet.play.setImageResource(drawable)
     }
 }

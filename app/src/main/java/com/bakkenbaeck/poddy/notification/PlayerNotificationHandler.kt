@@ -36,6 +36,8 @@ class PlayerNotificationHandler(
             .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
             .addAction(action)
             .addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Forward", ACTION_FAST_FORWARD))
+            .setSound(null)
+            .setOnlyAlertOnce(true)
 
         context.notifyNotification(PLAYER_NOTIFICATION_ID, builder.build())
     }
@@ -48,7 +50,7 @@ class PlayerNotificationHandler(
         return generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY)
     }
 
-    fun generateAction(icon: Int, title: String, intentAction: String): NotificationCompat.Action {
+    private fun generateAction(icon: Int, title: String, intentAction: String): NotificationCompat.Action {
         val intent = Intent(context, PlayerService::class.java).apply {
             action = intentAction
         }
@@ -70,7 +72,9 @@ class PlayerNotificationHandler(
             PLAYER_CHANNEL_ID,
             PLAYER_CHANNEL_NAME,
             NotificationManager.IMPORTANCE_DEFAULT
-        )
+        ).apply {
+            setSound(null, null)
+        }
 
         context.createNotificationChannel(channel ?: return)
     }
