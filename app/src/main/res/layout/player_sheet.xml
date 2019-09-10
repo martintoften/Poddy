@@ -47,7 +47,7 @@
         <ImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="350dp"
             android:layout_marginTop="30dp"
             android:layout_marginStart="@dimen/margin_primary"
             android:layout_marginEnd="@dimen/margin_primary"
@@ -108,18 +108,47 @@
             android:id="@+id/progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="30dp"
             android:layout_marginStart="@dimen/margin_primary"
             android:layout_marginEnd="@dimen/margin_primary"
             style="?android:attr/progressBarStyleHorizontal"
             android:progressBackgroundTint="@color/colorProgressBackground"
             android:progressTint="@color/colorProgress"
             android:thumb="@drawable/ic_thumb"
-            android:progress="50"
+            android:progress="0"
             android:max="100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/playBig" />
+
+        <TextView
+            android:id="@+id/progressText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/textColorPrimary"
+            android:text="00.00"
+            app:layout_constraintStart_toStartOf="@id/progress"
+            app:layout_constraintTop_toBottomOf="@+id/progress" />
+
+        <TextView
+            android:id="@+id/durationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:textColor="@color/textColorPrimary"
+            android:text="00.00"
+            app:layout_constraintEnd_toEndOf="@id/progress"
+            app:layout_constraintTop_toBottomOf="@+id/progress" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/durationText"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

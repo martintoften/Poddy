@@ -5,19 +5,19 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.IBinder
 import android.util.Log
+import com.bakkenbaeck.poddy.extensions.getEpisodePath
 import com.bakkenbaeck.poddy.notification.PlayerNotificationHandler
-import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
-import java.lang.IllegalStateException
 
 const val EPISODE = "EPISODE"
 
@@ -37,6 +37,7 @@ class PlayerService : Service() {
 
     private val scope by lazy { CoroutineScope(Dispatchers.Main) }
     private val playerChannel by inject<ConflatedBroadcastChannel<ViewPlayerAction>>(named("playerChannel"))
+    private val tickerChannel by lazy { ticker(delayMillis = 1000, context = Dispatchers.Main) }
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -44,7 +45,23 @@ class PlayerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        initProgress()
         listenForPlayerAction()
+    }
+
+    private fun initProgress() {
+        scope.launch {
+            for (event in tickerChannel) {
+                broadcastProgress()
+            }
+        }
+    }
+
+    private suspend fun broadcastProgress() {
+        val episode = queue.firstOrNull() ?: return
+        val progressInMillis = mediaPlayer?.currentPosition ?: 0
+        val durationInMillis = mediaPlayer?.duration ?: 0
+        playerChannel.send(ViewPlayerAction.Progress(episode, progressInMillis, durationInMillis))
     }
 
     private fun listenForPlayerAction() {
@@ -90,10 +107,11 @@ class PlayerService : Service() {
 
         val lastPlayerAction = playerChannel.valueOrNull
         if (episode.id == lastPlayerAction?.episode?.id) {
-            val action = if (lastPlayerAction is ViewPlayerAction.Play) ViewPlayerAction.Pause(episode)
+            val action = if (mediaPlayer?.isPlaying == true) ViewPlayerAction.Pause(episode)
             else ViewPlayerAction.Play(episode)
             playerChannel.send(action)
         } else {
+            queue.clear()
             queue.add(episode)
             playerChannel.send(ViewPlayerAction.Start(episode))
         }
@@ -133,16 +151,17 @@ class PlayerService : Service() {
     }
 
     private fun initMediaPlayer(path: String, onStartListener: () -> Unit) {
-        if (mediaPlayer != null) return
-
-        mediaPlayer = MediaPlayer().apply {
-            setDataSource(path)
-            setOnPreparedListener {
-                onStartListener()
-                start()
-            }
-            prepareAsync()
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer()
         }
+
+        mediaPlayer?.reset()
+        mediaPlayer?.setDataSource(path)
+        mediaPlayer?.setOnPreparedListener {
+            onStartListener()
+            mediaPlayer?.start()
+        }
+        mediaPlayer?.prepareAsync()
     }
 
     override fun onDestroy() {

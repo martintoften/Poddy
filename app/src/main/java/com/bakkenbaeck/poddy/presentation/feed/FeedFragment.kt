@@ -173,7 +173,7 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun handlePlayerUpdates(action: ViewPlayerAction) {
-        val drawable = action.getPlayIcon()
+        val drawable = action.getPlayIcon() ?: return
         sheet.play.setImageResource(drawable)
     }
 }

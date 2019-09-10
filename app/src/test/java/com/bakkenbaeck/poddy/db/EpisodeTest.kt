@@ -13,12 +13,12 @@ class EpisodeTest {
     }
     private val queries = PoddyDB(inMemorySqlDriver).episodeQueries
 
-    @Test
+    /*@Test
     fun episodeTest() {
         val episode = Episode.Impl("1", "11", "Reply All", "Podcast about the internet", "1.1.1.1", 1000, "url")
         queries.insert(episode)
         val episodes = queries.selectAll().executeAsList()
 
         assertEquals(1, episodes.count())
-    }
+    }*/
 }

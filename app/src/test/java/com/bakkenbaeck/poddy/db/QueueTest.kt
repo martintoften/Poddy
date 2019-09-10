@@ -1,8 +1,5 @@
 package com.bakkenbaeck.poddy.db
 
-import com.bakkenbaeck.poddy.di.testAppModule
-import com.bakkenbaeck.poddy.di.testDBModule
-import com.bakkenbaeck.poddy.di.testRepositoryModule
 import db.PoddyDB
 import kotlinx.coroutines.runBlocking
 import org.db.Episode
@@ -19,7 +16,7 @@ import org.koin.test.inject
 class QueueTest: KoinTest {
 
     private val db: PoddyDB by inject()
-    private val dbWriter: DBWriter by inject()
+    /*private val dbWriter: DBWriter by inject()
     private val dbReader: DBReader by inject()
 
     private val testEpisodes = listOf(
@@ -86,5 +83,5 @@ class QueueTest: KoinTest {
     @After
     fun after() {
         stopKoin()
-    }
+    }*/
 }

@@ -1,13 +1,12 @@
 package com.bakkenbaeck.poddy.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import com.bakkenbaeck.poddy.R
-import com.bakkenbaeck.poddy.extensions.getPlayIcon
-import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
-import com.bakkenbaeck.poddy.extensions.startForegroundService
+import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.presentation.navigation.BottomNav
 import com.bakkenbaeck.poddy.presentation.navigation.MainPagerAdapter
@@ -73,7 +72,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handlePlayerUpdates(action: ViewPlayerAction) {
-        val drawable = action.getPlayIcon()
+        when (action) {
+            is ViewPlayerAction.Progress -> updateProgressUi(action)
+            else -> updatePlayerUi(action)
+        }
+    }
+
+    private fun updateProgressUi(action: ViewPlayerAction.Progress) {
+        sheet.progress.progress = action.getProgressInPercent()
+        sheet.progressText.text = action.getFormattedProgress()
+        sheet.durationText.text = action.getFormattedDuration()
+    }
+
+    private fun updatePlayerUi(action: ViewPlayerAction) {
+        val drawable = action.getPlayIcon() ?: return
         sheet.apply {
             playBig.setImageResource(drawable)
             playSmall.setImageResource(drawable)
