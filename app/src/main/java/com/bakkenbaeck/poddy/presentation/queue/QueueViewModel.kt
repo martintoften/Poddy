@@ -17,14 +17,15 @@ class QueueViewModel(
 ) : ViewModel() {
 
     init {
+        listenForQueueUpdates()
         getQueue()
     }
 
     val queue by lazy { MutableLiveData<List<ViewEpisode>>() }
 
-    private fun getQueue() {
+    private fun listenForQueueUpdates() {
         viewModelScope.launch {
-            queueRepository.getQueue()
+            queueRepository.listenForQueueUpdates()
                 .flowOn(Dispatchers.IO)
                 .map { mapToViewEpisodeFromDB(it) }
                 .collect { handleQueue(it) }
@@ -33,6 +34,12 @@ class QueueViewModel(
 
     private fun handleQueue(queueResult: List<ViewEpisode>) {
         queue.value = queueResult
+    }
+
+    private fun getQueue() {
+        viewModelScope.launch {
+            queueRepository.getQueue()
+        }
     }
 
     fun reorderQueue(queue: List<ViewEpisode>) {

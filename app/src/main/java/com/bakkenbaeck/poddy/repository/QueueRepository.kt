@@ -17,6 +17,11 @@ class QueueRepository(
 ) {
     private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
 
+    suspend fun listenForQueueUpdates(): Flow<List<Episode>> {
+        queueChannel.send(emptyList())
+        return queueChannel.asFlow()
+    }
+
     suspend fun addToQueue(podcast: ViewPodcast, episode: ViewEpisode) {
         val episodeId = episode.id
         val channelId = podcast.id
@@ -32,10 +37,9 @@ class QueueRepository(
         }
     }
 
-    suspend fun getQueue(): Flow<List<Episode>> {
+    suspend fun getQueue() {
         val queue = queueDBHandler.getQueue()
         queueChannel.send(queue)
-        return queueChannel.asFlow()
     }
 
     suspend fun reorderQueue(queue: List<ViewEpisode>) {
