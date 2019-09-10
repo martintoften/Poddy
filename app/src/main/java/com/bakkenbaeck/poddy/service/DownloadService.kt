@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.bakkenbaeck.poddy.MainActivity
+import com.bakkenbaeck.poddy.presentation.MainActivity
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.createNotificationChannel
 import com.bakkenbaeck.poddy.extensions.getPodcastDir

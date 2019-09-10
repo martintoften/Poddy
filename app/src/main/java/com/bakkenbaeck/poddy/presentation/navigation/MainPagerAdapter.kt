@@ -1,4 +1,4 @@
-package com.bakkenbaeck.poddy
+package com.bakkenbaeck.poddy.presentation.navigation
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -16,15 +16,11 @@ class MainPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm, BEHA
         }
     }
 
-    fun getItems(): List<MainScreen> {
-        return screens
-    }
-
     override fun getItem(position: Int): Fragment {
         return screens[position].fragment
     }
 
-    override fun getCount(): Int {
-        return screens.size
-    }
+    override fun getCount() =  screens.size
+
+    fun getItems() = screens
 }

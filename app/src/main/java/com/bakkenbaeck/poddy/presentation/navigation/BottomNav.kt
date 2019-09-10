@@ -1,38 +1,23 @@
-package com.bakkenbaeck.poddy
+package com.bakkenbaeck.poddy.presentation.navigation
 
-import android.os.Bundle
 import android.view.MenuItem
 import androidx.annotation.IdRes
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.NestedScrollView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.detail_sheet.*
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+class BottomNav(
+    private val pagerAdapter: MainPagerAdapter,
+    private val bottomNavigationView: BottomNavigationView,
+    private val viewPager: ViewPager
+) : BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var mainPagerAdapter: MainPagerAdapter
-    private lateinit var sheetBehavior: BottomSheetBehavior<NestedScrollView>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
+    init {
         initBottomNav()
-        initSheetView()
-    }
-
-    private fun initSheetView() {
-        sheetBehavior = BottomSheetBehavior.from(sheet)
-        sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private fun initBottomNav() {
         val tabs = listOf(MainScreen.Search, MainScreen.Queue, MainScreen.Podcast)
-        mainPagerAdapter = MainPagerAdapter(supportFragmentManager)
-        mainPagerAdapter.setItems(tabs)
+        pagerAdapter.setItems(tabs)
 
         val defaultScreen = MainScreen.Search
         scrollToScreen(defaultScreen)
@@ -40,18 +25,18 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this)
 
-        viewPager.adapter = mainPagerAdapter
+        viewPager.adapter = pagerAdapter
         viewPager.offscreenPageLimit = tabs.count()
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
-                val selectedScreen = mainPagerAdapter.getItems()[position]
+                val selectedScreen = pagerAdapter.getItems()[position]
                 selectBottomNavigationViewMenuItem(selectedScreen.menuItemId)
             }
         })
     }
 
     private fun scrollToScreen(mainScreen: MainScreen) {
-        val screenPosition = mainPagerAdapter.getItems().indexOf(mainScreen)
+        val screenPosition = pagerAdapter.getItems().indexOf(mainScreen)
         if (screenPosition != viewPager.currentItem) {
             viewPager.currentItem = screenPosition
         }
