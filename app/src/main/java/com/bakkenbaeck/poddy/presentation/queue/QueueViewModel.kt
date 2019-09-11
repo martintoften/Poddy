@@ -50,7 +50,7 @@ class QueueViewModel(
 
     fun deleteEpisode(episode: ViewEpisode) {
         viewModelScope.launch {
-            queueRepository.deleteEpisodeFromQueue(episode)
+            queueRepository.deleteEpisodeFromQueue(episode.id)
         }
     }
 }

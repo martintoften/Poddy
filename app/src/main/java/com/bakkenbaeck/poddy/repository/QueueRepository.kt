@@ -39,8 +39,8 @@ class QueueRepository(
         queueDBHandler.reorderQueue(queue.map { it.id })
     }
 
-    suspend fun deleteEpisodeFromQueue(episode: ViewEpisode) {
-        episodeDBHandler.deleteEpisode(episode.id)
+    suspend fun deleteEpisodeFromQueue(episodeId: String) {
+        episodeDBHandler.deleteEpisode(episodeId)
         val queue = queueDBHandler.getQueue()
         queueChannel.send(queue)
     }

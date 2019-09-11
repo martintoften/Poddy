@@ -113,6 +113,11 @@ class PlayerService : Service() {
 
     private fun handleQueue(episodes: List<ViewEpisode>) {
         playerQueue.updateQueue(episodes)
+
+        if (!playerQueue.hasCurrent()) {
+            val nextEpisode = playerQueue.first() ?: return
+            buildAndBroadcastAction(ACTION_START, nextEpisode)
+        }
     }
 
     private fun getQueue() {
@@ -177,7 +182,12 @@ class PlayerService : Service() {
     }
 
     private fun onFinished() {
+        val currentEpisode = playerQueue.current() ?: return
+        playerQueue.clearCurrentEpisode()
 
+        scope.launch {
+            queueRepository.deleteEpisodeFromQueue(currentEpisode.id)
+        }
     }
 
     private fun onStart(episode: ViewEpisode) {
