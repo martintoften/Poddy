@@ -42,7 +42,7 @@ class PodcastRepository(
         return singlePodcastChannel.asFlow()
     }
 
-    suspend fun updatePodcast(episodeId: String) {
+    suspend fun broadcastUpdatedPodcast(episodeId: String) {
         val podcast = podcastDBHandler.getPodcastFromEpisodeId(episodeId) ?: return
         val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcast.id)
         if (dbPodcast == null) return
@@ -116,5 +116,9 @@ class PodcastRepository(
         val podcasts = subscriptionDBHandler.getSubscribedPodcasts()
         subscriptionsChannel.send(podcasts)
         return subscriptionsChannel.asFlow()
+    }
+
+    suspend fun updateProgress(episodeId: String, progress: Long) {
+        episodeDBHandler.updateProgress(episodeId, progress)
     }
 }

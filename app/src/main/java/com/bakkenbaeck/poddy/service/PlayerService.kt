@@ -10,6 +10,7 @@ import com.bakkenbaeck.poddy.notification.PlayerNotificationHandler
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
+import com.bakkenbaeck.poddy.repository.PodcastRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.util.PlayerQueue
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +38,7 @@ class PlayerService : Service() {
     private var mediaPlayer: MediaPlayer? = null
     private val playerNotificationHandler by lazy { PlayerNotificationHandler(this) }
     private val queueRepository by inject<QueueRepository>()
+    private val podcastRepository by inject<PodcastRepository>()
 
     private val scope by lazy { CoroutineScope(Dispatchers.Main) }
 
@@ -44,18 +46,57 @@ class PlayerService : Service() {
     private val tickerChannel by lazy { ticker(delayMillis = 1000, context = Dispatchers.Main) }
 
     private val playerQueue = PlayerQueue()
+    private val playerActionBuilder = PlayerActionBuilder(playerQueue)
     private var isListenerInitialised = false
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
 
-    private fun init() {
+    override fun onCreate() {
+        super.onCreate()
+        listenForProgressUpdates()
+        listenForPlayerAction()
+    }
+
+    private fun listenForProgressUpdates() {
+        scope.launch {
+            for (event in tickerChannel) {
+                if (mediaPlayer?.isPlaying == true) {
+                    broadcastProgress()
+                }
+            }
+        }
+    }
+
+    private suspend fun broadcastProgress() {
+        val episode = playerQueue.current() ?: return
+        val progressInMillis = mediaPlayer?.currentPosition ?: 0
+        val durationInMillis = mediaPlayer?.duration ?: 0
+        val action = ViewPlayerAction.Progress(episode, progressInMillis, durationInMillis)
+        playerChannel.send(action)
+        podcastRepository.updateProgress(episode.id, progressInMillis.toLong())
+    }
+
+    private fun listenForPlayerAction() {
+        scope.launch {
+            playerChannel.asFlow()
+                .collect { handlePlayerAction(it) }
+        }
+    }
+
+    private fun handlePlayerAction(playerAction: ViewPlayerAction) {
+        when (playerAction) {
+            is ViewPlayerAction.Start -> initPlayerAndNotification(playerAction.episode)
+            is ViewPlayerAction.Play -> onPlay()
+            is ViewPlayerAction.Pause -> onPause()
+        }
+    }
+
+    private fun initQueueListener() {
         if (isListenerInitialised) return
         isListenerInitialised = true
 
-        initProgress()
-        listenForPlayerAction()
         listenForQueueUpdates()
         getQueue()
     }
@@ -79,37 +120,6 @@ class PlayerService : Service() {
         }
     }
 
-    private fun initProgress() {
-        scope.launch {
-            for (event in tickerChannel) {
-                if (mediaPlayer?.isPlaying == false) return@launch
-                broadcastProgress()
-            }
-        }
-    }
-
-    private suspend fun broadcastProgress() {
-        val episode = playerQueue.current() ?: return
-        val progressInMillis = mediaPlayer?.currentPosition ?: 0
-        val durationInMillis = mediaPlayer?.duration ?: 0
-        playerChannel.send(ViewPlayerAction.Progress(episode, progressInMillis, durationInMillis))
-    }
-
-    private fun listenForPlayerAction() {
-        scope.launch {
-            playerChannel.asFlow()
-                .collect { handlePlayerAction(it) }
-        }
-    }
-
-    private fun handlePlayerAction(playerAction: ViewPlayerAction) {
-        when (playerAction) {
-            is ViewPlayerAction.Start -> initPlayerAndNotification(playerAction.episode)
-            is ViewPlayerAction.Play -> onPlay()
-            is ViewPlayerAction.Pause -> onPause()
-        }
-    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let { handleIntent(it) }
         return START_NOT_STICKY
@@ -119,48 +129,42 @@ class PlayerService : Service() {
         val action = intent.action ?: return
         val episode = intent.getParcelableExtra<ViewEpisode?>(EPISODE)
 
-        broadcastAction(action, episode)
+        buildAndBroadcastAction(action, episode)
     }
 
-    private fun broadcastAction(action: String, episode: ViewEpisode?) {
+    private fun buildAndBroadcastAction(action: String, episode: ViewEpisode?) {
+        val playerAction = buildAction(action, episode) ?: return
+
         scope.launch {
-            when (action) {
-                ACTION_START -> broadcastStartAction(episode)
-                ACTION_PLAY -> broadcastPlayAction()
-                ACTION_PAUSE -> broadcastPauseAction()
-                else -> Log.d("PlayerService", "Invalid intent action")
+            broadcastAction(playerAction)
+            initQueueListener()
+        }
+    }
+
+    private fun buildAction(action: String, episode: ViewEpisode?): ViewPlayerAction? {
+        return when (action) {
+            ACTION_START -> playerActionBuilder.getStartAction(episode, mediaPlayer?.isPlaying == true)
+            ACTION_PLAY -> playerActionBuilder.getPlayAction()
+            ACTION_PAUSE -> playerActionBuilder.getPauseAction()
+            else -> null
+        }
+    }
+
+    private suspend fun broadcastAction(action: ViewPlayerAction) {
+        when (action) {
+            is ViewPlayerAction.Start -> {
+                queueRepository.addToQueue(action.episode)
+                playerQueue.setCurrent(action.episode)
+                playerChannel.send(action)
             }
+            is ViewPlayerAction.Pause, is ViewPlayerAction.Play -> playerChannel.send(action)
+            else -> Log.d("PlayerService", "Invalid action at this stage")
         }
-    }
-
-    private suspend fun broadcastStartAction(episode: ViewEpisode?) {
-        if (episode == null) throw IllegalStateException("Must pass an episode with the start action")
-
-        val isTheSameEpisodeAsCurrent = episode.id == playerQueue.current()?.id
-        if (isTheSameEpisodeAsCurrent) {
-            val action = if (mediaPlayer?.isPlaying == true) ViewPlayerAction.Pause(episode)
-            else ViewPlayerAction.Play(episode)
-            playerChannel.send(action)
-        } else {
-            queueRepository.addToQueue(episode)
-            playerQueue.setCurrent(episode)
-            playerChannel.send(ViewPlayerAction.Start(episode))
-        }
-    }
-
-    private suspend fun broadcastPlayAction() {
-        val episode = playerQueue.current() ?: return
-        playerChannel.send(ViewPlayerAction.Play(episode))
-    }
-
-    private suspend fun broadcastPauseAction() {
-        val episode = playerQueue.current() ?: return
-        playerChannel.send(ViewPlayerAction.Pause(episode))
     }
 
     private fun initPlayerAndNotification(episode: ViewEpisode) {
         val podcastPath = episode.getEpisodePath(this)
-        initMediaPlayer(podcastPath, { onStart(episode) }, { onFinished() })
+        initMediaPlayer(episode, podcastPath, { onStart(episode) }, { onFinished() })
         playerNotificationHandler.createChannel()
     }
 
@@ -187,7 +191,7 @@ class PlayerService : Service() {
         mediaPlayer?.pause()
     }
 
-    private fun initMediaPlayer(path: String, onStartListener: () -> Unit, onCompletedListener: () -> Unit) {
+    private fun initMediaPlayer(episode: ViewEpisode, path: String, onStartListener: () -> Unit, onCompletedListener: () -> Unit) {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer()
         }
@@ -196,6 +200,7 @@ class PlayerService : Service() {
         mediaPlayer?.setDataSource(path)
         mediaPlayer?.setOnPreparedListener {
             onStartListener()
+            mediaPlayer?.seekTo(episode.progress.toInt())
             mediaPlayer?.start()
         }
         mediaPlayer?.prepareAsync()
@@ -204,6 +209,8 @@ class PlayerService : Service() {
 
     override fun onDestroy() {
         mediaPlayer?.release()
+        tickerChannel.cancel()
+        playerChannel.cancel()
         super.onDestroy()
     }
 }

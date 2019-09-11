@@ -11,8 +11,6 @@ import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.repository.DownloadRepository
 import com.bakkenbaeck.poddy.repository.PodcastRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
-import com.bakkenbaeck.poddy.service.ACTION_PLAY
-import com.bakkenbaeck.poddy.service.ACTION_START
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
@@ -20,8 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
-import org.koin.core.qualifier.named
 
 class FeedViewModel(
     private val podcastRepository: PodcastRepository,
@@ -73,7 +69,7 @@ class FeedViewModel(
         viewModelScope.launch {
             downloadRepository.listenForDownloadStateUpdates()
                 .filterNotNull()
-                .collect { podcastRepository.updatePodcast(it) }
+                .collect { podcastRepository.broadcastUpdatedPodcast(it) }
         }
     }
 

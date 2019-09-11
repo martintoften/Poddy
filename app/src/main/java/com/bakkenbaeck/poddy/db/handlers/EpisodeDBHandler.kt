@@ -44,9 +44,15 @@ class EpisodeDBHandler(
         }
     }
 
-    suspend fun updateDownloadState(id: String, downloadState: DownloadState) {
+    suspend fun updateDownloadState(episodeId: String, downloadState: DownloadState) {
         return withContext(context) {
-            db.episodeQueries.updateDownloadState(downloadState.value.toLong(), id)
+            db.episodeQueries.updateDownloadState(downloadState.value.toLong(), episodeId)
+        }
+    }
+
+    suspend fun updateProgress(episodeId: String, progress: Long) {
+        return withContext(context) {
+            db.episodeQueries.updateProgressState(progress, episodeId)
         }
     }
 }

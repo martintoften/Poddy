@@ -29,7 +29,8 @@ fun mapEpisodesFromNetworkToDB(podcast: PodcastResponse): List<Episode.Impl> {
         image = it.image,
         timestamp = timestamp,
         audio = it.audio,
-        is_downloaded = 0
+        is_downloaded = 0,
+        progress = 0
     ) }
 }
 
@@ -60,6 +61,7 @@ fun mapEpisodeFromViewToDB(episode: ViewEpisode, timestamp: Long = Date().time):
         image = episode.image,
         timestamp = timestamp,
         audio = episode.audio,
-        is_downloaded = episode.isDownloaded.value.toLong()
+        is_downloaded = episode.isDownloaded.value.toLong(),
+        progress = episode.progress
     )
 }

@@ -65,7 +65,8 @@ fun mapToViewEpisodeFromDB(db: List<Episode>): List<ViewEpisode> {
             duration = it.duration.toInt(),
             image = it.image,
             audio = it.audio,
-            isDownloaded = DownloadState.intToEnum(it.is_downloaded.toInt())
+            isDownloaded = DownloadState.intToEnum(it.is_downloaded.toInt()),
+            progress = it.progress
         )
     }
 }
