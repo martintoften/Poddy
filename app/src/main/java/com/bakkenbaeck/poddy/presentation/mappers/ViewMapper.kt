@@ -37,36 +37,6 @@ fun mapToViewPodcastSearchFromNetworkToView(network: List<SearchItem>): List<Vie
     }
 }
 
-fun mapFromNetworkToView(network: PodcastResponse, hasSubscribed: Boolean): ViewPodcast {
-    val items = mapToViewEpisodeFromNetwork(network.episodes)
-
-    return ViewPodcast(
-        id = network.id,
-        title = network.title,
-        description = network.description,
-        image = network.image,
-        nextEpisodePubDate = network.next_episode_pub_date,
-        episodes = items,
-        hasSubscribed = hasSubscribed,
-        totalEpisodes = network.total_episodes
-    )
-}
-
-fun mapToViewEpisodeFromNetwork(network: List<EpisodeItem>): List<ViewEpisode> {
-    return network.map {
-        ViewEpisode(
-            id = it.id,
-            description = it.description,
-            title = it.title,
-            image = it.image,
-            duration = it.audio_length_sec,
-            pubDate = it.pub_date_ms,
-            audio = it.audio,
-            isDownloaded = DownloadState.NOT_DOWNLOADED
-        )
-    }
-}
-
 fun mapToViewPodcastFromDB(db: List<Podcast>): List<ViewPodcast> {
     return db.map { mapToViewPodcastFromDB(it, emptyList(), true) }
 }
@@ -88,6 +58,7 @@ fun mapToViewEpisodeFromDB(db: List<Episode>): List<ViewEpisode> {
     return db.map {
         ViewEpisode(
             id = it.id,
+            podcastId = it.podcast_id,
             title = it.title,
             description = it.description,
             pubDate = it.pub_date,

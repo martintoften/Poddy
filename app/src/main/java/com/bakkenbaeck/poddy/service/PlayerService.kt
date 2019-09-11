@@ -44,17 +44,16 @@ class PlayerService : Service() {
     private val tickerChannel by lazy { ticker(delayMillis = 1000, context = Dispatchers.Main) }
 
     private val playerQueue = PlayerQueue()
+    private var isListenerInitialised = false
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        init()
-    }
-
     private fun init() {
+        if (isListenerInitialised) return
+        isListenerInitialised = true
+
         initProgress()
         listenForPlayerAction()
         listenForQueueUpdates()
@@ -66,8 +65,12 @@ class PlayerService : Service() {
             queueRepository.listenForQueueUpdates()
                 .flowOn(Dispatchers.IO)
                 .map { mapToViewEpisodeFromDB(it) }
-                .collect { playerQueue.updateQueue(it) }
+                .collect { handleQueue(it) }
         }
+    }
+
+    private fun handleQueue(episodes: List<ViewEpisode>) {
+        playerQueue.updateQueue(episodes)
     }
 
     private fun getQueue() {
@@ -79,6 +82,7 @@ class PlayerService : Service() {
     private fun initProgress() {
         scope.launch {
             for (event in tickerChannel) {
+                if (mediaPlayer?.isPlaying == false) return@launch
                 broadcastProgress()
             }
         }
@@ -132,19 +136,16 @@ class PlayerService : Service() {
     private suspend fun broadcastStartAction(episode: ViewEpisode?) {
         if (episode == null) throw IllegalStateException("Must pass an episode with the start action")
 
-        if (episode.id == playerQueue.current()?.id) {
+        val isTheSameEpisodeAsCurrent = episode.id == playerQueue.current()?.id
+        if (isTheSameEpisodeAsCurrent) {
             val action = if (mediaPlayer?.isPlaying == true) ViewPlayerAction.Pause(episode)
             else ViewPlayerAction.Play(episode)
             playerChannel.send(action)
         } else {
+            queueRepository.addToQueue(episode)
             playerQueue.setCurrent(episode)
             playerChannel.send(ViewPlayerAction.Start(episode))
         }
-    }
-
-    private suspend fun broadcastPauseAction() {
-        val episode = playerQueue.current() ?: return
-        playerChannel.send(ViewPlayerAction.Pause(episode))
     }
 
     private suspend fun broadcastPlayAction() {
@@ -152,13 +153,24 @@ class PlayerService : Service() {
         playerChannel.send(ViewPlayerAction.Play(episode))
     }
 
+    private suspend fun broadcastPauseAction() {
+        val episode = playerQueue.current() ?: return
+        playerChannel.send(ViewPlayerAction.Pause(episode))
+    }
+
     private fun initPlayerAndNotification(episode: ViewEpisode) {
         val podcastPath = episode.getEpisodePath(this)
-        initMediaPlayer(podcastPath) {
-            val action = playerNotificationHandler.generatePauseAction()
-            playerNotificationHandler.buildNotification(episode.title, action)
-        }
+        initMediaPlayer(podcastPath, { onStart(episode) }, { onFinished() })
         playerNotificationHandler.createChannel()
+    }
+
+    private fun onFinished() {
+
+    }
+
+    private fun onStart(episode: ViewEpisode) {
+        val action = playerNotificationHandler.generatePauseAction()
+        playerNotificationHandler.buildNotification(episode.title, action)
     }
 
     private fun onPlay() {
@@ -175,7 +187,7 @@ class PlayerService : Service() {
         mediaPlayer?.pause()
     }
 
-    private fun initMediaPlayer(path: String, onStartListener: () -> Unit) {
+    private fun initMediaPlayer(path: String, onStartListener: () -> Unit, onCompletedListener: () -> Unit) {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer()
         }
@@ -187,6 +199,7 @@ class PlayerService : Service() {
             mediaPlayer?.start()
         }
         mediaPlayer?.prepareAsync()
+        mediaPlayer?.setOnCompletionListener { onCompletedListener() }
     }
 
     override fun onDestroy() {

@@ -11,11 +11,24 @@ class PlayerQueue {
         queue.addAll(episodes)
     }
 
-    fun first() = queue.first()
+    fun first(): ViewEpisode? = queue.firstOrNull()
 
     fun current(): ViewEpisode? = currentEpisode
+
+    fun hasCurrent() = currentEpisode != null
+
+    fun setFirstAsCurrent(): ViewEpisode? {
+        currentEpisode = first()
+        return currentEpisode
+    }
 
     fun setCurrent(episode: ViewEpisode) {
         currentEpisode = episode
     }
+
+    fun clearCurrentEpisode() {
+        currentEpisode = null
+    }
+
+    fun deleteFirst() = queue.removeAt(0)
 }

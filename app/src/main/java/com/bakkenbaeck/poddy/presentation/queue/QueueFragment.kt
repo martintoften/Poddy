@@ -10,8 +10,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
+import com.bakkenbaeck.poddy.service.ACTION_START
+import com.bakkenbaeck.poddy.service.EPISODE
+import com.bakkenbaeck.poddy.service.PlayerService
 import com.bakkenbaeck.poddy.util.OnStartDragListener
 import com.bakkenbaeck.poddy.util.SimpleItemTouchHelperCallback
 import kotlinx.android.synthetic.main.queue_fragment.*
@@ -52,8 +56,11 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
         }
     }
 
-    private fun handleEpisodeClicked(episodes: ViewEpisode) {
-        Log.d("QueueFragment", episodes.toString())
+    private fun handleEpisodeClicked(episode: ViewEpisode) {
+        startForegroundService<PlayerService> {
+            action = ACTION_START
+            putExtra(EPISODE, episode)
+        }
     }
 
     private fun initObservers() {

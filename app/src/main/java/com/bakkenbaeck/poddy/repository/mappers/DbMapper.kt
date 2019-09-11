@@ -46,13 +46,13 @@ fun mapPodcastFromViewToDB(podcast: ViewPodcast): Podcast.Impl {
 
 fun mapEpisodesFromViewToDB(podcast: ViewPodcast): List<Episode.Impl> {
     val timestamp = Date().time
-    return podcast.episodes.map { mapEpisodeFromViewToDB(podcast, it, timestamp) }
+    return podcast.episodes.map { mapEpisodeFromViewToDB(it, timestamp) }
 }
 
-fun mapEpisodeFromViewToDB(podcast: ViewPodcast, episode: ViewEpisode, timestamp: Long = Date().time): Episode.Impl {
+fun mapEpisodeFromViewToDB(episode: ViewEpisode, timestamp: Long = Date().time): Episode.Impl {
     return Episode.Impl(
         id = episode.id,
-        podcast_id = podcast.id,
+        podcast_id = episode.podcastId,
         title = episode.title,
         description = episode.description,
         pub_date = episode.pubDate,

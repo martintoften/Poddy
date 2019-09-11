@@ -19,7 +19,7 @@ SELECT episode_id FROM queue ORDER BY queue_index ASC;
 selectAll:
 SELECT * FROM queue ORDER BY queue_index ASC;
 
-doesAlreadyExist:
+alreadyExist:
 SELECT COUNT(1) FROM queue WHERE episode_id = ?;
 
 delete:

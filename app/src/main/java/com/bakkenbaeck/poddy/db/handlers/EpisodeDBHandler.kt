@@ -16,13 +16,6 @@ class EpisodeDBHandler(
         }
     }
 
-    suspend fun doesEpisodeAlreadyExist(episodeId: String): Boolean {
-        return withContext(context) {
-            val result = db.queueQueries.doesAlreadyExist(episodeId).executeAsOne()
-            return@withContext result > 0
-        }
-    }
-
     suspend fun deleteEpisode(episodeId: String) {
         return withContext(context) {
             db.episodeQueries.deleteByEpisodeId(episodeId)

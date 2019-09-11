@@ -116,10 +116,9 @@ class FeedViewModel(
 
     fun addToQueue() {
         val episode = selectedEpisode ?: return
-        val channel = getPodcast() ?: return
 
         viewModelScope.launch {
-            queueRepository.addToQueue(channel, episode)
+            queueRepository.addToQueue(episode)
         }
     }
 

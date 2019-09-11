@@ -3,7 +3,6 @@ package com.bakkenbaeck.poddy.repository
 import com.bakkenbaeck.poddy.db.handlers.EpisodeDBHandler
 import com.bakkenbaeck.poddy.db.handlers.QueueDBHandler
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
-import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.repository.mappers.mapEpisodeFromViewToDB
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
@@ -17,24 +16,18 @@ class QueueRepository(
 ) {
     private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
 
-    suspend fun listenForQueueUpdates(): Flow<List<Episode>> {
-        queueChannel.send(emptyList())
+    fun listenForQueueUpdates(): Flow<List<Episode>> {
         return queueChannel.asFlow()
     }
 
-    suspend fun addToQueue(podcast: ViewPodcast, episode: ViewEpisode) {
-        val episodeId = episode.id
-        val channelId = podcast.id
-        val dbQueueItem = Queue.Impl(episodeId, channelId, -1)
-        val dbEpisode = mapEpisodeFromViewToDB(podcast, episode)
+    suspend fun addToQueue(episode: ViewEpisode) {
+        val (id, podcastId) = episode
+        val dbQueueItem = Queue.Impl(id, podcastId, -1)
+        val dbEpisode = mapEpisodeFromViewToDB(episode)
 
-        val doesAlreadyExist = episodeDBHandler.doesEpisodeAlreadyExist(episodeId)
-
-        if (!doesAlreadyExist) {
-            queueDBHandler.insertQueueItem(dbQueueItem, dbEpisode)
-            val queue = queueDBHandler.getQueue()
-            queueChannel.send(queue)
-        }
+        queueDBHandler.insertQueueItem(dbQueueItem, dbEpisode)
+        val queue = queueDBHandler.getQueue()
+        queueChannel.send(queue)
     }
 
     suspend fun getQueue() {

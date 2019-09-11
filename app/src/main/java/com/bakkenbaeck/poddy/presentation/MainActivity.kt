@@ -2,6 +2,7 @@ package com.bakkenbaeck.poddy.presentation
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
@@ -53,16 +54,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun initBottomNav() {
         val pagerAdapter = MainPagerAdapter(supportFragmentManager)
-        BottomNav(
-            pagerAdapter,
-            bottomNavigationView,
-            viewPager
-        )
+        BottomNav(pagerAdapter, bottomNavigationView, viewPager)
     }
 
     private fun initSheetView() {
         sheetBehavior = BottomSheetBehavior.from(sheet)
         sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        sheet.progress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+            override fun onStopTrackingTouch(p0: SeekBar?) {}
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, p2: Boolean) {
+
+            }
+        })
     }
 
     private fun initObservers() {
@@ -91,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             playSmall.setImageResource(drawable)
             episodeName.text = action.episode.title
             image.loadWithRoundCorners(action.episode.image, R.dimen.radius_small)
-            thumbnail.loadWithRoundCorners(action.episode.image)
+            thumbnail.loadWithRoundCorners(action.episode.image, R.dimen.radius_small)
         }
     }
 }

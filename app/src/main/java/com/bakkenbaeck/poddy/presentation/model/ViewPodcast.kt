@@ -18,6 +18,7 @@ data class ViewPodcast(
 @Parcelize
 data class ViewEpisode(
     override val id: String,
+    val podcastId: String,
     val title: String,
     val description: String,
     val pubDate: Long,

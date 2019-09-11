@@ -40,4 +40,11 @@ class QueueDBHandler(
             }
         }
     }
+
+    suspend fun doesEpisodeAlreadyExist(episodeId: String): Boolean {
+        return withContext(context) {
+            val result = db.queueQueries.alreadyExist(episodeId).executeAsOne()
+            return@withContext result > 0
+        }
+    }
 }
