@@ -11,9 +11,11 @@ import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.presentation.navigation.BottomNav
 import com.bakkenbaeck.poddy.presentation.navigation.MainPagerAdapter
+import com.bakkenbaeck.poddy.service.ACTION_SEEK_TO
 import com.bakkenbaeck.poddy.service.ACTION_START
 import com.bakkenbaeck.poddy.service.EPISODE
 import com.bakkenbaeck.poddy.service.PlayerService
+import com.bakkenbaeck.poddy.util.OnProgressChangesListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.player_sheet.*
@@ -61,13 +63,20 @@ class MainActivity : AppCompatActivity() {
         sheetBehavior = BottomSheetBehavior.from(sheet)
         sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-        sheet.progress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(p0: SeekBar?) {}
-            override fun onStopTrackingTouch(p0: SeekBar?) {}
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, p2: Boolean) {
-
+        sheet.progress.setOnSeekBarChangeListener(object : OnProgressChangesListener() {
+            override fun onProgressChanged(progress: Int) {
+                handleProgressChanged(progress)
             }
         })
+    }
+
+    private fun handleProgressChanged(progress: Int) {
+        val currentEpisode = mainViewModel.getCurrentEpisode()?.episode ?: return
+
+        startForegroundService<PlayerService> {
+            action = ACTION_SEEK_TO
+            putExtra(EPISODE, currentEpisode.copy(progress = progress.toLong()))
+        }
     }
 
     private fun initObservers() {

@@ -32,6 +32,7 @@ const val ACTION_PLAY = "action_play"
 const val ACTION_PAUSE = "action_pause"
 const val ACTION_REWIND = "action_rewind"
 const val ACTION_FAST_FORWARD = "action_fast_forward"
+const val ACTION_SEEK_TO = "action_seek_to"
 
 class PlayerService : Service() {
 
@@ -129,7 +130,14 @@ class PlayerService : Service() {
         val action = intent.action ?: return
         val episode = intent.getParcelableExtra<ViewEpisode?>(EPISODE)
 
+        handleAction(action, episode)
         buildAndBroadcastAction(action, episode)
+    }
+
+    private fun handleAction(action: String, episode: ViewEpisode?) {
+        if (action == ACTION_SEEK_TO && episode != null) {
+            seekTo(episode.progress.toInt())
+        }
     }
 
     private fun buildAndBroadcastAction(action: String, episode: ViewEpisode?) {
@@ -205,6 +213,11 @@ class PlayerService : Service() {
         }
         mediaPlayer?.prepareAsync()
         mediaPlayer?.setOnCompletionListener { onCompletedListener() }
+    }
+
+    private fun seekTo(progressInPercent: Int) {
+        val progress = (mediaPlayer?.duration ?: 0) * (progressInPercent.toDouble() / 100)
+        mediaPlayer?.seekTo(progress.toInt())
     }
 
     override fun onDestroy() {
