@@ -1,19 +1,17 @@
 package com.bakkenbaeck.poddy.presentation
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
+import com.bakkenbaeck.poddy.ACTION_SEEK_TO
+import com.bakkenbaeck.poddy.ACTION_START
+import com.bakkenbaeck.poddy.EPISODE
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.presentation.navigation.BottomNav
 import com.bakkenbaeck.poddy.presentation.navigation.MainPagerAdapter
-import com.bakkenbaeck.poddy.service.ACTION_SEEK_TO
-import com.bakkenbaeck.poddy.service.ACTION_START
-import com.bakkenbaeck.poddy.service.EPISODE
 import com.bakkenbaeck.poddy.service.PlayerService
 import com.bakkenbaeck.poddy.util.OnProgressChangesListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior

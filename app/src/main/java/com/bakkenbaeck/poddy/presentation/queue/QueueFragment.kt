@@ -1,7 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.queue
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +8,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bakkenbaeck.poddy.ACTION_START
+import com.bakkenbaeck.poddy.EPISODE
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
-import com.bakkenbaeck.poddy.service.ACTION_START
-import com.bakkenbaeck.poddy.service.EPISODE
 import com.bakkenbaeck.poddy.service.PlayerService
 import com.bakkenbaeck.poddy.util.OnStartDragListener
 import com.bakkenbaeck.poddy.util.SimpleItemTouchHelperCallback

@@ -8,10 +8,9 @@ import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.api.load
-import coil.transform.RoundedCornersTransformation
+import com.bakkenbaeck.poddy.ACTION_START
+import com.bakkenbaeck.poddy.EPISODE
 import com.bakkenbaeck.poddy.R
-import com.bakkenbaeck.poddy.extensions.getDimen
 import com.bakkenbaeck.poddy.extensions.getPlayIcon
 import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
 import com.bakkenbaeck.poddy.extensions.startForegroundService

@@ -7,8 +7,8 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.bakkenbaeck.poddy.*
 import com.bakkenbaeck.poddy.presentation.MainActivity
-import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.createNotificationChannel
 import com.bakkenbaeck.poddy.extensions.notifyNotification
 import com.bakkenbaeck.poddy.service.*
@@ -42,6 +42,16 @@ class PlayerNotificationHandler(
         context.notifyNotification(PLAYER_NOTIFICATION_ID, builder.build())
     }
 
+    fun showPauseNotification(podcastName: String) {
+        val action = generatePauseAction()
+        buildNotification(podcastName, action)
+    }
+
+    fun showPlayNotification(podcastName: String) {
+        val action = generatePlayAction()
+        buildNotification(podcastName, action)
+    }
+
     fun generatePauseAction(): NotificationCompat.Action {
         return generateAction(android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE)
     }
@@ -54,7 +64,7 @@ class PlayerNotificationHandler(
         val intent = Intent(context, PlayerService::class.java).apply {
             action = intentAction
         }
-        val pendingIntent = PendingIntent.getService(context.applicationContext, 1, intent, 0)
+        val pendingIntent = PendingIntent.getService(context, 1, intent, 0)
         return NotificationCompat.Action.Builder(icon, title, pendingIntent).build()
     }
 
