@@ -139,15 +139,15 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun initObservers() {
-        feedViewModel.feedResult.observe(this, Observer {
+        feedViewModel.feedResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> handleFeedResult(it.data)
             }
         })
-        feedViewModel.downloadUpdates.observe(this, Observer {
+        feedViewModel.downloadUpdates.observe(viewLifecycleOwner, Observer {
             handleDownloadUpdates(it)
         })
-        feedViewModel.playerUpdates.observe(this, Observer {
+        feedViewModel.playerUpdates.observe(viewLifecycleOwner, Observer {
             handlePlayerUpdates(it)
         })
     }

@@ -63,7 +63,7 @@ class SearchFragment : BackableFragment() {
     }
 
     private fun initObservers() {
-        viewModel.queryResult.observe(this, Observer {
+        viewModel.queryResult.observe(viewLifecycleOwner, Observer {
             handleQueryResult(it)
         })
     }

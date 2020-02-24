@@ -52,7 +52,7 @@ class PodcastFragment : BackableFragment() {
     }
 
     private fun initObservers() {
-        podcastViewModel.podcasts.observe(this, Observer {
+        podcastViewModel.podcasts.observe(viewLifecycleOwner, Observer {
             handlePodcasts(it)
         })
     }

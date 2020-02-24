@@ -63,7 +63,7 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
     }
 
     private fun initObservers() {
-        queueViewModel.queue.observe(this, Observer {
+        queueViewModel.queue.observe(viewLifecycleOwner, Observer {
             handleQueue(it)
         })
     }
