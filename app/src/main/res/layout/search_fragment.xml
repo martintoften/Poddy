@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/search"
-        android:layout_margin="@dimen/margin_primary"
+        android:layout_marginHorizontal="@dimen/margin_primary"
+        android:layout_marginTop="@dimen/margin_primary"
         android:textColor="@color/textColorPrimary"
         android:textColorHint="@color/textColorHint"
         android:hint="@string/search"
@@ -24,10 +25,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/search"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

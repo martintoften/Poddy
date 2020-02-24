@@ -29,7 +29,7 @@ fun View.getString(@StringRes resId: Int, vararg formatArgs: Any): String {
     return context.getString(resId, *formatArgs)
 }
 
-fun View.addPadding(left: Int = 0, top: Int = 0, right: Int, bottom: Int = 0) {
+fun View.addPadding(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0) {
     setPadding(left, top, right, bottom)
 }
 

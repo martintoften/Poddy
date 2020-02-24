@@ -4,6 +4,8 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.marginBottom
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import com.bakkenbaeck.poddy.ACTION_SEEK_TO
@@ -95,7 +97,11 @@ class MainActivity : AppCompatActivity() {
             duration = 300
             interpolator = DecelerateInterpolator()
             addUpdateListener {
-                sheetBehavior.peekHeight = it.animatedValue as Int
+                val value = it.animatedValue as Int
+                val bottomMargin = value - dpToPx(R.dimen.nav_height)
+                sheetBehavior.peekHeight = value
+                val layoutParams = viewPager.layoutParams as CoordinatorLayout.LayoutParams
+                layoutParams.bottomMargin = bottomMargin
             }
         }.start()
     }
