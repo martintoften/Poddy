@@ -56,12 +56,12 @@ class DetailsFragment : BaseBottomDialogFragment() {
     }
 
     private fun handleDownloadClicked() {
-        val selectedEpisode = feedViewModel.selectedEpisode ?: return
+        val selectedEpisode = getEpisode()
         handleDownloadClicked(selectedEpisode)
     }
 
     private fun handlePlayClicked() {
-        val episode = feedViewModel.selectedEpisode ?: return
+        val episode = getEpisode()
 
         startForegroundService<PlayerService> {
             action = ACTION_START
