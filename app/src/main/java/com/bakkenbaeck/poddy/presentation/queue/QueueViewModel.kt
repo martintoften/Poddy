@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.queue
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,7 @@ import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -28,6 +30,7 @@ class QueueViewModel(
             queueRepository.listenForQueueUpdates()
                 .flowOn(Dispatchers.IO)
                 .map { mapToViewEpisodeFromDB(it) }
+                .catch { Log.e("Handing error", it.toString()) }
                 .collect { handleQueue(it) }
         }
     }
