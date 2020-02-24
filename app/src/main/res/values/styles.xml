@@ -6,4 +6,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">#000</item>
     </style>
+
+    <style name="BottomDialogStyle" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/Animation.MaterialComponents.BottomSheetDialog</item>
+    </style>
 </resources>

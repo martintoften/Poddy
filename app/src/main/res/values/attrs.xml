@@ -3,4 +3,8 @@
     <declare-styleable name="SpinnerOverlayLayout">
         <attr name="overlayColor" format="color"/>
     </declare-styleable>
+    <declare-styleable name="Toolbar">
+        <attr name="titleText" format="string"/>
+        <attr name="showBackArrow" format="boolean"/>
+    </declare-styleable>
 </resources>

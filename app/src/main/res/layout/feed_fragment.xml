@@ -7,41 +7,19 @@
     android:layout_height="match_parent"
     android:background="@color/colorAccent">
 
-    <!--<LinearLayout
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:id="@+id/backArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margin_primary"
-            app:srcCompat="@drawable/ic_back_arrow"/>
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_title"
-            style="@style/TextAppearance.AppCompat.SearchResult.Title"
-            tools:text="Reply all"/>
-
-    </LinearLayout>-->
+   <com.bakkenbaeck.poddy.presentation.custom.Toolbar
+       android:id="@+id/toolbar"
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/nav_height"
+       app:showBackArrow="true"
+       app:titleText="Feed"/>
 
     <com.bakkenbaeck.poddy.presentation.custom.EpisodeRecyclerView
         android:id="@+id/episodeList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <include layout="@layout/detail_sheet" />
+        app:layout_constraintStart_toStartOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.bakkenbaeck.poddy.presentation.custom.SpinnerOverlay
         android:id="@+id/spinnerOverlay"

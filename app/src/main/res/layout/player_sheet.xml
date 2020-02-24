@@ -9,7 +9,8 @@
     android:fillViewport="true"
     android:background="@color/colorPrimary"
     app:layout_behavior="@string/bottom_sheet_behavior"
-    app:behavior_hideable="false">
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="@dimen/nav_height">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -11,11 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.ACTION_START
 import com.bakkenbaeck.poddy.EPISODE
 import com.bakkenbaeck.poddy.R
-import com.bakkenbaeck.poddy.extensions.getPlayIcon
-import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
-import com.bakkenbaeck.poddy.extensions.startForegroundService
+import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.BackableFragment
+import com.bakkenbaeck.poddy.presentation.modal.DetailsFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
@@ -29,16 +28,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val PODCAST_ID = "PODCAST_ID"
 const val PODCAST_IMAGE = "PODCAST_IMAGE"
+const val DETAIL_TAG = "DETAIL_TAG"
 
 class FeedFragment : BackableFragment() {
 
-    private fun getPodcastImage(arguments: Bundle?): String? = arguments?.getString(PODCAST_IMAGE)
     private fun getPodcastId(arguments: Bundle?): String? = arguments?.getString(PODCAST_ID)
 
     private val feedViewModel: FeedViewModel by viewModel()
-
     private lateinit var episodeAdapter: EpisodeAdapter
-    private lateinit var sheetBehavior: BottomSheetBehavior<NestedScrollView>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.feed_fragment, container, false)
@@ -50,22 +47,14 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun init(arguments: Bundle?) {
-        initSheetView()
+        initToolbar()
         initAdapter()
         getEpisodes(arguments)
         initObservers()
     }
 
-    private fun initSheetView() {
-        sheetBehavior = BottomSheetBehavior.from(sheet)
-        sheet.play.setOnClickListener { handlePlayClicked() }
-        sheet.download.setOnClickListener { handleDownloadClicked() }
-        sheet.queue.setOnClickListener { feedViewModel.addToQueue() }
-    }
-
-    private fun handleDownloadClicked() {
-        val selectedEpisode = feedViewModel.selectedEpisode ?: return
-        handleDownloadClicked(selectedEpisode)
+    private fun initToolbar() {
+        toolbar.setOnBackClickedListener { pop() }
     }
 
     private fun initAdapter() {
@@ -90,15 +79,6 @@ class FeedFragment : BackableFragment() {
         }
     }
 
-    private fun handlePlayClicked() {
-        val episode = feedViewModel.selectedEpisode ?: return
-
-        startForegroundService<PlayerService> {
-            action = ACTION_START
-            putExtra(EPISODE, episode)
-        }
-    }
-
     private fun handleOnLastElement() {
         val podcastId = getPodcastId(arguments) ?: return
         val episode = episodeAdapter.getLastItem() ?: return
@@ -106,31 +86,8 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun handleEpisodeClicked(episode: ViewEpisode) {
-        if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) updateSheetStateToExpanded(episode)
-        else updateSheetStateToCollapsed()
-    }
-
-    private fun updateSheetStateToExpanded(episode: ViewEpisode) {
-        val imageUrl = getPodcastImage(arguments)
-        sheet.image.loadWithRoundCorners(imageUrl)
-        sheet.episodeName.text = episode.title
-        sheet.description.text = HtmlCompat.fromHtml(
-            episode.description,
-            HtmlCompat.FROM_HTML_MODE_LEGACY
-        )
-        sheet.downloadProgress.text = ""
-
-        val isSelectedEpisodePlaying = feedViewModel.isEpisodePlaying(episode)
-        val playResource = if (isSelectedEpisodePlaying) R.drawable.ic_player_pause else R.drawable.ic_player_play
-        sheet.play.setImageResource(playResource)
-
-        sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        feedViewModel.setCurrentEpisode(episode)
-    }
-
-    private fun updateSheetStateToCollapsed() {
-        sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        sheet.downloadProgress.text = ""
+        val detailsFragment = DetailsFragment.newInstance(episode)
+        detailsFragment.show(parentFragmentManager, DETAIL_TAG)
     }
 
     private fun getEpisodes(arguments: Bundle?) {

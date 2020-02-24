@@ -3,6 +3,7 @@ package com.bakkenbaeck.poddy.extensions
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.DimenRes
@@ -39,4 +40,8 @@ fun Fragment.getPodcastDir(): File? = context?.filesDir
 inline fun <reified T> Fragment.startForegroundService(intent: Intent.() -> Intent) {
     val context = context ?: return
     ContextCompat.startForegroundService(context, Intent(activity, T::class.java).intent())
+}
+
+fun Fragment.getScreenHeight(): Int {
+    return Resources.getSystem().displayMetrics.heightPixels
 }
