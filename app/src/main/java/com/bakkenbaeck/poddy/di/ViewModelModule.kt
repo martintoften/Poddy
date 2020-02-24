@@ -10,7 +10,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModel { MainViewModel(playerChannel = get(named("playerChannel"))) }
+    viewModel { MainViewModel(playerChannel = get(named("playerChannel")), queueRepository = get()) }
     viewModel { SearchViewModel(podcastRepository = get()) }
     viewModel { QueueViewModel(queueRepository = get()) }
     viewModel { PodcastViewModel(podcastRepository = get()) }

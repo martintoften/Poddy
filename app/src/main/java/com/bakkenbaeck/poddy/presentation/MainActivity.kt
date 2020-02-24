@@ -1,6 +1,8 @@
 package com.bakkenbaeck.poddy.presentation
 
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
@@ -81,6 +83,21 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.playerUpdates.observe(this, Observer {
             handlePlayerUpdates(it)
         })
+        mainViewModel.queueSize.observe(this, Observer {
+            handleQueue(it)
+        })
+    }
+
+    private fun handleQueue(queueSize: Int) {
+        val peekHeight = if (queueSize == 0) dpToPx(R.dimen.nav_height) else dpToPx(R.dimen.peek_height)
+
+        ValueAnimator.ofInt(sheetBehavior.peekHeight, peekHeight).apply {
+            duration = 300
+            interpolator = DecelerateInterpolator()
+            addUpdateListener {
+                sheetBehavior.peekHeight = it.animatedValue as Int
+            }
+        }.start()
     }
 
     private fun handlePlayerUpdates(action: ViewPlayerAction) {

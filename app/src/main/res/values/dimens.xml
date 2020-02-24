@@ -19,4 +19,7 @@
     <dimen name="subscribe_margin_vertical">3dp</dimen>
     <dimen name="subscribe_radius">50dp</dimen>
 
+    <dimen name="nav_height">56dp</dimen>
+    <dimen name="peek_height">112dp</dimen>
+
 </resources>
