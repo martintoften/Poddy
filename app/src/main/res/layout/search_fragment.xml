@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.motion.widget.MotionLayout
+    android:id="@+id/root"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent">
+    android:background="@color/colorAccent"
+    app:layoutDescription="@xml/search_fragment_scene">
 
     <EditText
         android:id="@+id/search"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/search"
-        android:layout_marginHorizontal="@dimen/margin_primary"
+        android:layout_marginStart="@dimen/margin_primary"
+        android:layout_marginEnd="@dimen/margin_primary"
         android:layout_marginTop="@dimen/margin_primary"
         android:textColor="@color/textColorPrimary"
         android:textColorHint="@color/textColorHint"
@@ -21,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/searchList"/>
+        android:translationZ="1dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchList"
@@ -32,4 +35,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.motion.widget.MotionLayout>

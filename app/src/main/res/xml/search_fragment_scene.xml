@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/margin_primary"
+            android:layout_marginEnd="@dimen/margin_primary"
+            android:layout_marginTop="@dimen/margin_primary">
+            <CustomAttribute
+                app:attributeName="textSize"
+                app:customFloatValue="16" />
+
+        </Constraint>
+
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/search"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginTop="0dp">
+            <CustomAttribute
+                app:attributeName="textSize"
+                app:customFloatValue="20" />
+
+        </Constraint>
+    </ConstraintSet>
+
+    <Transition
+        app:duration="200"
+        app:motionInterpolator="easeIn"
+        app:constraintSetStart="@id/start"
+        app:constraintSetEnd="@id/end" />
+</MotionScene>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.R
@@ -60,6 +61,10 @@ class SearchFragment : BackableFragment() {
                 viewModel.search(value)
             }
         })
+
+        search.setOnFocusChangeListener { _, _ ->
+            root.transitionToEnd()
+        }
     }
 
     private fun initObservers() {
