@@ -24,10 +24,9 @@
         android:textSize="22sp"
         android:layout_marginStart="@dimen/margin_primary"
         android:layout_marginEnd="@dimen/margin_primary"
-        android:autofillHints="search"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/backButton"
-        app:layout_constraintEnd_toEndOf="@id/parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Title here"/>
 

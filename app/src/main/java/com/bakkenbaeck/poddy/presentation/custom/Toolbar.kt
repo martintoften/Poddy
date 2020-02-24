@@ -2,6 +2,7 @@ package com.bakkenbaeck.poddy.presentation.custom
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bakkenbaeck.poddy.R
 import kotlinx.android.synthetic.main.view_toolbar.view.*
@@ -51,5 +52,9 @@ class Toolbar : ConstraintLayout {
 
     fun setOnBackClickedListener(action: () -> Unit) {
         backButton.setOnClickListener { action() }
+    }
+
+    fun setTextSize(size: Float) {
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
     }
 }
