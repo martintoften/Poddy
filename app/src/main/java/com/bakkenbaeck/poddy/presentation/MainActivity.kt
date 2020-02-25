@@ -2,10 +2,11 @@ package com.bakkenbaeck.poddy.presentation
 
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.marginBottom
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import com.bakkenbaeck.poddy.ACTION_SEEK_TO
@@ -65,6 +66,16 @@ class MainActivity : AppCompatActivity() {
         sheetBehavior = BottomSheetBehavior.from(sheet)
         sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
+        sheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {}
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                val newAlpha = 1f - slideOffset
+                sheet.player.alpha = newAlpha
+                sheet.smallProgressFront.alpha = newAlpha
+                sheet.smallProgressBack.alpha = newAlpha
+            }
+        })
+
         sheet.progress.setOnSeekBarChangeListener(object : OnProgressChangesListener() {
             override fun onProgressChanged(progress: Int) {
                 handleProgressChanged(progress)
@@ -91,7 +102,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleQueue(queueSize: Int) {
-        val peekHeight = if (queueSize == 0) dpToPx(R.dimen.nav_height) else dpToPx(R.dimen.peek_height)
+        val peekHeight = if (queueSize == 0) dpToPx(R.dimen.peek_height_collapsed)
+        else dpToPx(R.dimen.peek_height_expanded)
 
         ValueAnimator.ofInt(sheetBehavior.peekHeight, peekHeight).apply {
             duration = 300
@@ -114,9 +126,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateProgressUi(action: ViewPlayerAction.Progress) {
-        sheet.progress.progress = action.getProgressInPercent()
+        val progress = action.getProgressInPercent()
+        sheet.progress.progress = progress
         sheet.progressText.text = action.getFormattedProgress()
         sheet.durationText.text = action.getFormattedDuration()
+        val layoutParams = sheet.smallProgressFront.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.width = (root.width * action.getProgressInFraction()).toInt()
     }
 
     private fun updatePlayerUi(action: ViewPlayerAction) {

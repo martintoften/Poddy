@@ -17,7 +17,7 @@
         <Constraint
             android:id="@+id/toolbar"
             android:layout_width="0dp"
-            android:layout_height="@dimen/nav_height"
+            android:layout_height="@dimen/toolbar_height"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +39,7 @@
         <Constraint
             android:id="@+id/toolbar"
             android:layout_width="0dp"
-            android:layout_height="@dimen/nav_height"
+            android:layout_height="@dimen/toolbar_height"
             app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -19,6 +19,10 @@ fun ViewPlayerAction.Progress.getProgressInPercent(): Int {
     return ((progress.toDouble() / duration.toDouble()) * 100).toInt()
 }
 
+fun ViewPlayerAction.Progress.getProgressInFraction(): Double {
+    return ((progress.toDouble() / duration.toDouble()))
+}
+
 fun ViewPlayerAction.Progress.getFormattedProgress(): String {
     return getFormattedTime(progress.toLong())
 }

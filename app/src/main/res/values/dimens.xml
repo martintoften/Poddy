@@ -20,7 +20,8 @@
     <dimen name="subscribe_radius">50dp</dimen>
 
     <dimen name="nav_height">56dp</dimen>
-    <dimen name="small_nav_height">40dp</dimen>
-    <dimen name="peek_height">112dp</dimen>
+
+    <dimen name="peek_height_collapsed">60dp</dimen>
+    <dimen name="peek_height_expanded">116dp</dimen>
 
 </resources>
