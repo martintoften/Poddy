@@ -1,12 +1,10 @@
 package com.bakkenbaeck.poddy.download
 
-import android.util.Log
 import com.bakkenbaeck.poddy.network.DownloadApi
 import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.sink
 import java.io.File
-import java.lang.IllegalStateException
 import kotlin.coroutines.CoroutineContext
 
 class DownloadHandler(

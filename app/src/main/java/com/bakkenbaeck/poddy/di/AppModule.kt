@@ -5,7 +5,6 @@ import com.bakkenbaeck.poddy.network.DownloadProgressInterceptor
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.network.buildDownloadApi
 import com.bakkenbaeck.poddy.network.buildSearchApi
-import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel

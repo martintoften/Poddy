@@ -1,7 +1,5 @@
 package com.bakkenbaeck.poddy.db
 
-import com.bakkenbaeck.poddy.util.HashUtil
-
 class IdBuilder {
     /*fun buildQueueId(episode: Channel.Item, channel: Channel): String {
         val episodeGuid = episode.guid

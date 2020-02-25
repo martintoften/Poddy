@@ -7,7 +7,6 @@ import com.bakkenbaeck.poddy.network.SearchApi
 import com.bakkenbaeck.poddy.network.model.SearchResponse
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.repository.mappers.mapEpisodesFromNetworkToDB
-import com.bakkenbaeck.poddy.repository.mappers.mapEpisodesFromViewToDB
 import com.bakkenbaeck.poddy.repository.mappers.mapPodcastFromNetworkToDB
 import com.bakkenbaeck.poddy.repository.mappers.mapPodcastFromViewToDB
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel

@@ -9,7 +9,7 @@ import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.PodcastRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
-import com.bakkenbaeck.poddy.service.*
+import com.bakkenbaeck.poddy.service.PlayerActionBuilder
 import com.bakkenbaeck.poddy.util.PlayerQueue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

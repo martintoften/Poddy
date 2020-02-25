@@ -1,6 +1,5 @@
 package com.bakkenbaeck.poddy.network
 
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

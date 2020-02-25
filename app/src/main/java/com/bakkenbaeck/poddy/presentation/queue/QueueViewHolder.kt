@@ -3,10 +3,7 @@ package com.bakkenbaeck.poddy.presentation.queue
 import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import coil.api.load
-import coil.transform.RoundedCornersTransformation
 import com.bakkenbaeck.poddy.R
-import com.bakkenbaeck.poddy.extensions.getDimen
 import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
 import com.bakkenbaeck.poddy.extensions.toDate
 import com.bakkenbaeck.poddy.extensions.toSeconds

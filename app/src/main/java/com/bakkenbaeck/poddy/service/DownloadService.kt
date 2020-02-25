@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.bakkenbaeck.poddy.presentation.MainActivity
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.createNotificationChannel
 import com.bakkenbaeck.poddy.extensions.getPodcastDir
 import com.bakkenbaeck.poddy.extensions.notifyNotification
 import com.bakkenbaeck.poddy.network.ProgressEvent
+import com.bakkenbaeck.poddy.presentation.MainActivity
 import com.bakkenbaeck.poddy.repository.DownloadRepository
 import com.bakkenbaeck.poddy.util.DownloadTask
 import com.bakkenbaeck.poddy.util.SafeQueue

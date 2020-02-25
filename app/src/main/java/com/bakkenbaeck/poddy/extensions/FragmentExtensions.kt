@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
@@ -13,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import java.io.File
 
 fun Fragment.navigate(id: Int, args: Bundle? = null) {

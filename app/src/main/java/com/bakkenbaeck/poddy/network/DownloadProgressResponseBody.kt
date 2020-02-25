@@ -3,7 +3,6 @@ package com.bakkenbaeck.poddy.network
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
-import okio.BufferedSource
 
 class DownloadProgressResponseBody(
     val downloadIdentifier: String,

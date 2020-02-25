@@ -1,7 +1,5 @@
 package com.bakkenbaeck.poddy.presentation.mappers
 
-import com.bakkenbaeck.poddy.network.model.EpisodeItem
-import com.bakkenbaeck.poddy.network.model.PodcastResponse
 import com.bakkenbaeck.poddy.network.model.SearchItem
 import com.bakkenbaeck.poddy.network.model.SearchResponse
 import com.bakkenbaeck.poddy.presentation.model.*

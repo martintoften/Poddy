@@ -5,10 +5,11 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.bakkenbaeck.poddy.*
-import com.bakkenbaeck.poddy.presentation.MainActivity
 import com.bakkenbaeck.poddy.extensions.createNotificationChannel
 import com.bakkenbaeck.poddy.extensions.notifyNotification
-import com.bakkenbaeck.poddy.service.*
+import com.bakkenbaeck.poddy.presentation.MainActivity
+import com.bakkenbaeck.poddy.service.NOTIFICATION_ID
+import com.bakkenbaeck.poddy.service.PlayerService
 
 const val PLAYER_NOTIFICATION_ID = 2
 const val PLAYER_CHANNEL_ID = "102"

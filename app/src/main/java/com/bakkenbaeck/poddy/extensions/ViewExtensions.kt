@@ -9,7 +9,6 @@ import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.feed_fragment.*
 
 fun View.getDimen(@DimenRes resource: Int): Float {
     return this.resources.getDimension(resource)

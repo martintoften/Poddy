@@ -3,11 +3,7 @@ package com.bakkenbaeck.poddy.presentation.feed
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import com.bakkenbaeck.poddy.R
-import com.bakkenbaeck.poddy.presentation.model.Subscribed
-import com.bakkenbaeck.poddy.presentation.model.Unsubscribed
 import com.bakkenbaeck.poddy.util.Success
-import kotlinx.android.synthetic.main.feed_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PodcastFeedFragment : FeedFragment() {
