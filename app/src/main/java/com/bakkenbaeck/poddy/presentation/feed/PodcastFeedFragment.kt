@@ -3,7 +3,11 @@ package com.bakkenbaeck.poddy.presentation.feed
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
+import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.presentation.model.Subscribed
+import com.bakkenbaeck.poddy.presentation.model.Unsubscribed
 import com.bakkenbaeck.poddy.util.Success
+import kotlinx.android.synthetic.main.feed_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PodcastFeedFragment : FeedFragment() {
@@ -18,15 +22,23 @@ class PodcastFeedFragment : FeedFragment() {
         init()
     }
 
-    override fun subscribe() {
-        viewModel.addPodcast()
+    private fun init() {
+        initObservers()
     }
 
-    private fun init() {
+    private fun initObservers() {
         viewModel.feedResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> handleFeedResult(it.data)
             }
         })
+
+        viewModel.subscriptionState.observe(viewLifecycleOwner, Observer {
+            updateSubscriptionState(it)
+        })
+    }
+
+    override fun subscribe() {
+        viewModel.addPodcast()
     }
 }

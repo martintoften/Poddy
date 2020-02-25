@@ -98,18 +98,19 @@ class PodcastRepository(
         }
     }
 
-    suspend fun subscribeOrUnsubscribeToPodcast(podcast: ViewPodcast) {
-        val hasAlreadySubscribed = subscriptionDBHandler.doesSubscribedPodcastAlreadyExist(podcast.id)
-        val dbPodcast = mapPodcastFromViewToDB(podcast)
+    suspend fun toggleSubscription(podcast: ViewPodcast): Flow<Boolean> {
+        return flow {
+            val hasAlreadySubscribed = subscriptionDBHandler.doesSubscribedPodcastAlreadyExist(podcast.id)
+            val dbPodcast = mapPodcastFromViewToDB(podcast)
 
-        if (hasAlreadySubscribed) subscriptionDBHandler.deleteSubscribedPodcast(podcast.id)
-        else subscriptionDBHandler.insertSubscribedPodcast(dbPodcast)
+            if (hasAlreadySubscribed) subscriptionDBHandler.deleteSubscribedPodcast(podcast.id)
+            else subscriptionDBHandler.insertSubscribedPodcast(dbPodcast)
 
-        val dbPodcasts = subscriptionDBHandler.getSubscribedPodcasts()
-        subscriptionsChannel.send(dbPodcasts)
+            emit(hasAlreadySubscribed)
 
-        val dbEpisodes = mapEpisodesFromViewToDB(podcast)
-        singlePodcastChannel.send(Pair(dbPodcast, dbEpisodes))
+            val dbPodcasts = subscriptionDBHandler.getSubscribedPodcasts()
+            subscriptionsChannel.send(dbPodcasts)
+        }
     }
 
     suspend fun getSubscribedPodcasts(): Flow<List<Podcast>> {

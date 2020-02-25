@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,15 +8,13 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.getColorById
 import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
 import com.bakkenbaeck.poddy.extensions.pop
 import com.bakkenbaeck.poddy.extensions.startForegroundService
-import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.modal.DetailsFragment
-import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
-import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
-import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
+import com.bakkenbaeck.poddy.presentation.model.*
 import com.bakkenbaeck.poddy.service.DownloadService
 import com.bakkenbaeck.poddy.service.ID
 import com.bakkenbaeck.poddy.service.NAME
@@ -111,5 +110,18 @@ abstract class FeedFragment : BackableFragment() {
 
     protected fun handleFeedResult(podcast: ViewPodcast) {
         episodeAdapter.setItems(podcast.episodes)
+    }
+
+    protected fun updateSubscriptionState(subscriptionState: SubscriptionState) {
+        when (subscriptionState) {
+            is Unsubscribed -> {
+                subscribeButton.setImageResource(R.drawable.ic_check_24px)
+                subscribeButton.backgroundTintList = ColorStateList.valueOf(getColorById(R.color.positive))
+            }
+            is Subscribed -> {
+                subscribeButton.setImageResource(R.drawable.ic_clear_24px)
+                subscribeButton.backgroundTintList = ColorStateList.valueOf(getColorById(R.color.negative))
+            }
+        }
     }
 }

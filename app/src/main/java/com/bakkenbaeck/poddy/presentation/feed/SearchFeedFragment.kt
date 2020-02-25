@@ -19,15 +19,23 @@ class SearchFeedFragment : FeedFragment() {
         init()
     }
 
-    override fun subscribe() {
-        viewModel.addPodcast()
+    private fun init() {
+        initObservers()
     }
 
-    private fun init() {
+    private fun initObservers() {
         viewModel.feedResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> handleFeedResult(it.data)
             }
         })
+
+        viewModel.subscriptionState.observe(viewLifecycleOwner, Observer {
+            updateSubscriptionState(it)
+        })
+    }
+
+    override fun subscribe() {
+        viewModel.addPodcast()
     }
 }

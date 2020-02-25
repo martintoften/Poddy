@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -45,3 +46,5 @@ inline fun <reified T> Fragment.startForegroundService(intent: Intent.() -> Inte
 fun Fragment.getScreenHeight(): Int {
     return Resources.getSystem().displayMetrics.heightPixels
 }
+
+fun Fragment.getColorById(@ColorRes id: Int) = context?.getColorById(id) ?: 0
