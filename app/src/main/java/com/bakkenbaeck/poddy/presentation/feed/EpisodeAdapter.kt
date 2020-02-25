@@ -7,59 +7,22 @@ import com.bakkenbaeck.poddy.extensions.layoutInflater
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.util.Diffable
 
-sealed class EpisodeViewType(val type: Int) {
-    companion object {
-        fun getType(index: Int): EpisodeViewType {
-            return when (index) {
-                0 -> Header(index)
-                else -> Item(index)
-            }
-        }
-    }
-    class Header(type: Int) : EpisodeViewType(type)
-    class Item(type: Int) : EpisodeViewType(type)
-}
-
-class Header(
-    val image: String,
-    val title: String,
-    val description: String,
-    val hasSubscribed: Boolean
-)
-
 class EpisodeAdapter(
     private val onItemClickListener: (ViewEpisode) -> Unit,
-    private val onHeaderItemClickListener: (Header) -> Unit,
     private val onDownloadClickListener: (ViewEpisode) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<EpisodeViewHolder>() {
 
     private val items by lazy { mutableListOf<Any>() }
 
-    fun add(header: Header, episodeItems: List<ViewEpisode>) {
+    fun add(episodeItems: List<ViewEpisode>) {
         items.clear()
-        items.add(header)
         items.addAll(episodeItems)
         notifyDataSetChanged()
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return EpisodeViewType.getType(position).type
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val episodeViewType = EpisodeViewType.getType(viewType)
-        val inflater = parent.layoutInflater()
-
-        return when (episodeViewType) {
-            is EpisodeViewType.Header -> {
-                val view = inflater.inflate(R.layout.episode_item_header, parent, false)
-                EpisodeHeaderViewHolder(view)
-            }
-            is EpisodeViewType.Item -> {
-                val view = inflater.inflate(R.layout.episode_item, parent, false)
-                EpisodeViewHolder(view)
-            }
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodeViewHolder {
+        val view = parent.layoutInflater().inflate(R.layout.episode_item, parent, false)
+        return EpisodeViewHolder(view)
     }
 
     override fun getItemCount() = items.count()
@@ -68,25 +31,14 @@ class EpisodeAdapter(
         return items.last() as? ViewEpisode ?: return null
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
         val item = items[position]
 
-        when (holder) {
-            is EpisodeHeaderViewHolder -> {
-                val castedItem = item as? Header ?: return
-                holder.apply {
-                    setHeader(castedItem)
-                    setOnSubscribedClicked(castedItem, onHeaderItemClickListener)
-                }
-            }
-            is EpisodeViewHolder -> {
-                val castedItem = item as? ViewEpisode ?: return
-                holder.apply {
-                    setEpisode(castedItem)
-                    setOnItemClickedListener(castedItem, onItemClickListener)
-                    setOnDownloadClickListener(castedItem, onDownloadClickListener)
-                }
-            }
+        val castedItem = item as? ViewEpisode ?: return
+        holder.apply {
+            setEpisode(castedItem)
+            setOnItemClickedListener(castedItem, onItemClickListener)
+            setOnDownloadClickListener(castedItem, onDownloadClickListener)
         }
     }
 }

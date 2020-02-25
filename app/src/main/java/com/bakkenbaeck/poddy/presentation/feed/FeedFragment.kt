@@ -4,23 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bakkenbaeck.poddy.ACTION_START
-import com.bakkenbaeck.poddy.EPISODE
 import com.bakkenbaeck.poddy.R
-import com.bakkenbaeck.poddy.extensions.*
+import com.bakkenbaeck.poddy.extensions.getPlayIcon
+import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
+import com.bakkenbaeck.poddy.extensions.pop
+import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.modal.DetailsFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
-import com.bakkenbaeck.poddy.service.*
+import com.bakkenbaeck.poddy.service.DownloadService
+import com.bakkenbaeck.poddy.service.ID
+import com.bakkenbaeck.poddy.service.NAME
+import com.bakkenbaeck.poddy.service.URL
 import com.bakkenbaeck.poddy.util.Success
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.detail_sheet.*
 import kotlinx.android.synthetic.main.detail_sheet.view.*
 import kotlinx.android.synthetic.main.feed_fragment.*
@@ -28,11 +29,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val PODCAST_ID = "PODCAST_ID"
 const val PODCAST_IMAGE = "PODCAST_IMAGE"
+const val PODCAST_TITLE = "PODCAST_TITLE"
 const val DETAIL_TAG = "DETAIL_TAG"
 
 class FeedFragment : BackableFragment() {
 
     private fun getPodcastId(arguments: Bundle?): String? = arguments?.getString(PODCAST_ID)
+    private fun getPodcastImage(arguments: Bundle?): String? = arguments?.getString(PODCAST_IMAGE)
+    private fun getPodcastTitle(arguments: Bundle?): String? = arguments?.getString(PODCAST_TITLE)
 
     private val feedViewModel: FeedViewModel by viewModel()
     private lateinit var episodeAdapter: EpisodeAdapter
@@ -55,12 +59,13 @@ class FeedFragment : BackableFragment() {
 
     private fun initToolbar() {
         toolbar.setOnBackClickedListener { pop() }
+        podcastImage.loadWithRoundCorners(getPodcastImage(arguments))
+        title.text = getPodcastTitle(arguments)
     }
 
     private fun initAdapter() {
         episodeAdapter = EpisodeAdapter(
             { handleEpisodeClicked(it) },
-            { feedViewModel.addPodcast() },
             { handleDownloadClicked(it) }
         )
 
@@ -110,13 +115,7 @@ class FeedFragment : BackableFragment() {
     }
 
     private fun handleFeedResult(podcast: ViewPodcast) {
-        val header = Header(
-            title = podcast.title,
-            description = podcast.description,
-            image = podcast.image,
-            hasSubscribed = podcast.hasSubscribed
-        )
-        episodeAdapter.add(header, podcast.episodes)
+        episodeAdapter.add(podcast.episodes)
     }
 
     private fun handleDownloadUpdates(progressEvent: ProgressEvent) {

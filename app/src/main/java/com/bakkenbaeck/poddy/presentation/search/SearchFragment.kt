@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.R
@@ -12,6 +11,7 @@ import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_TITLE
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearch
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearchItem
 import com.bakkenbaeck.poddy.util.TextListener
@@ -51,6 +51,7 @@ class SearchFragment : BackableFragment() {
         val bundle = Bundle().apply {
             putString(PODCAST_ID, searchItem.id)
             putString(PODCAST_IMAGE, searchItem.image)
+            putString(PODCAST_TITLE, searchItem.title)
         }
         navigate(R.id.to_details_fragment, bundle)
     }

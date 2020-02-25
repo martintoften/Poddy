@@ -11,6 +11,7 @@ import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_TITLE
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import kotlinx.android.synthetic.main.podcast_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -47,6 +48,7 @@ class PodcastFragment : BackableFragment() {
         val bundle = Bundle().apply {
             putString(PODCAST_ID, podcast.id)
             putString(PODCAST_IMAGE, podcast.image)
+            putString(PODCAST_TITLE, podcast.title)
         }
         navigate(R.id.to_details_fragment, bundle)
     }

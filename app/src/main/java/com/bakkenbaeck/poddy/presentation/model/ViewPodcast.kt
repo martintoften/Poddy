@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.bakkenbaeck.poddy.util.Diffable
 import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ViewPodcast(
     override val id: String,
     val title: String,
@@ -13,7 +14,7 @@ data class ViewPodcast(
     val episodes: List<ViewEpisode>,
     val hasSubscribed: Boolean,
     val totalEpisodes: Int
-) : Diffable
+) : Diffable, Parcelable
 
 @Parcelize
 data class ViewEpisode(
