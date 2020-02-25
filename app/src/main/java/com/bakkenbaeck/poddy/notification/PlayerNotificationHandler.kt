@@ -1,9 +1,6 @@
 package com.bakkenbaeck.poddy.notification
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
@@ -23,7 +20,7 @@ class PlayerNotificationHandler(
 
     private var channel: NotificationChannel? = null
 
-    fun buildNotification(podcastName: String, action: NotificationCompat.Action) {
+    fun buildNotification(podcastName: String, action: NotificationCompat.Action): Notification {
         val style = androidx.media.app.NotificationCompat.MediaStyle()
             .setShowActionsInCompactView(0, 1, 2)
 
@@ -39,17 +36,19 @@ class PlayerNotificationHandler(
             .setSound(null)
             .setOnlyAlertOnce(true)
 
-        context.notifyNotification(PLAYER_NOTIFICATION_ID, builder.build())
+        return builder.build()
     }
 
     fun showPauseNotification(podcastName: String) {
         val action = generatePauseAction()
-        buildNotification(podcastName, action)
+        val notification = buildNotification(podcastName, action)
+        context.notifyNotification(PLAYER_NOTIFICATION_ID, notification)
     }
 
     fun showPlayNotification(podcastName: String) {
         val action = generatePlayAction()
-        buildNotification(podcastName, action)
+        val notification = buildNotification(podcastName, action)
+        context.notifyNotification(PLAYER_NOTIFICATION_ID, notification)
     }
 
     fun generatePauseAction(): NotificationCompat.Action {
@@ -73,7 +72,14 @@ class PlayerNotificationHandler(
         return PendingIntent.getActivity(context, 0, notificationIntent, 0)
     }
 
-    fun createChannel() {
+    fun initNotification(podcastName: String) {
+        createChannel()
+        val action = generatePauseAction()
+        val notification = buildNotification(podcastName, action)
+        context.startForeground(NOTIFICATION_ID, notification)
+    }
+
+    private fun createChannel() {
         if (channel != null || Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
             return
         }
@@ -81,7 +87,7 @@ class PlayerNotificationHandler(
         channel = NotificationChannel(
             PLAYER_CHANNEL_ID,
             PLAYER_CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_DEFAULT
+            NotificationManager.IMPORTANCE_HIGH
         ).apply {
             setSound(null, null)
         }

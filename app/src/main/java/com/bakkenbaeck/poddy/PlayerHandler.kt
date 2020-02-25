@@ -158,7 +158,7 @@ class PlayerHandler(
     private fun loadPlayerAndNotification(episode: ViewEpisode) {
         val podcastPath = episode.getEpisodePath()
         podcastPlayer.load(episode, podcastPath, { onStart(episode) }, { onFinished() })
-        playerNotificationHandler.createChannel()
+        playerNotificationHandler.initNotification(episode.title)
     }
 
     private fun onFinished() {
