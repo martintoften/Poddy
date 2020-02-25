@@ -54,6 +54,10 @@ class Toolbar : ConstraintLayout {
         backButton.setOnClickListener { action() }
     }
 
+    fun setText(text: String) {
+        titleView.text = text
+    }
+
     fun setTextSize(size: Float) {
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
     }

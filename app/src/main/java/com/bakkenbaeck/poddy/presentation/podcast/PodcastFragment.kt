@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_DESCRIPTION
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_TITLE
@@ -49,6 +50,7 @@ class PodcastFragment : BackableFragment() {
             putString(PODCAST_ID, podcast.id)
             putString(PODCAST_IMAGE, podcast.image)
             putString(PODCAST_TITLE, podcast.title)
+            putString(PODCAST_DESCRIPTION, podcast.description)
         }
         navigate(R.id.to_details_fragment, bundle)
     }

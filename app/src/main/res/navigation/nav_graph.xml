@@ -14,7 +14,7 @@
     </fragment>
 
     <fragment android:id="@+id/detailsFragment"
-        android:name="com.bakkenbaeck.poddy.presentation.feed.FeedFragment"
+        android:name="com.bakkenbaeck.poddy.presentation.feed.SearchFeedFragment"
         tools:layout="@layout/feed_fragment">
     </fragment>
 

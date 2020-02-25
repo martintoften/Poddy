@@ -11,7 +11,6 @@ import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.repository.DownloadRepository
 import com.bakkenbaeck.poddy.repository.PodcastRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
-import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
 import kotlinx.coroutines.Dispatchers
@@ -42,8 +41,8 @@ class FeedViewModel(
     private fun listenForPlayerAction() {
         viewModelScope.launch {
             playerChannel.asFlow()
-                .filter { filterEpisode(it.episode, selectedEpisode) }
-                .collect { handlePlayerAction(it) }
+                .filter { it.episode.id == selectedEpisode?.id }
+                .collect { playerUpdates.value = it }
         }
     }
 
@@ -53,15 +52,11 @@ class FeedViewModel(
                 && (action is ViewPlayerAction.Play || action is ViewPlayerAction.Start)
     }
 
-    private fun filterEpisode(episode: ViewEpisode, selectedEpisode: ViewEpisode?): Boolean {
-        return episode.id == selectedEpisode?.id
-    }
-
     private fun listenForDownloadUpdates() {
         viewModelScope.launch {
             progressChannel
                 .asFlow()
-                .collect { handleDownloadResult(it) }
+                .collect { downloadUpdates.value = it }
         }
     }
 
@@ -73,14 +68,6 @@ class FeedViewModel(
         }
     }
 
-    private fun handlePlayerAction(action: ViewPlayerAction) {
-        playerUpdates.value = action
-    }
-
-    private fun handleDownloadResult(progressEvent: ProgressEvent) {
-        downloadUpdates.value = progressEvent
-    }
-
     private fun listenForPodcastUpdates() {
         viewModelScope.launch {
             podcastRepository.listenForPodcastUpdates()
@@ -89,20 +76,7 @@ class FeedViewModel(
                     .map { hasSubscribed -> mapToViewPodcastFromDB(podcast.first, podcast.second, hasSubscribed) }
                 }
                 .flowOn(Dispatchers.IO)
-                .collect { handleFeedResult(it) }
-        }
-    }
-
-    private fun handleFeedResult(podcast: ViewPodcast) {
-        feedResult.value = Success(podcast)
-    }
-
-    fun getFeed(id: String, lastTimestamp: Long? = null) {
-        if (feedResult.value is Loading) return
-
-        viewModelScope.launch {
-            feedResult.value = Loading()
-            podcastRepository.getPodcast(id, lastTimestamp)
+                .collect { feedResult.value = Success(it) }
         }
     }
 
@@ -115,21 +89,6 @@ class FeedViewModel(
 
         viewModelScope.launch {
             queueRepository.addToQueue(episode)
-        }
-    }
-
-    fun addPodcast() {
-        val podcast = getPodcast() ?: return
-
-        viewModelScope.launch {
-            podcastRepository.subscribeOrUnsubscribeToPodcast(podcast)
-        }
-    }
-
-    private fun getPodcast(): ViewPodcast? {
-        return when (val podcast = feedResult.value) {
-            is Success -> podcast.data
-            else -> null
         }
     }
 }

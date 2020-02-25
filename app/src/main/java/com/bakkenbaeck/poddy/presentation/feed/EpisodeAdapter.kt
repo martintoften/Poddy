@@ -12,9 +12,9 @@ class EpisodeAdapter(
     private val onDownloadClickListener: (ViewEpisode) -> Unit
 ) : RecyclerView.Adapter<EpisodeViewHolder>() {
 
-    private val items by lazy { mutableListOf<Any>() }
+    private val items by lazy { mutableListOf<ViewEpisode>() }
 
-    fun add(episodeItems: List<ViewEpisode>) {
+    fun setItems(episodeItems: List<ViewEpisode>) {
         items.clear()
         items.addAll(episodeItems)
         notifyDataSetChanged()
@@ -33,12 +33,10 @@ class EpisodeAdapter(
 
     override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
         val item = items[position]
-
-        val castedItem = item as? ViewEpisode ?: return
         holder.apply {
-            setEpisode(castedItem)
-            setOnItemClickedListener(castedItem, onItemClickListener)
-            setOnDownloadClickListener(castedItem, onDownloadClickListener)
+            setEpisode(item)
+            setOnItemClickedListener(item, onItemClickListener)
+            setOnDownloadClickListener(item, onDownloadClickListener)
         }
     }
 }

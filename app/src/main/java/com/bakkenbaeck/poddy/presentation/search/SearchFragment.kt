@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
+import com.bakkenbaeck.poddy.presentation.feed.PODCAST_DESCRIPTION
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_TITLE
@@ -52,6 +53,7 @@ class SearchFragment : BackableFragment() {
             putString(PODCAST_ID, searchItem.id)
             putString(PODCAST_IMAGE, searchItem.image)
             putString(PODCAST_TITLE, searchItem.title)
+            putString(PODCAST_DESCRIPTION, searchItem.description)
         }
         navigate(R.id.to_details_fragment, bundle)
     }

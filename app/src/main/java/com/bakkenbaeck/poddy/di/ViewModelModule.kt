@@ -2,6 +2,8 @@ package com.bakkenbaeck.poddy.di
 
 import com.bakkenbaeck.poddy.presentation.MainViewModel
 import com.bakkenbaeck.poddy.presentation.feed.FeedViewModel
+import com.bakkenbaeck.poddy.presentation.feed.PodcastFeedViewModel
+import com.bakkenbaeck.poddy.presentation.feed.SearchFeedViewModel
 import com.bakkenbaeck.poddy.presentation.podcast.PodcastViewModel
 import com.bakkenbaeck.poddy.presentation.queue.QueueViewModel
 import com.bakkenbaeck.poddy.presentation.search.SearchViewModel
@@ -22,4 +24,7 @@ val viewModelModule = module {
             progressChannel = get(named("progressChannel")),
             playerChannel = get(named("playerChannel")))
     }
+
+    viewModel { SearchFeedViewModel(podcastRepository = get()) }
+    viewModel { PodcastFeedViewModel(podcastRepository = get()) }
 }

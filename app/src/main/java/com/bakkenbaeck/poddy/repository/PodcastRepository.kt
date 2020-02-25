@@ -49,25 +49,25 @@ class PodcastRepository(
         singlePodcastChannel.send(Pair(dbPodcast, dbEpisodes))
     }
 
-    suspend fun getPodcast(podcastId: String, nextDate: Long? = null) {
-        val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcastId)
+    suspend fun getPodcastFlow(podcastId: String, nextDate: Long? = null): Flow<Pair<Podcast, List<Episode>>?> {
+        return flow {
+            val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcastId)
+            if (dbPodcast != null) {
+                emit(Pair(dbPodcast, dbEpisodes))
+            }
 
-        if (dbPodcast != null) {
-            singlePodcastChannel.send(Pair(dbPodcast, dbEpisodes))
+            val podcastResponse = searchApi.getEpisodes(podcastId, EPISODE, nextDate)
+            val podcast = mapPodcastFromNetworkToDB(podcastResponse)
+            val episodes = mapEpisodesFromNetworkToDB(podcastResponse)
+
+            val isFirstRequest = nextDate == null
+            if (isFirstRequest) updateEpisodes(podcast, episodes, dbEpisodes)
+            else podcastDBHandler.insertPodcast(podcast, episodes)
+
+            val updatedDbEpisodes = episodeDBHandler.getEpisodes(podcast.id)
+
+            emit(Pair(podcast, updatedDbEpisodes))
         }
-
-        val podcastResponse = searchApi.getEpisodes(podcastId, EPISODE, nextDate)
-        val podcast = mapPodcastFromNetworkToDB(podcastResponse)
-        val episodes = mapEpisodesFromNetworkToDB(podcastResponse)
-
-        val isFirstRequest = nextDate == null
-
-        if (isFirstRequest) updateEpisodes(podcast, episodes, dbEpisodes)
-        else podcastDBHandler.insertPodcast(podcast, episodes)
-
-        val updatedDbEpisodes = episodeDBHandler.getEpisodes(podcast.id)
-
-        singlePodcastChannel.send(Pair(podcast, updatedDbEpisodes))
     }
 
     // Temp, find a way to update episodes

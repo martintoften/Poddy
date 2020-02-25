@@ -4,9 +4,46 @@
 
     <ConstraintSet android:id="@+id/start">
 
+        <Constraint
+            android:id="@+id/podcastImage"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginVertical="@dimen/margin_primary"
+            android:layout_marginStart="@dimen/margin_primary"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/episodeList"/>
+
+        <Constraint
+            android:id="@+id/toolbar"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/nav_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:showBackArrow="true"/>
+
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/podcastImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginVertical="@dimen/margin_primary"
+            android:layout_marginStart="@dimen/margin_primary"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/episodeList"/>
+
+        <Constraint
+            android:id="@+id/toolbar"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/nav_height"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:showBackArrow="true"/>
 
     </ConstraintSet>
 
