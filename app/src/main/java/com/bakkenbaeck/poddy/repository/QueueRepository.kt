@@ -12,10 +12,9 @@ import org.db.Queue
 
 class QueueRepository(
     private val queueDBHandler: QueueDBHandler,
-    private val episodeDBHandler: EpisodeDBHandler
+    private val episodeDBHandler: EpisodeDBHandler,
+    private val queueChannel: ConflatedBroadcastChannel<List<Episode>>
 ) {
-    private val queueChannel = ConflatedBroadcastChannel<List<Episode>>()
-
     fun listenForQueueUpdates(): Flow<List<Episode>> {
         return queueChannel.asFlow()
     }

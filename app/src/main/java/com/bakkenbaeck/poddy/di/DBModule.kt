@@ -10,8 +10,10 @@ import org.koin.dsl.module
 
 val dbModule = module {
     single { buildDatabase(get()) }
-    single { EpisodeDBHandler(get(), get(named("IO"))) }
-    single { PodcastDBHandler(get(), get(named("IO"))) }
-    single { QueueDBHandler(get(), get(named("IO"))) }
-    single { SubscriptionDBHandler(get(), get(named("IO"))) }
+
+    // Database handlers
+    factory { EpisodeDBHandler(get(), get(named("IO"))) }
+    factory { PodcastDBHandler(get(), get(named("IO"))) }
+    factory { QueueDBHandler(get(), get(named("IO"))) }
+    factory { SubscriptionDBHandler(get(), get(named("IO"))) }
 }

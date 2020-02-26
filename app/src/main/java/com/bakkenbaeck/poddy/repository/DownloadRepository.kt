@@ -10,10 +10,9 @@ import java.io.File
 
 class DownloadRepository(
     private val downloadHandler: DownloadHandler,
-    private val episodeDBHandler: EpisodeDBHandler
+    private val episodeDBHandler: EpisodeDBHandler,
+    private val downloadStateChannel: ConflatedBroadcastChannel<String?>
 ) {
-    private val downloadStateChannel by lazy { ConflatedBroadcastChannel<String?>() }
-
     suspend fun listenForDownloadStateUpdates(): Flow<String?> {
         downloadStateChannel.send(null)
         return downloadStateChannel.asFlow()

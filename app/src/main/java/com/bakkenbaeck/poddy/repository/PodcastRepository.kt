@@ -23,11 +23,10 @@ class PodcastRepository(
     private val searchApi: SearchApi,
     private val podcastDBHandler: PodcastDBHandler,
     private val episodeDBHandler: EpisodeDBHandler,
-    private val subscriptionDBHandler: SubscriptionDBHandler
+    private val subscriptionDBHandler: SubscriptionDBHandler,
+    private val subscriptionsChannel: ConflatedBroadcastChannel<List<Podcast>>,
+    private val singlePodcastChannel: ConflatedBroadcastChannel<Pair<Podcast, List<Episode>>?>
 ) {
-
-    private val subscriptionsChannel = ConflatedBroadcastChannel<List<Podcast>>()
-    private val singlePodcastChannel = ConflatedBroadcastChannel<Pair<Podcast, List<Episode>>?>()
 
     suspend fun search(query: String): Flow<SearchResponse> {
         return flow {
