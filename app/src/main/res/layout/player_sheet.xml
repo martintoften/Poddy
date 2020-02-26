@@ -10,7 +10,7 @@
     android:background="@color/colorPrimary"
     app:layout_behavior="@string/bottom_sheet_behavior"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="@dimen/peek_height_collapsed">
+    app:behavior_peekHeight="@dimen/peek_height_invisible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

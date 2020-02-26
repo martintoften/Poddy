@@ -8,15 +8,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
 import com.bakkenbaeck.poddy.ACTION_SEEK_TO
 import com.bakkenbaeck.poddy.ACTION_START
 import com.bakkenbaeck.poddy.EPISODE
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
-import com.bakkenbaeck.poddy.presentation.navigation.BottomNav
-import com.bakkenbaeck.poddy.presentation.navigation.MainPagerAdapter
 import com.bakkenbaeck.poddy.service.PlayerService
 import com.bakkenbaeck.poddy.util.OnProgressChangesListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -29,18 +29,45 @@ class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModel()
     private lateinit var sheetBehavior: BottomSheetBehavior<NestedScrollView>
+    private var currentNavController: LiveData<NavController>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        init()
+        init(savedInstanceState)
     }
 
-    private fun init() {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        // Now that BottomNavigationBar has restored its instance state
+        // and its selectedItemId, we can proceed with setting up the
+        // BottomNavigationBar with Navigation
+        setupBottomNavigationBar()
+    }
+
+    private fun init(inState: Bundle?) {
+        if (inState == null) {
+            setupBottomNavigationBar()
+        } // Else, need to wait for onRestoreInstanceState
+
         initView()
-        initBottomNav()
         initSheetView()
         initObservers()
+    }
+
+    private fun setupBottomNavigationBar() {
+        val navGraphIds = listOf(R.navigation.podcast, R.navigation.queue, R.navigation.search)
+        val controller = bottomNavigationView.setupWithNavController(
+            navGraphIds = navGraphIds,
+            fragmentManager = supportFragmentManager,
+            containerId = R.id.navHostContainer,
+            intent = intent
+        )
+        currentNavController = controller
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return currentNavController?.value?.navigateUp() ?: false
     }
 
     private fun initView() {
@@ -55,11 +82,6 @@ class MainActivity : AppCompatActivity() {
             action = ACTION_START
             putExtra(EPISODE, currentEpisode)
         }
-    }
-
-    private fun initBottomNav() {
-        val pagerAdapter = MainPagerAdapter(supportFragmentManager)
-        BottomNav(pagerAdapter, bottomNavigationView, viewPager)
     }
 
     private fun initSheetView() {
@@ -102,7 +124,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleQueue(queueSize: Int) {
-        val peekHeight = if (queueSize == 0) dpToPx(R.dimen.peek_height_collapsed)
+        val peekHeight = if (queueSize == 0) dpToPx(R.dimen.peek_height_invisible)
         else dpToPx(R.dimen.peek_height_expanded)
 
         ValueAnimator.ofInt(sheetBehavior.peekHeight, peekHeight).apply {
@@ -112,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                 val value = it.animatedValue as Int
                 val bottomMargin = value - dpToPx(R.dimen.nav_height)
                 sheetBehavior.peekHeight = value
-                val layoutParams = viewPager.layoutParams as CoordinatorLayout.LayoutParams
+                val layoutParams = navHostContainer.layoutParams as CoordinatorLayout.LayoutParams
                 layoutParams.bottomMargin = bottomMargin
             }
         }.start()

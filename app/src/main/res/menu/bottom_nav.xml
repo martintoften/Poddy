@@ -13,8 +13,8 @@
 
 
     <item
-        android:id="@+id/podcasts"
+        android:id="@+id/podcast"
         android:icon="@drawable/ic_queue"
-        android:title="Podcasts" />
+        android:title="Podcast" />
 
 </menu>

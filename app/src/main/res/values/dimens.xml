@@ -21,6 +21,7 @@
 
     <dimen name="nav_height">56dp</dimen>
 
+    <dimen name="peek_height_invisible">0dp</dimen>
     <dimen name="peek_height_collapsed">60dp</dimen>
     <dimen name="peek_height_expanded">116dp</dimen>
 
