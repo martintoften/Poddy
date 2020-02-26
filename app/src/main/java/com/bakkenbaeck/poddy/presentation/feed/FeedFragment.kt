@@ -34,8 +34,6 @@ abstract class FeedFragment : BackableFragment() {
     private fun getPodcastTitle(arguments: Bundle?): String? = arguments?.getString(PODCAST_TITLE)
     private fun getPodcastDescription(arguments: Bundle?): String? = arguments?.getString(PODCAST_DESCRIPTION)
 
-    private lateinit var episodeAdapter: EpisodeAdapter
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.feed_fragment, container, false)
     }
@@ -70,13 +68,11 @@ abstract class FeedFragment : BackableFragment() {
     abstract fun subscribe()
 
     private fun initAdapter() {
-        episodeAdapter = EpisodeAdapter(
-            { handleEpisodeClicked(it) },
-            { handleDownloadClicked(it) }
-        )
-
         episodeList.apply {
-            adapter = episodeAdapter
+            adapter =  EpisodeAdapter(
+                { handleEpisodeClicked(it) },
+                { handleDownloadClicked(it) }
+            )
             layoutManager = LinearLayoutManager(context)
             onLastElementListener = { handleOnLastElement() }
         }
@@ -92,7 +88,8 @@ abstract class FeedFragment : BackableFragment() {
 
     private fun handleOnLastElement() {
         val podcastId = getPodcastId(arguments) ?: return
-        val episode = episodeAdapter.getLastItem() ?: return
+        val adapter = episodeList.adapter as? EpisodeAdapter?
+        val episode = adapter?.getLastItem() ?: return
         getFeed(podcastId, episode.pubDate)
     }
 
@@ -109,7 +106,8 @@ abstract class FeedFragment : BackableFragment() {
     abstract fun getFeed(podcastId: String, pubDate: Long? = null)
 
     protected fun handleFeedResult(podcast: ViewPodcast) {
-        episodeAdapter.setItems(podcast.episodes)
+        val adapter = episodeList.adapter as? EpisodeAdapter?
+        adapter?.setItems(podcast.episodes)
     }
 
     protected fun updateSubscriptionState(subscriptionState: SubscriptionState) {

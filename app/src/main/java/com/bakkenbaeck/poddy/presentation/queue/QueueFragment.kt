@@ -23,8 +23,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class QueueFragment : BackableFragment(), OnStartDragListener {
 
     private val queueViewModel: QueueViewModel by viewModel()
-    private lateinit var queueAdapter: QueueAdapter
-    private lateinit var itemTouchHelper: ItemTouchHelper
+    private var itemTouchHelper: ItemTouchHelper? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.queue_fragment, container, false)
@@ -42,15 +41,14 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
     }
 
     private fun initAdapter() {
-        queueAdapter = QueueAdapter(
-            this,
-            { queueViewModel.reorderQueue(it) },
-            { queueViewModel.deleteEpisode(it) },
-            { handleEpisodeClicked(it) }
-        )
-
         queueList.apply {
-            adapter = queueAdapter
+            adapter = QueueAdapter(
+                this@QueueFragment,
+                { queueViewModel.reorderQueue(it) },
+                { queueViewModel.deleteEpisode(it) },
+                { handleEpisodeClicked(it) }
+            )
+
             layoutManager = LinearLayoutManager(context)
         }
     }
@@ -69,16 +67,23 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
     }
 
     private fun handleQueue(episodes: List<ViewEpisode>) {
-        queueAdapter.addItems(episodes)
+        val adapter = queueList.adapter as? QueueAdapter?
+        adapter?.addItems(episodes)
     }
 
     private fun initItemTouchHelper() {
-        val callback = SimpleItemTouchHelperCallback(queueAdapter)
+        val adapter = queueList.adapter as? QueueAdapter? ?: return
+        val callback = SimpleItemTouchHelperCallback(adapter)
         itemTouchHelper = ItemTouchHelper(callback)
-        itemTouchHelper.attachToRecyclerView(queueList)
+        itemTouchHelper?.attachToRecyclerView(queueList)
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
-        itemTouchHelper.startDrag(viewHolder)
+        itemTouchHelper?.startDrag(viewHolder)
+    }
+
+    override fun onDestroyView() {
+        itemTouchHelper = null
+        super.onDestroyView()
     }
 }

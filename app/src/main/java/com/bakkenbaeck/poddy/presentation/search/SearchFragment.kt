@@ -16,13 +16,13 @@ import com.bakkenbaeck.poddy.presentation.feed.PODCAST_TITLE
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearch
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearchItem
 import com.bakkenbaeck.poddy.util.TextListener
+import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.search_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : BackableFragment() {
 
     private val viewModel: SearchViewModel by viewModel()
-    private lateinit var searchAdapter: SearchAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.search_fragment, container, false)
@@ -40,10 +40,8 @@ class SearchFragment : BackableFragment() {
     }
 
     private fun initAdapter() {
-        searchAdapter = SearchAdapter { goTo(it) }
-
         searchList.apply {
-            adapter = searchAdapter
+            adapter = SearchAdapter { goTo(it) }
             layoutManager = LinearLayoutManager(context)
         }
     }
@@ -77,6 +75,7 @@ class SearchFragment : BackableFragment() {
     }
 
     private fun handleQueryResult(searchResult: ViewPodcastSearch) {
-        searchAdapter.add(searchResult.results)
+        val adapter = searchList.adapter as? SearchAdapter
+        adapter?.add(searchResult.results)
     }
 }

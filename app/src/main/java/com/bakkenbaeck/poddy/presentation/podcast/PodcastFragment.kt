@@ -20,7 +20,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class PodcastFragment : BackableFragment() {
 
     private val podcastViewModel: PodcastViewModel by viewModel()
-    private lateinit var podcastAdapter: PodcastAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.podcast_fragment, container, false)
@@ -37,10 +36,8 @@ class PodcastFragment : BackableFragment() {
     }
 
     private fun initAdapter() {
-        podcastAdapter = PodcastAdapter { goTo(it) }
-
         podcastList.apply {
-            adapter = podcastAdapter
+            adapter = PodcastAdapter { goTo(it) }
             layoutManager = GridLayoutManager(context, 4)
         }
     }
@@ -62,6 +59,7 @@ class PodcastFragment : BackableFragment() {
     }
 
     private fun handlePodcasts(podcasts: List<ViewPodcast>) {
-        podcastAdapter.addItems(podcasts)
+        val adapter = podcastList.adapter as? PodcastAdapter?
+        adapter?.addItems(podcasts)
     }
 }
