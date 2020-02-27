@@ -8,7 +8,6 @@ import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.TransitionInflater
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
@@ -25,11 +24,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment : BackableFragment() {
 
     private val viewModel: SearchViewModel by viewModel()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.search_fragment, container, false)

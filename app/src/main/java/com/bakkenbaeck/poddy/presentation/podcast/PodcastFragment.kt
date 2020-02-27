@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.transition.TransitionInflater
+import coil.Coil
+import coil.api.get
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
@@ -18,16 +20,13 @@ import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_TITLE
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import kotlinx.android.synthetic.main.podcast_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PodcastFragment : BackableFragment() {
 
     private val podcastViewModel: PodcastViewModel by viewModel()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.podcast_fragment, container, false)
@@ -79,5 +78,16 @@ class PodcastFragment : BackableFragment() {
     private fun handlePodcasts(podcasts: List<ViewPodcast>) {
         val adapter = podcastList.adapter as? PodcastAdapter?
         adapter?.addItems(podcasts)
+
+        loadImages(podcasts)
+    }
+
+    private fun loadImages(podcasts: List<ViewPodcast>) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            podcasts.forEach {
+                Coil.get(it.image)
+            }
+
+        }
     }
 }

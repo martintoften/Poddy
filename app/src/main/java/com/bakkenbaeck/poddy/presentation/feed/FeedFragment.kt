@@ -1,19 +1,18 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.core.transition.doOnEnd
 import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.TransitionInflater
+import coil.api.load
 import com.bakkenbaeck.poddy.R
-import com.bakkenbaeck.poddy.extensions.getColorById
-import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
-import com.bakkenbaeck.poddy.extensions.pop
-import com.bakkenbaeck.poddy.extensions.startForegroundService
+import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.modal.DetailsFragment
 import com.bakkenbaeck.poddy.presentation.model.*
@@ -21,6 +20,8 @@ import com.bakkenbaeck.poddy.service.DownloadService
 import com.bakkenbaeck.poddy.service.ID
 import com.bakkenbaeck.poddy.service.NAME
 import com.bakkenbaeck.poddy.service.URL
+import com.google.android.material.shape.ShapeAppearanceModel
+import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.feed_fragment.*
 
 const val PODCAST_ID = "PODCAST_ID"
@@ -38,7 +39,25 @@ abstract class FeedFragment : BackableFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition = MaterialContainerTransform(requireContext()).apply {
+            duration = 500
+            fadeMode = MaterialContainerTransform.FADE_MODE_OUT
+            startShapeAppearanceModel = ShapeAppearanceModel().withCornerSize(0f)
+            endShapeAppearanceModel = ShapeAppearanceModel().withCornerSize(getDimen(R.dimen.radius_default))
+            scrimColor = Color.TRANSPARENT
+
+            // Load the cached image with corner radius when the transition is done
+            doOnEnd {
+                podcastImage.loadWithRoundCorners(getPodcastImage(arguments), R.dimen.radius_default_coil)
+            }
+        }
+
+        sharedElementReturnTransition = MaterialContainerTransform(requireContext()).apply {
+            duration = 500
+            startShapeAppearanceModel = ShapeAppearanceModel().withCornerSize(getDimen(R.dimen.radius_default))
+            endShapeAppearanceModel = ShapeAppearanceModel().withCornerSize(0f)
+            scrimColor = Color.TRANSPARENT
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -63,13 +82,11 @@ abstract class FeedFragment : BackableFragment() {
     }
 
     private fun initToolbar() {
-        toolbar.setOnBackClickedListener { pop() }
-        podcastImage.apply {
-            transitionName = getPodcastId(arguments)
-            loadWithRoundCorners(getPodcastImage(arguments))
-            doOnPreDraw { startPostponedEnterTransition() }
+        loadImage()
+        toolbar.apply {
+            setOnBackClickedListener { pop() }
+            setText(getPodcastTitle(arguments).orEmpty())
         }
-        toolbar.setText(getPodcastTitle(arguments).orEmpty())
         val description = HtmlCompat.fromHtml(
             getPodcastDescription(arguments).orEmpty(),
             HtmlCompat.FROM_HTML_MODE_LEGACY
@@ -79,6 +96,21 @@ abstract class FeedFragment : BackableFragment() {
 
     private fun initFloatingActionButton() {
         subscribeButton.setOnClickListener { subscribe() }
+    }
+
+    private fun loadImage() {
+        podcastImage.apply {
+            transitionName = getPodcastId(arguments)
+            load(getPodcastImage(arguments))
+            doOnPreDraw {
+                startPostponedEnterTransition()
+            }
+        }
+
+        // Create a invisible image to load the image into. We need the cached image with corner radius
+        podcastImagePlaceHolder.apply {
+            loadWithRoundCorners(getPodcastImage(arguments), R.dimen.radius_default_coil)
+        }
     }
 
     abstract fun subscribe()

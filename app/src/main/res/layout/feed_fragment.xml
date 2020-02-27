@@ -27,6 +27,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:showBackArrow="true" />
 
+    <!-- Invisible imageView to load the image into so the image is ready when the transition finishes -->
+    <ImageView
+        android:id="@+id/podcastImagePlaceHolder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@+id/podcastImage"
+        app:layout_constraintEnd_toEndOf="@+id/podcastImage"
+        app:layout_constraintTop_toTopOf="@+id/podcastImage"
+        app:layout_constraintBottom_toBottomOf="@+id/podcastImage"
+        android:translationZ="0dp"
+        android:visibility="invisible"/>
+
     <ImageView
         android:id="@+id/podcastImage"
         android:layout_width="140dp"
@@ -35,7 +47,8 @@
         android:layout_marginStart="@dimen/margin_primary"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/episodeList"/>
+        app:layout_constraintBottom_toTopOf="@id/episodeList"
+        android:translationZ="1dp"/>
 
    <TextView
        android:id="@+id/podcastDescription"

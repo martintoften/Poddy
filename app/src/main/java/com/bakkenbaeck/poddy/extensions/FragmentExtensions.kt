@@ -15,6 +15,7 @@ import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import java.io.File
 
+
 fun Fragment.navigate(id: Int, args: Bundle? = null, navOptions: NavOptions? = null, extras: FragmentNavigator.Extras? = null) {
     findNavController().navigate(id, args, navOptions, extras)
 }
@@ -47,3 +48,15 @@ fun Fragment.getScreenHeight(): Int {
 }
 
 fun Fragment.getColorById(@ColorRes id: Int) = context?.getColorById(id) ?: 0
+
+fun Fragment.dpToPx(@DimenRes dimen: Int): Float {
+    return requireContext().resources.getDimensionPixelSize(dimen).toFloat()
+}
+
+fun Fragment.dpToPx(dp: Float): Float {
+    return requireContext().dpToPx(dp)
+}
+
+fun Fragment.pxToDp(px: Float): Float {
+    return requireContext().pxToDp(px)
+}
