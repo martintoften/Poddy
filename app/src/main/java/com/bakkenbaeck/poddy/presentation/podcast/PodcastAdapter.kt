@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.podcast
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +10,7 @@ import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.util.Differ
 
 class PodcastAdapter(
-    private val onItemClickedListener: (ViewPodcast) -> Unit
+    private val onItemClickedListener: (View, ViewPodcast) -> Unit
 ) : RecyclerView.Adapter<PodcastViewHolder>() {
 
     private val items by lazy { mutableListOf<ViewPodcast>() }

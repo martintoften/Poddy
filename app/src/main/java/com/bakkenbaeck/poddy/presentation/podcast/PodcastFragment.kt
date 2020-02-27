@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.transition.TransitionInflater
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
@@ -21,6 +24,11 @@ class PodcastFragment : BackableFragment() {
 
     private val podcastViewModel: PodcastViewModel by viewModel()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.podcast_fragment, container, false)
     }
@@ -31,25 +39,35 @@ class PodcastFragment : BackableFragment() {
     }
 
     private fun init() {
+        initTransition()
         initAdapter()
         initObservers()
     }
 
+    private fun initTransition() {
+        postponeEnterTransition()
+        podcastList.doOnPreDraw {
+            startPostponedEnterTransition()
+        }
+    }
+
     private fun initAdapter() {
+
         podcastList.apply {
-            adapter = PodcastAdapter { goTo(it) }
+            adapter = PodcastAdapter { view, podcast ->  goTo(view, podcast) }
             layoutManager = GridLayoutManager(context, 4)
         }
     }
 
-    private fun goTo(podcast: ViewPodcast) {
+    private fun goTo(view: View, podcast: ViewPodcast) {
         val bundle = Bundle().apply {
             putString(PODCAST_ID, podcast.id)
             putString(PODCAST_IMAGE, podcast.image)
             putString(PODCAST_TITLE, podcast.title)
             putString(PODCAST_DESCRIPTION, podcast.description)
         }
-        navigate(R.id.to_details_fragment, bundle)
+        val extras = FragmentNavigatorExtras(view to podcast.id)
+        navigate(id = R.id.to_details_fragment, args = bundle, extras = extras)
     }
 
     private fun initObservers() {

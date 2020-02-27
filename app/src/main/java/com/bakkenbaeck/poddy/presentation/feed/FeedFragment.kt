@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.TransitionInflater
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getColorById
 import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
@@ -34,6 +36,11 @@ abstract class FeedFragment : BackableFragment() {
     private fun getPodcastTitle(arguments: Bundle?): String? = arguments?.getString(PODCAST_TITLE)
     private fun getPodcastDescription(arguments: Bundle?): String? = arguments?.getString(PODCAST_DESCRIPTION)
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.feed_fragment, container, false)
     }
@@ -44,15 +51,24 @@ abstract class FeedFragment : BackableFragment() {
     }
 
     private fun init(arguments: Bundle?) {
+        initTransition()
         initToolbar()
         initFloatingActionButton()
         initAdapter()
         getEpisodes(arguments)
     }
 
+    private fun initTransition() {
+        postponeEnterTransition()
+    }
+
     private fun initToolbar() {
         toolbar.setOnBackClickedListener { pop() }
-        podcastImage.loadWithRoundCorners(getPodcastImage(arguments))
+        podcastImage.apply {
+            transitionName = getPodcastId(arguments)
+            loadWithRoundCorners(getPodcastImage(arguments))
+            doOnPreDraw { startPostponedEnterTransition() }
+        }
         toolbar.setText(getPodcastTitle(arguments).orEmpty())
         val description = HtmlCompat.fromHtml(
             getPodcastDescription(arguments).orEmpty(),
@@ -70,7 +86,7 @@ abstract class FeedFragment : BackableFragment() {
     private fun initAdapter() {
         episodeList.apply {
             adapter =  EpisodeAdapter(
-                { handleEpisodeClicked(it) },
+                { view, episode -> handleEpisodeClicked(view, episode) },
                 { handleDownloadClicked(it) }
             )
             layoutManager = LinearLayoutManager(context)
@@ -93,7 +109,7 @@ abstract class FeedFragment : BackableFragment() {
         getFeed(podcastId, episode.pubDate)
     }
 
-    private fun handleEpisodeClicked(episode: ViewEpisode) {
+    private fun handleEpisodeClicked(view: View, episode: ViewEpisode) {
         val detailsFragment = DetailsFragment.newInstance(episode)
         detailsFragment.show(parentFragmentManager, DETAIL_TAG)
     }

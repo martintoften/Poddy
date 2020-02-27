@@ -11,11 +11,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import java.io.File
 
-fun Fragment.navigate(id: Int, args: Bundle? = null) {
-    findNavController().navigate(id, args)
+fun Fragment.navigate(id: Int, args: Bundle? = null, navOptions: NavOptions? = null, extras: FragmentNavigator.Extras? = null) {
+    findNavController().navigate(id, args, navOptions, extras)
 }
 
 fun Fragment.navigate(directions: NavDirections, navOptions: NavOptions? = null) {

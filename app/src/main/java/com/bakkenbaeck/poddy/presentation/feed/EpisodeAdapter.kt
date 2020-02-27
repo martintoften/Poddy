@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
@@ -7,7 +8,7 @@ import com.bakkenbaeck.poddy.extensions.layoutInflater
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 
 class EpisodeAdapter(
-    private val onItemClickListener: (ViewEpisode) -> Unit,
+    private val onItemClickListener: (View, ViewEpisode) -> Unit,
     private val onDownloadClickListener: (ViewEpisode) -> Unit
 ) : RecyclerView.Adapter<EpisodeViewHolder>() {
 

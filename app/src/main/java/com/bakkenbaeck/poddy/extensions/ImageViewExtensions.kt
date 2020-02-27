@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.extensions
 
+import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DimenRes
 import coil.api.load

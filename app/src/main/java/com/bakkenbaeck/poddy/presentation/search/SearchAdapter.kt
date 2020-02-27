@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.search
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +10,7 @@ import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearchItem
 import com.bakkenbaeck.poddy.util.Differ
 
 class SearchAdapter(
-    private val onItemClickedListener: (ViewPodcastSearchItem) -> Unit
+    private val onItemClickedListener: (View, ViewPodcastSearchItem) -> Unit
 ) : RecyclerView.Adapter<SearchViewHolder>() {
 
     private val items by lazy { mutableListOf<ViewPodcastSearchItem>() }
