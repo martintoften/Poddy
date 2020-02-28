@@ -18,12 +18,12 @@ class QueueViewModel(
     private val queueRepository: QueueRepository
 ) : ViewModel() {
 
+    val queue by lazy { MutableLiveData<List<ViewEpisode>>() }
+
     init {
         listenForQueueUpdates()
         getQueue()
     }
-
-    val queue by lazy { MutableLiveData<List<ViewEpisode>>() }
 
     private fun listenForQueueUpdates() {
         viewModelScope.launch {

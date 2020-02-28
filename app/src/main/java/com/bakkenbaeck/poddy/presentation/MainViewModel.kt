@@ -41,12 +41,12 @@ class MainViewModel(
 
     private fun listenForQueueUpdates() {
         viewModelScope.launch {
+            queueRepository.getQueue()
             queueRepository.listenForQueueUpdates()
                 .distinctUntilChanged()
                 .collect {
                     queueSize.value = it.size
                 }
-            queueRepository.getQueue()
         }
     }
 }
