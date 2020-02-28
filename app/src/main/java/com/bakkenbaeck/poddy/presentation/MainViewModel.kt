@@ -3,12 +3,11 @@ package com.bakkenbaeck.poddy.presentation
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -27,7 +26,27 @@ class MainViewModel(
     private fun listenForPlayerAction() {
         viewModelScope.launch {
             playerChannel.asFlow()
+                .onStart { addTopEpisodeFromQueueIfPlayerIsEmpty() }
                 .collect { handlePlayerAction(it) }
+        }
+    }
+
+    // Add a player action if channel is empty or if the current action is a progress action
+    private suspend fun addTopEpisodeFromQueueIfPlayerIsEmpty() {
+        val queue = queueRepository.getQueue()
+
+        if (queue.isNotEmpty() && playerChannel.valueOrNull == null) {
+            val topEpisode = mapToViewEpisodeFromDB(queue.first())
+            val playerAction = ViewPlayerAction.Pause(topEpisode)
+            playerChannel.send(playerAction)
+        } else if (queue.isNotEmpty() && playerChannel.valueOrNull != null) {
+            val currentPlayerAction = playerChannel.value
+            val topEpisode = mapToViewEpisodeFromDB(queue.first())
+
+            if (currentPlayerAction is ViewPlayerAction.Progress) {
+                val playerAction = ViewPlayerAction.Play(topEpisode)
+                playerChannel.send(playerAction)
+            }
         }
     }
 

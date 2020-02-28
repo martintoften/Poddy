@@ -29,9 +29,10 @@ class QueueRepository(
         queueChannel.send(queue)
     }
 
-    suspend fun getQueue() {
+    suspend fun getQueue(): List<Episode> {
         val queue = queueDBHandler.getQueue()
         queueChannel.send(queue)
+        return queue
     }
 
     suspend fun reorderQueue(queue: List<ViewEpisode>) {
