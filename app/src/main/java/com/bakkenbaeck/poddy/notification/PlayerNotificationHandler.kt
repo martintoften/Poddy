@@ -52,11 +52,11 @@ class PlayerNotificationHandler(
         context.notifyNotification(PLAYER_NOTIFICATION_ID, notification)
     }
 
-    fun generatePauseAction(): NotificationCompat.Action {
+    private fun generatePauseAction(): NotificationCompat.Action {
         return generateAction(android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE)
     }
 
-    fun generatePlayAction(): NotificationCompat.Action {
+    private fun generatePlayAction(): NotificationCompat.Action {
         return generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY)
     }
 
@@ -77,7 +77,7 @@ class PlayerNotificationHandler(
         createChannel()
         val action = generatePauseAction()
         val notification = buildNotification(podcastName, action)
-        context.startForeground(NOTIFICATION_ID, notification)
+        context.startForeground(PLAYER_NOTIFICATION_ID, notification)
     }
 
     private fun createChannel() {
