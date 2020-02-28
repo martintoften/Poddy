@@ -15,10 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ticker
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 const val EPISODE = "EPISODE"
@@ -48,7 +45,7 @@ class PlayerHandler(
 
     fun listenForProgressUpdates() {
         scope.launch {
-            for (event in tickerChannel) {
+            tickerChannel.consumeAsFlow().collect {
                 if (podcastPlayer.isPlaying()) {
                     broadcastProgress()
                 }
