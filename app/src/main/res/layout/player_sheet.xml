@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/colorPrimary"
+    android:background="?attr/colorPrimary"
     app:layout_behavior="@string/bottom_sheet_behavior"
     app:behavior_hideable="false"
     app:behavior_peekHeight="@dimen/peek_height_invisible">
