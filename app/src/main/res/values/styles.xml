@@ -1,12 +1,50 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorSurface">@color/colorSurface</item>
-        <item name="android:windowBackground">@color/colorSurface</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="BaseDark" parent="AppTheme">
+        <item name="colorPrimary">@color/lightBlack</item>
+        <item name="colorOnPrimary">@color/lightWhite</item>
+        <item name="colorPrimaryDark">@color/almostBlack</item>
+        <item name="colorAccent">@color/lightDarkGrey</item>
+
+        <item name="colorControlNormal">@color/grey</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/grey</item>
+
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/lightWhite</item>
+        <item name="android:textColorHint">@color/lightWhite</item>
+
+        <item name="android:windowBackground">@color/black</item>
+
+        <item name="dialogTheme">@style/BottomDialogStyle</item>
+    </style>
+
+    <style name="Dark" parent="BaseDark"></style>
+
+    <style name="BaseLight" parent="AppTheme">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/white</item>
+        
+        <item name="colorControlNormal">@color/grey</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="colorControlHighlight">@color/grey</item>
+
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/lightBlack</item>
+        <item name="android:textColorHint">@color/lightBlack</item>
+
+        <item name="android:windowBackground">@color/white</item>
+
+        <item name="dialogTheme">@style/BottomDialogStyle</item>
+    </style>
+
+    <style name="Light" parent="BaseLight"></style>
 
     <style name="BottomDialogStyle" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>

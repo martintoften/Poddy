@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.TypedValue
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.getColor
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.getColorById
+import com.bakkenbaeck.poddy.extensions.getColorFromAttr
 import kotlinx.android.synthetic.main.view_toolbar.view.*
 
 class Toolbar : ConstraintLayout {
@@ -39,7 +42,7 @@ class Toolbar : ConstraintLayout {
         inflate(context, R.layout.view_toolbar, this)
         initBackArrow()
         initTitle()
-        setBackgroundResource(R.color.colorPrimary)
+        setBackgroundColor(getColorFromAttr(R.attr.colorPrimary))
     }
 
     private fun initBackArrow() {

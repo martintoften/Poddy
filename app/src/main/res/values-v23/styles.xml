@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="SubAppTheme" parent="AppTheme">
+
+    <style name="Dark" parent="BaseDark">
         <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <style name="Light" parent="BaseLight">
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
 </resources>

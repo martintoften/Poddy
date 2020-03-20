@@ -51,7 +51,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/player"
-            android:background="@color/colorProgressBackground"/>
+            android:background="?attr/colorAccent"/>
 
         <View
             android:id="@+id/smallProgressFront"
@@ -80,7 +80,7 @@
             android:paddingStart="@dimen/margin_primary"
             android:paddingEnd="@dimen/margin_primary"
             android:gravity="center"
-            android:textColor="@color/textColorPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -129,8 +129,8 @@
             android:layout_marginStart="@dimen/margin_primary"
             android:layout_marginEnd="@dimen/margin_primary"
             style="?android:attr/progressBarStyleHorizontal"
-            android:progressBackgroundTint="@color/colorProgressBackground"
-            android:progressTint="@color/colorProgress"
+            android:progressBackgroundTint="?attr/colorControlActivated"
+            android:progressTint="?attr/colorControlHighlight"
             android:thumb="@drawable/ic_thumb"
             android:progress="0"
             android:max="100"
@@ -144,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginStart="5dp"
-            android:textColor="@color/textColorPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:text="00.00"
             app:layout_constraintStart_toStartOf="@id/progress"
             app:layout_constraintTop_toBottomOf="@+id/progress" />
@@ -155,7 +155,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
-            android:textColor="@color/textColorPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:text="00.00"
             app:layout_constraintEnd_toEndOf="@id/progress"
             app:layout_constraintTop_toBottomOf="@+id/progress" />

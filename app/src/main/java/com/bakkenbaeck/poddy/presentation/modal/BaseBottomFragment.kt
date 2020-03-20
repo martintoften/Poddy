@@ -8,11 +8,6 @@ import com.bakkenbaeck.poddy.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 abstract class BaseBottomDialogFragment : BottomSheetDialogFragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(theme, R.style.BottomDialogStyle)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(getLayout(), container, false)
     }

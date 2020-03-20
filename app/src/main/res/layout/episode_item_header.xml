@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
+    android:background="?attr/colorAccent"
     android:padding="@dimen/margin_primary">
 
     <ImageView
@@ -19,7 +19,7 @@
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/textColorPrimary"
+        android:textColor="?android:attr/textColorPrimary"
         android:layout_marginHorizontal="@dimen/margin_primary"
         android:textSize="30sp"
         android:maxLines="3"
@@ -35,7 +35,7 @@
         android:id="@+id/subscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/textColorPrimary"
+        android:textColor="?android:attr/textColorPrimary"
         android:textStyle="bold"
         android:textAllCaps="false"
         android:textSize="@dimen/text_medium"

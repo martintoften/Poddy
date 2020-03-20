@@ -27,7 +27,7 @@
             android:id="@+id/showName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/textColorPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/text_primary"
             tools:text="Reply all"/>
 
@@ -35,7 +35,7 @@
             android:id="@+id/author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/textColorSecondary"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="@dimen/text_small"
             tools:text="Gimlet"/>
 

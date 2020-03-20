@@ -4,6 +4,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.getColorFromAttr
 import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
 import com.bakkenbaeck.poddy.extensions.toDate
 import com.bakkenbaeck.poddy.extensions.toSeconds
@@ -37,7 +38,8 @@ class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolde
     }
 
     override fun onItemSelected() {
-        containerView.setBackgroundResource(R.color.colorPrimary)
+        val color = containerView.context.getColorFromAttr(R.attr.colorPrimary)
+        containerView.setBackgroundColor(color)
     }
 
     override fun onItemClear() {

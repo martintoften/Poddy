@@ -20,7 +20,7 @@
        android:layout_width="match_parent"
        android:layout_height="@dimen/nav_height"
        android:layout_gravity="bottom"
-       android:background="@color/colorPrimary"
+       android:background="?attr/colorPrimary"
        app:itemIconTint="@drawable/bottom_navigation_tint"
        app:itemTextColor="@drawable/bottom_navigation_tint"
        app:labelVisibilityMode="unlabeled"

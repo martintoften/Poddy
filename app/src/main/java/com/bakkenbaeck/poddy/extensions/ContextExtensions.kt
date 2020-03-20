@@ -2,6 +2,9 @@ package com.bakkenbaeck.poddy.extensions
 
 import android.content.Context
 import android.util.DisplayMetrics
+import android.util.TypedValue
+import android.view.ViewGroup
+import androidx.annotation.AttrRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
@@ -25,4 +28,13 @@ fun Context.dpToPx(dp: Float): Float {
 
 fun Context.pxToDp(px: Float): Float {
     return px / (resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+}
+
+fun Context.getColorFromAttr(
+    @AttrRes attrColor: Int,
+    resolveRefs: Boolean = true
+): Int {
+    val typedValue = TypedValue()
+    theme.resolveAttribute(attrColor, typedValue, resolveRefs)
+    return typedValue.data
 }
