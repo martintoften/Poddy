@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="SubAppTheme" parent="AppTheme">
+
+    <style name="Dark" parent="AppTheme">
+        <item name="colorPrimary">@color/lightBlack</item>
+        <item name="colorPrimaryDark">@color/almostBlack</item>
+        <item name="colorAccent">@color/lightDarkGrey</item>
+
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/lightWhite</item>
+        <item name="android:textColorHint">@color/lightWhite</item>
+
+        <item name="android:windowBackground">@color/black</item>
+
         <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <style name="Light" parent="AppTheme">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/white</item>
+
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/lightBlack</item>
+        <item name="android:textColorHint">@color/lightBlack</item>
+
+        <item name="android:windowBackground">@color/white</item>
+
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
 </resources>

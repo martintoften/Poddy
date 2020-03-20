@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_small"
-            android:textColor="@color/textColorSecondary"
+            android:textColor="?android:attr/textColorSecondary"
             tools:text="August 29"/>
 
         <TextView
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_medium"
-            android:textColor="@color/textColorPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             tools:text="The crime machine"/>
 
         <TextView
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_small"
-            android:textColor="@color/textColorSecondary"
+            android:textColor="?android:attr/textColorSecondary"
             tools:text="47 min"/>
 
     </LinearLayout>

@@ -31,14 +31,14 @@ class SpinnerOverlay : FrameLayout {
         val a = context.obtainStyledAttributes(attrs, R.styleable.SpinnerOverlayLayout)
         overlayColor = a.getColor(
                 R.styleable.SpinnerOverlayLayout_overlayColor,
-                getColorById(R.color.semi_transparent_overlay)
+                getColorById(R.color.semiTransparentLightDarkGrey)
         )
         a.recycle()
     }
 
     private fun init() {
         inflate(context, R.layout.view_spinner, this)
-        setBackgroundColor(this.overlayColor ?: getColorById(R.color.semi_transparent_overlay))
+        setBackgroundColor(this.overlayColor ?: getColorById(R.color.semiTransparentLightDarkGrey))
         visibility = View.GONE
         isClickable = true
         isFocusable = true

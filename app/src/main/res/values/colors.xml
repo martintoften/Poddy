@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
     <color name="colorPrimary">#222</color>
     <color name="colorPrimaryDark">#111</color>
     <color name="colorAccent">#333</color>
     <color name="colorSurface">#333</color>
 
-    <color name="colorProgressBackground">#AAA</color>
-    <color name="colorProgress">#EEE</color>
-
-    <color name="colorPrimaryContrast">#EEE</color>
     <color name="colorPrimaryDarkContrast">#FFF</color>
-    <color name="colorAccentContrast">#DDD</color>
-
     <color name="textColorPrimary">#FFF</color>
+
+    <color name="colorProgress">#EEE</color>
+    <color name="colorPrimaryContrast">#EEE</color>
+
+    <color name="colorAccentContrast">#DDD</color>
     <color name="textColorSecondary">#DDD</color>
     <color name="textColorHint">#DDD</color>
-
     <color name="bottomNavigationItemTintPrimary">#DDD</color>
+    <color name="colorProgressBackground">#AAA</color>
     <color name="bottomNavigationItemTintSecondary">#999</color>
-
     <color name="semi_transparent_overlay">#99444444</color>
+    -->
+
+    <color name="black">#000</color>
+    <color name="almostBlack">#111</color>
+    <color name="lightBlack">#222</color>
+    <color name="lightDarkGrey">#333</color>
+
+    <color name="semiTransparentLightDarkGrey">#99444444</color>
+
+    <color name="darkerGrey">#999</color>
+    <color name="grey">#AAA</color>
+
+    <color name="lightWhite">#DDD</color>
+    <color name="almostWhite">#EEE</color>
+    <color name="white">#FFF</color>
 
     <color name="positive">#4CAF50</color>
     <color name="negative">#FF224E</color>
