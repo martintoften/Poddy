@@ -8,11 +8,13 @@ import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.PodcastRepository
+import com.bakkenbaeck.poddy.repository.ProgressRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.service.PlayerActionBuilder
 import com.bakkenbaeck.poddy.util.PlayerQueue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.*
@@ -29,11 +31,10 @@ const val ACTION_SEEK_TO = "action_seek_to"
 
 class PlayerHandler(
     private val queueRepository: QueueRepository,
-    private val podcastRepository: PodcastRepository,
+    private val progressRepository: ProgressRepository,
     private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction>,
     private val playerNotificationHandler: PlayerNotificationHandler
 ) {
-
     private var isQueueListenerInitialised = false
 
     private val scope by lazy { CoroutineScope(Dispatchers.Main) }
@@ -43,7 +44,12 @@ class PlayerHandler(
     private val playerQueue by lazy { PlayerQueue() }
     private val playerActionBuilder by lazy { PlayerActionBuilder(playerQueue) }
 
-    fun listenForProgressUpdates() {
+    fun init() {
+        listenForProgressUpdates()
+        listenForPlayerAction()
+    }
+
+    private fun listenForProgressUpdates() {
         scope.launch {
             tickerChannel.consumeAsFlow().collect {
                 if (podcastPlayer.isPlaying()) {
@@ -58,10 +64,10 @@ class PlayerHandler(
         val (progress, duration) = podcastPlayer.getProgressAndDuration()
         val action = ViewPlayerAction.Progress(episode, progress, duration)
         playerChannel.send(action)
-        podcastRepository.updateProgress(episode.id, progress.toLong())
+        progressRepository.updateProgress(episode.id, progress.toLong())
     }
 
-    fun listenForPlayerAction() {
+    private fun listenForPlayerAction() {
         scope.launch {
             playerChannel.asFlow()
                 .collect { handlePlayerAction(it) }
@@ -76,36 +82,35 @@ class PlayerHandler(
         }
     }
 
-    private fun initQueueListener() {
-        if (isQueueListenerInitialised) return
-        isQueueListenerInitialised = true
-
-        listenForQueueUpdates()
-        getQueue()
+    private fun loadPlayerAndNotification(episode: ViewEpisode) {
+        val podcastPath = episode.getEpisodePath()
+        podcastPlayer.load(episode, podcastPath, { onStart(episode) }, { onFinished() })
+        playerNotificationHandler.initNotification(episode.title)
     }
 
-    private fun listenForQueueUpdates() {
+    private fun onStart(episode: ViewEpisode) {
+        playerNotificationHandler.showPauseNotification(episode.title)
+    }
+
+    private fun onFinished() {
+        val currentEpisode = playerQueue.current() ?: return
+        playerQueue.clearCurrentEpisode()
+
         scope.launch {
-            queueRepository.listenForQueueUpdates()
-                .flowOn(Dispatchers.IO)
-                .map { mapToViewEpisodeFromDB(it) }
-                .collect { handleQueue(it) }
+            queueRepository.deleteEpisodeFromQueue(currentEpisode.id)
         }
     }
 
-    private fun handleQueue(episodes: List<ViewEpisode>) {
-        playerQueue.updateQueue(episodes)
-
-        if (!playerQueue.hasCurrent()) {
-            val nextEpisode = playerQueue.first() ?: return
-            buildAndBroadcastAction(ACTION_START, nextEpisode)
-        }
+    private fun onPlay() {
+        val episode = playerQueue.current() ?: return
+        playerNotificationHandler.showPauseNotification(episode.title)
+        podcastPlayer.start()
     }
 
-    private fun getQueue() {
-        scope.launch {
-            queueRepository.getQueue()
-        }
+    private fun onPause() {
+        val episode = playerQueue.current() ?: return
+        playerNotificationHandler.showPlayNotification(episode.title)
+        podcastPlayer.pause()
     }
 
     fun handleIntent(intent: Intent) {
@@ -148,44 +153,46 @@ class PlayerHandler(
                 playerChannel.send(action)
             }
             is ViewPlayerAction.Pause, is ViewPlayerAction.Play -> playerChannel.send(action)
-            else -> Log.d("PlayerService", "Invalid action at this stage")
+            else -> Log.e("PlayerService", "Invalid action at this stage")
         }
     }
 
-    private fun loadPlayerAndNotification(episode: ViewEpisode) {
-        val podcastPath = episode.getEpisodePath()
-        podcastPlayer.load(episode, podcastPath, { onStart(episode) }, { onFinished() })
-        playerNotificationHandler.initNotification(episode.title)
+    private fun initQueueListener() {
+        if (isQueueListenerInitialised) return
+        isQueueListenerInitialised = true
+
+        listenForQueueUpdates()
+        getQueue()
     }
 
-    private fun onFinished() {
-        val currentEpisode = playerQueue.current() ?: return
-        playerQueue.clearCurrentEpisode()
-
+    private fun listenForQueueUpdates() {
         scope.launch {
-            queueRepository.deleteEpisodeFromQueue(currentEpisode.id)
+            queueRepository.listenForQueueUpdates()
+                .flowOn(Dispatchers.IO)
+                .map { mapToViewEpisodeFromDB(it) }
+                .collect { handleQueue(it) }
         }
     }
 
-    private fun onStart(episode: ViewEpisode) {
-        playerNotificationHandler.showPauseNotification(episode.title)
+    private fun getQueue() {
+        scope.launch {
+            queueRepository.getQueue()
+        }
     }
 
-    private fun onPlay() {
-        val episode = playerQueue.current() ?: return
-        playerNotificationHandler.showPauseNotification(episode.title)
-        podcastPlayer.start()
+    private fun handleQueue(episodes: List<ViewEpisode>) {
+        playerQueue.setQueue(episodes)
+
+        if (!playerQueue.hasCurrent()) {
+            val nextEpisode = playerQueue.first() ?: return
+            buildAndBroadcastAction(ACTION_START, nextEpisode)
+        }
     }
 
-    private fun onPause() {
-        val episode = playerQueue.current() ?: return
-        playerNotificationHandler.showPlayNotification(episode.title)
-        podcastPlayer.pause()
-    }
-
-    fun onDestroy() {
-        podcastPlayer.release()
+    fun destroy() {
+        podcastPlayer.destroy()
         tickerChannel.cancel()
         playerChannel.cancel()
+        scope.cancel()
     }
 }

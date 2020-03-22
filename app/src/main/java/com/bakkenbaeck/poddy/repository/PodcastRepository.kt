@@ -120,8 +120,4 @@ class PodcastRepository(
         subscriptionsChannel.send(podcasts)
         return subscriptionsChannel.asFlow()
     }
-
-    suspend fun updateProgress(episodeId: String, progress: Long) {
-        episodeDBHandler.updateProgress(episodeId, progress)
-    }
 }

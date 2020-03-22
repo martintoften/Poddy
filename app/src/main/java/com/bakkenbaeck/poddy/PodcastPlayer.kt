@@ -40,7 +40,7 @@ class PodcastPlayer(
 
     fun getProgressAndDuration(): Pair<Int, Int> = Pair(getProgress(), getDuration())
 
-    fun release() {
+    fun destroy() {
         mediaPlayer.release()
     }
 }

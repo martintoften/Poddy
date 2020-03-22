@@ -6,7 +6,7 @@ class PlayerQueue {
     private val queue = mutableListOf<ViewEpisode>()
     private var currentEpisode: ViewEpisode? = null
 
-    fun updateQueue(episodes: List<ViewEpisode>) {
+    fun setQueue(episodes: List<ViewEpisode>) {
         queue.clear()
         queue.addAll(episodes)
     }
