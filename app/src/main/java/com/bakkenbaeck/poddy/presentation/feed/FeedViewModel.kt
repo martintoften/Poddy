@@ -72,8 +72,15 @@ class FeedViewModel(
         viewModelScope.launch {
             podcastRepository.listenForPodcastUpdates()
                 .filterNotNull()
-                .flatMapMerge { podcast -> podcastRepository.hasSubscribed(podcast.first)
-                    .map { hasSubscribed -> mapToViewPodcastFromDB(podcast.first, podcast.second, hasSubscribed) }
+                .flatMapMerge { podcast ->
+                    podcastRepository.hasSubscribed(podcast.first)
+                        .map { hasSubscribed ->
+                            mapToViewPodcastFromDB(
+                                podcast.first,
+                                podcast.second,
+                                hasSubscribed
+                            )
+                        }
                 }
                 .flowOn(Dispatchers.IO)
                 .collect { feedResult.value = Success(it) }

@@ -6,7 +6,12 @@ import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 class PodcastPlayer(
     private val mediaPlayer: MediaPlayer = MediaPlayer()
 ) {
-    fun load(episode: ViewEpisode, path: String, onStartListener: () -> Unit, onCompletedListener: () -> Unit) {
+    fun load(
+        episode: ViewEpisode,
+        path: String,
+        onStartListener: () -> Unit,
+        onCompletedListener: () -> Unit
+    ) {
         mediaPlayer.reset()
         mediaPlayer.setDataSource(path)
         mediaPlayer.setOnPreparedListener {

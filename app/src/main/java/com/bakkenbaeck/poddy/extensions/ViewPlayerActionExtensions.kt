@@ -4,8 +4,6 @@ import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 
 
-
-
 fun ViewPlayerAction.getPlayIcon(): Int? {
     return when (this) {
         is ViewPlayerAction.Start -> R.drawable.ic_player_pause

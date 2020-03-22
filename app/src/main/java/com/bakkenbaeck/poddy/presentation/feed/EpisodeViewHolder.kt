@@ -9,7 +9,8 @@ import com.bakkenbaeck.poddy.presentation.model.DownloadState
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import kotlinx.android.synthetic.main.episode_item.*
 
-class EpisodeViewHolder(override val containerView: View) : ClickableViewHolder<ViewEpisode>(containerView) {
+class EpisodeViewHolder(override val containerView: View) :
+    ClickableViewHolder<ViewEpisode>(containerView) {
     fun setEpisode(episode: ViewEpisode) {
         date.text = episode.pubDate.toDate()
         name.text = episode.title

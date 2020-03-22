@@ -25,7 +25,11 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
     private val queueViewModel: QueueViewModel by viewModel()
     private var itemTouchHelper: ItemTouchHelper? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.queue_fragment, container, false)
     }
 

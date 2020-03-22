@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.TypedValue
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat.getColor
 import com.bakkenbaeck.poddy.R
-import com.bakkenbaeck.poddy.extensions.getColorById
 import com.bakkenbaeck.poddy.extensions.getColorFromAttr
 import kotlinx.android.synthetic.main.view_toolbar.view.*
 

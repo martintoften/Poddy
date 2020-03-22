@@ -30,8 +30,15 @@ abstract class BaseFeedViewModel(
             feedResult.value = Loading()
             podcastRepository.getPodcastFlow(id, lastTimestamp)
                 .filterNotNull()
-                .flatMapMerge { podcast -> podcastRepository.hasSubscribed(podcast.first)
-                    .map { hasSubscribed -> mapToViewPodcastFromDB(podcast.first, podcast.second, hasSubscribed) }
+                .flatMapMerge { podcast ->
+                    podcastRepository.hasSubscribed(podcast.first)
+                        .map { hasSubscribed ->
+                            mapToViewPodcastFromDB(
+                                podcast.first,
+                                podcast.second,
+                                hasSubscribed
+                            )
+                        }
                 }
                 .flowOn(Dispatchers.IO)
                 .catch { handleFeedError(it) }

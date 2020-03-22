@@ -8,7 +8,6 @@ import com.bakkenbaeck.poddy.*
 import com.bakkenbaeck.poddy.extensions.createNotificationChannel
 import com.bakkenbaeck.poddy.extensions.notifyNotification
 import com.bakkenbaeck.poddy.presentation.MainActivity
-import com.bakkenbaeck.poddy.service.NOTIFICATION_ID
 import com.bakkenbaeck.poddy.service.PlayerService
 
 const val PLAYER_NOTIFICATION_ID = 2
@@ -33,7 +32,13 @@ class PlayerNotificationHandler(
             .setStyle(style)
             .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
             .addAction(action)
-            .addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Forward", ACTION_FAST_FORWARD))
+            .addAction(
+                generateAction(
+                    android.R.drawable.ic_media_ff,
+                    "Fast Forward",
+                    ACTION_FAST_FORWARD
+                )
+            )
             .setSound(null)
             .setOnlyAlertOnce(true)
 
@@ -60,7 +65,11 @@ class PlayerNotificationHandler(
         return generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY)
     }
 
-    private fun generateAction(icon: Int, title: String, intentAction: String): NotificationCompat.Action {
+    private fun generateAction(
+        icon: Int,
+        title: String,
+        intentAction: String
+    ): NotificationCompat.Action {
         val intent = Intent(context, PlayerService::class.java).apply {
             action = intentAction
         }

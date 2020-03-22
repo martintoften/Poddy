@@ -3,7 +3,6 @@ package com.bakkenbaeck.poddy.extensions
 import android.content.Context
 import android.util.DisplayMetrics
 import android.util.TypedValue
-import android.view.ViewGroup
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes

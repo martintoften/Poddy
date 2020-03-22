@@ -22,7 +22,11 @@ class SpinnerOverlay : FrameLayout {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyle: Int): super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         parseAttributes(attrs ?: return)
         init()
     }
@@ -30,8 +34,8 @@ class SpinnerOverlay : FrameLayout {
     private fun parseAttributes(attrs: AttributeSet) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.SpinnerOverlayLayout)
         overlayColor = a.getColor(
-                R.styleable.SpinnerOverlayLayout_overlayColor,
-                getColorById(R.color.semiTransparentLightDarkGrey)
+            R.styleable.SpinnerOverlayLayout_overlayColor,
+            getColorById(R.color.semiTransparentLightDarkGrey)
         )
         a.recycle()
     }
@@ -50,8 +54,8 @@ class SpinnerOverlay : FrameLayout {
 
     fun setSpinnerColor(@ColorRes id: Int) {
         loadingSpinner.indeterminateDrawable.setColorFilter(
-                getColorById(id),
-                PorterDuff.Mode.SRC_ATOP
+            getColorById(id),
+            PorterDuff.Mode.SRC_ATOP
         )
     }
 }

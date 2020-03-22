@@ -7,13 +7,15 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    factory { PodcastRepository(
-        get(),
-        get(),
-        get(),
-        get(),
-        get(named("subscriptionChannel")),
-        get(named("podcastChannel")))
+    factory {
+        PodcastRepository(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(named("subscriptionChannel")),
+            get(named("podcastChannel"))
+        )
     }
     factory { QueueRepository(get(), get(), get(named("queueChannel"))) }
     factory { DownloadRepository(get(), get(), get(named("downloadStateChannel"))) }

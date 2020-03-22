@@ -16,7 +16,12 @@ import androidx.navigation.fragment.findNavController
 import java.io.File
 
 
-fun Fragment.navigate(id: Int, args: Bundle? = null, navOptions: NavOptions? = null, extras: FragmentNavigator.Extras? = null) {
+fun Fragment.navigate(
+    id: Int,
+    args: Bundle? = null,
+    navOptions: NavOptions? = null,
+    extras: FragmentNavigator.Extras? = null
+) {
     findNavController().navigate(id, args, navOptions, extras)
 }
 

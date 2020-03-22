@@ -19,19 +19,21 @@ fun mapPodcastFromNetworkToDB(podcast: PodcastResponse): Podcast.Impl {
 
 fun mapEpisodesFromNetworkToDB(podcast: PodcastResponse): List<Episode.Impl> {
     val timestamp = Date().time
-    return podcast.episodes.map { Episode.Impl(
-        id = it.id,
-        podcast_id = podcast.id,
-        title = it.title,
-        description = it.description,
-        pub_date = it.pub_date_ms,
-        duration = it.audio_length_sec.toLong(),
-        image = it.image,
-        timestamp = timestamp,
-        audio = it.audio,
-        is_downloaded = 0,
-        progress = 0
-    ) }
+    return podcast.episodes.map {
+        Episode.Impl(
+            id = it.id,
+            podcast_id = podcast.id,
+            title = it.title,
+            description = it.description,
+            pub_date = it.pub_date_ms,
+            duration = it.audio_length_sec.toLong(),
+            image = it.image,
+            timestamp = timestamp,
+            audio = it.audio,
+            is_downloaded = 0,
+            progress = 0
+        )
+    }
 }
 
 

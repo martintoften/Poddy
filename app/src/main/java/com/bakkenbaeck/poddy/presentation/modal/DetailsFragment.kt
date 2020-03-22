@@ -87,7 +87,8 @@ class DetailsFragment : BaseBottomDialogFragment() {
         downloadProgress.text = ""
 
         val isSelectedEpisodePlaying = feedViewModel.isEpisodePlaying(episode)
-        val playResource = if (isSelectedEpisodePlaying) R.drawable.ic_player_pause else R.drawable.ic_player_play
+        val playResource =
+            if (isSelectedEpisodePlaying) R.drawable.ic_player_pause else R.drawable.ic_player_play
         play.setImageResource(playResource)
 
         feedViewModel.setCurrentEpisode(episode)

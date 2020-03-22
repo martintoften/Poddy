@@ -39,7 +39,11 @@ fun mapToViewPodcastFromDB(db: List<Podcast>): List<ViewPodcast> {
     return db.map { mapToViewPodcastFromDB(it, emptyList(), true) }
 }
 
-fun mapToViewPodcastFromDB(db: Podcast, episodes: List<Episode>, hasSubscribed: Boolean): ViewPodcast {
+fun mapToViewPodcastFromDB(
+    db: Podcast,
+    episodes: List<Episode>,
+    hasSubscribed: Boolean
+): ViewPodcast {
     return ViewPodcast(
         id = db.id,
         title = db.title,

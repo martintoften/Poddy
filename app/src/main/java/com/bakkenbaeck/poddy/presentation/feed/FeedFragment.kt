@@ -35,7 +35,8 @@ abstract class FeedFragment : BackableFragment() {
     private fun getPodcastId(arguments: Bundle?): String? = arguments?.getString(PODCAST_ID)
     private fun getPodcastImage(arguments: Bundle?): String? = arguments?.getString(PODCAST_IMAGE)
     private fun getPodcastTitle(arguments: Bundle?): String? = arguments?.getString(PODCAST_TITLE)
-    private fun getPodcastDescription(arguments: Bundle?): String? = arguments?.getString(PODCAST_DESCRIPTION)
+    private fun getPodcastDescription(arguments: Bundle?): String? =
+        arguments?.getString(PODCAST_DESCRIPTION)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,24 +44,33 @@ abstract class FeedFragment : BackableFragment() {
             duration = 500
             fadeMode = MaterialContainerTransform.FADE_MODE_OUT
             startShapeAppearanceModel = ShapeAppearanceModel().withCornerSize(0f)
-            endShapeAppearanceModel = ShapeAppearanceModel().withCornerSize(getDimen(R.dimen.radius_default))
+            endShapeAppearanceModel =
+                ShapeAppearanceModel().withCornerSize(getDimen(R.dimen.radius_default))
             scrimColor = Color.TRANSPARENT
 
             // Load the cached image with corner radius when the transition is done
             doOnEnd {
-                podcastImage.loadWithRoundCorners(getPodcastImage(arguments), R.dimen.radius_default_coil)
+                podcastImage.loadWithRoundCorners(
+                    getPodcastImage(arguments),
+                    R.dimen.radius_default_coil
+                )
             }
         }
 
         sharedElementReturnTransition = MaterialContainerTransform(requireContext()).apply {
             duration = 500
-            startShapeAppearanceModel = ShapeAppearanceModel().withCornerSize(getDimen(R.dimen.radius_default))
+            startShapeAppearanceModel =
+                ShapeAppearanceModel().withCornerSize(getDimen(R.dimen.radius_default))
             endShapeAppearanceModel = ShapeAppearanceModel().withCornerSize(0f)
             scrimColor = Color.TRANSPARENT
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.feed_fragment, container, false)
     }
 
@@ -117,7 +127,7 @@ abstract class FeedFragment : BackableFragment() {
 
     private fun initAdapter() {
         episodeList.apply {
-            adapter =  EpisodeAdapter(
+            adapter = EpisodeAdapter(
                 { view, episode -> handleEpisodeClicked(view, episode) },
                 { handleDownloadClicked(it) }
             )
@@ -162,11 +172,13 @@ abstract class FeedFragment : BackableFragment() {
         when (subscriptionState) {
             is Unsubscribed -> {
                 subscribeButton.setImageResource(R.drawable.ic_check_24px)
-                subscribeButton.backgroundTintList = ColorStateList.valueOf(getColorById(R.color.positive))
+                subscribeButton.backgroundTintList =
+                    ColorStateList.valueOf(getColorById(R.color.positive))
             }
             is Subscribed -> {
                 subscribeButton.setImageResource(R.drawable.ic_clear_24px)
-                subscribeButton.backgroundTintList = ColorStateList.valueOf(getColorById(R.color.negative))
+                subscribeButton.backgroundTintList =
+                    ColorStateList.valueOf(getColorById(R.color.negative))
             }
         }
     }

@@ -28,7 +28,11 @@ class PodcastFragment : BackableFragment() {
 
     private val podcastViewModel: PodcastViewModel by viewModel()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.podcast_fragment, container, false)
     }
 
@@ -51,9 +55,8 @@ class PodcastFragment : BackableFragment() {
     }
 
     private fun initAdapter() {
-
         podcastList.apply {
-            adapter = PodcastAdapter { view, podcast ->  goTo(view, podcast) }
+            adapter = PodcastAdapter { view, podcast -> goTo(view, podcast) }
             layoutManager = GridLayoutManager(context, 4)
         }
     }
@@ -87,7 +90,6 @@ class PodcastFragment : BackableFragment() {
             podcasts.forEach {
                 Coil.get(it.image)
             }
-
         }
     }
 }

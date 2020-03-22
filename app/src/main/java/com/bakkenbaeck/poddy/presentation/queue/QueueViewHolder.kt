@@ -14,7 +14,8 @@ import com.bakkenbaeck.poddy.util.OnStartDragListener
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.queue_item.*
 
-class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer, ItemTouchHelperViewHolder {
+class QueueViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+    LayoutContainer, ItemTouchHelperViewHolder {
 
     fun setItem(episode: ViewEpisode) {
         date.text = episode.pubDate.toDate()

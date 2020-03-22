@@ -47,7 +47,10 @@ class PodcastRepository(
         singlePodcastChannel.send(Pair(dbPodcast, dbEpisodes))
     }
 
-    suspend fun getPodcastFlow(podcastId: String, nextDate: Long? = null): Flow<Pair<Podcast, List<Episode>>?> {
+    suspend fun getPodcastFlow(
+        podcastId: String,
+        nextDate: Long? = null
+    ): Flow<Pair<Podcast, List<Episode>>?> {
         return flow {
             val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcastId)
             if (dbPodcast != null) {
@@ -98,7 +101,8 @@ class PodcastRepository(
 
     suspend fun toggleSubscription(podcast: ViewPodcast): Flow<Boolean> {
         return flow {
-            val hasAlreadySubscribed = subscriptionDBHandler.doesSubscribedPodcastAlreadyExist(podcast.id)
+            val hasAlreadySubscribed =
+                subscriptionDBHandler.doesSubscribedPodcastAlreadyExist(podcast.id)
             val dbPodcast = mapPodcastFromViewToDB(podcast)
 
             if (hasAlreadySubscribed) subscriptionDBHandler.deleteSubscribedPodcast(podcast.id)

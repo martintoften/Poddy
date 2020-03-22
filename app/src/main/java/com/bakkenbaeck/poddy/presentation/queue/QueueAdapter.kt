@@ -35,7 +35,7 @@ class QueueAdapter(
     override fun getItemCount() = items.count()
 
     override fun onBindViewHolder(holder: QueueViewHolder, position: Int) {
-       val item = items[position]
+        val item = items[position]
 
         holder.apply {
             setItem(item)

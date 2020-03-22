@@ -12,7 +12,12 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModel { MainViewModel(playerChannel = get(named("playerChannel")), queueRepository = get()) }
+    viewModel {
+        MainViewModel(
+            playerChannel = get(named("playerChannel")),
+            queueRepository = get()
+        )
+    }
     viewModel { SearchViewModel(podcastRepository = get()) }
     viewModel { QueueViewModel(queueRepository = get()) }
     viewModel { PodcastViewModel(podcastRepository = get()) }
@@ -22,7 +27,8 @@ val viewModelModule = module {
             queueRepository = get(),
             downloadRepository = get(),
             progressChannel = get(named("progressChannel")),
-            playerChannel = get(named("playerChannel")))
+            playerChannel = get(named("playerChannel"))
+        )
     }
 
     viewModel { SearchFeedViewModel(podcastRepository = get()) }
