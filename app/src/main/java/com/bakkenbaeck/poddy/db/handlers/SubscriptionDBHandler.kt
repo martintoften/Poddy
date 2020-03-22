@@ -6,32 +6,39 @@ import org.db.Podcast
 import org.db.Subscription
 import kotlin.coroutines.CoroutineContext
 
-class SubscriptionDBHandler(
+interface SubscriptionDBHandler {
+    suspend fun getSubscribedPodcasts(): List<Podcast>
+    suspend fun doesSubscribedPodcastAlreadyExist(podcastId: String): Boolean
+    suspend fun insertSubscribedPodcast(podcast: Podcast)
+    suspend fun deleteSubscribedPodcast(podcastId: String)
+}
+
+class SubscriptionDBHandlerImpl(
     private val db: PoddyDB,
     private val context: CoroutineContext
-) {
-    suspend fun getSubscribedPodcasts(): List<Podcast> {
+) : SubscriptionDBHandler {
+    override suspend fun getSubscribedPodcasts(): List<Podcast> {
         return withContext(context) {
             val ids = db.subQueries.selectAll().executeAsList()
             return@withContext db.podcastQueries.selectByIds(ids).executeAsList()
         }
     }
 
-    suspend fun doesSubscribedPodcastAlreadyExist(podcastId: String): Boolean {
+    override suspend fun doesSubscribedPodcastAlreadyExist(podcastId: String): Boolean {
         return withContext(context) {
             val result = db.subQueries.doesAlreadyExist(podcastId).executeAsOne()
             return@withContext result > 0
         }
     }
 
-    suspend fun insertSubscribedPodcast(podcast: Podcast) {
+    override suspend fun insertSubscribedPodcast(podcast: Podcast) {
         return withContext(context) {
             db.subQueries.insert(Subscription.Impl(podcast.id))
             db.podcastQueries.insert(podcast)
         }
     }
 
-    suspend fun deleteSubscribedPodcast(podcastId: String) {
+    override suspend fun deleteSubscribedPodcast(podcastId: String) {
         return withContext(context) {
             db.podcastQueries.delete(podcastId)
             db.subQueries.delete(podcastId)

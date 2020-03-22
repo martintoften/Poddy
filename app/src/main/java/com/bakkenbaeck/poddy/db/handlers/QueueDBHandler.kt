@@ -6,11 +6,18 @@ import org.db.Episode
 import org.db.Queue
 import kotlin.coroutines.CoroutineContext
 
-class QueueDBHandler(
+interface QueueDBHandler {
+    suspend fun getQueue(): List<Episode>
+    suspend fun insertQueueItem(queue: Queue, episode: Episode)
+    suspend fun reorderQueue(queueIds: List<String>)
+    suspend fun doesEpisodeAlreadyExist(episodeId: String): Boolean
+}
+
+class QueueDBHandlerImpl(
     private val db: PoddyDB,
     private val context: CoroutineContext
-) {
-    suspend fun getQueue(): List<Episode> {
+) : QueueDBHandler {
+    override suspend fun getQueue(): List<Episode> {
         return withContext(context) {
             val queue = db.queueQueries.selectEpisodeIdAll().executeAsList()
             val episodeResult = db.episodeQueries.selectByIds(queue).executeAsList()
@@ -20,7 +27,7 @@ class QueueDBHandler(
         }
     }
 
-    suspend fun insertQueueItem(queue: Queue, episode: Episode) {
+    override suspend fun insertQueueItem(queue: Queue, episode: Episode) {
         return withContext(context) {
             db.episodeQueries.insert(episode)
             db.queueQueries.insert(queue)
@@ -33,7 +40,7 @@ class QueueDBHandler(
         }
     }
 
-    suspend fun reorderQueue(queueIds: List<String>) {
+    override suspend fun reorderQueue(queueIds: List<String>) {
         return withContext(context) {
             queueIds.forEachIndexed { index, id ->
                 db.queueQueries.updateIndex(index.toLong(), id)
@@ -41,7 +48,7 @@ class QueueDBHandler(
         }
     }
 
-    suspend fun doesEpisodeAlreadyExist(episodeId: String): Boolean {
+    override suspend fun doesEpisodeAlreadyExist(episodeId: String): Boolean {
         return withContext(context) {
             val result = db.queueQueries.alreadyExist(episodeId).executeAsOne()
             return@withContext result > 0

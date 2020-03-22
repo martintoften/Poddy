@@ -7,7 +7,6 @@ import com.bakkenbaeck.poddy.notification.PlayerNotificationHandler
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
-import com.bakkenbaeck.poddy.repository.PodcastRepository
 import com.bakkenbaeck.poddy.repository.ProgressRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.service.PlayerActionBuilder
