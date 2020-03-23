@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleQueue(queueSize: Int) {
-        val peekHeight = if (queueSize == 0) dpToPx(R.dimen.peek_height_invisible)
+        val peekHeight = if (queueSize == 0) dpToPx(R.dimen.nav_height)
         else dpToPx(R.dimen.peek_height_expanded)
 
         ValueAnimator.ofInt(sheetBehavior.peekHeight, peekHeight).apply {
@@ -132,10 +132,9 @@ class MainActivity : AppCompatActivity() {
             interpolator = DecelerateInterpolator()
             addUpdateListener {
                 val value = it.animatedValue as Int
-                val bottomMargin = value - dpToPx(R.dimen.nav_height)
                 sheetBehavior.peekHeight = value
                 val layoutParams = navHostContainer.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.bottomMargin = bottomMargin
+                layoutParams.bottomMargin = value
             }
         }.start()
     }
