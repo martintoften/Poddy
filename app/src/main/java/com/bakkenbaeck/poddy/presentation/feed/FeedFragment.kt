@@ -107,7 +107,8 @@ abstract class FeedFragment : BackableFragment() {
     }
 
     private fun initFloatingActionButton() {
-        subscribeButton.hide()
+        subscribeButton.scaleX = 0.0f
+        subscribeButton.scaleY = 0.0f
         subscribeButton.setOnClickListener { subscribe() }
     }
 
@@ -193,9 +194,6 @@ abstract class FeedFragment : BackableFragment() {
 
     private fun animateSubscribeButton() {
         if (hasAnimatedFab) return
-
-        subscribeButton.scaleX = 0.3f
-        subscribeButton.scaleY = 0.3f
 
         AnimatorSet().apply {
             duration = 300
