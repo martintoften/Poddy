@@ -70,7 +70,8 @@ fun Fragment.pxToDp(px: Float): Float {
 }
 
 fun Fragment.hideKeyboard() {
-    val imm: InputMethodManager = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    val imm: InputMethodManager =
+        activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     var view = activity?.currentFocus
     if (view == null) {
         view = View(activity)

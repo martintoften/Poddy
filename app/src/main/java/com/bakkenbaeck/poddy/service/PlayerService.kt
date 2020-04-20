@@ -6,14 +6,12 @@ import android.os.IBinder
 import com.bakkenbaeck.poddy.EPISODE
 import com.bakkenbaeck.poddy.PlayerHandler
 import com.bakkenbaeck.poddy.PodcastPlayer
-import com.bakkenbaeck.poddy.PodcastPlayerImpl
 import com.bakkenbaeck.poddy.notification.PlayerNotificationHandlerImpl
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.ProgressRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.util.EpisodePathHelper
-import com.bakkenbaeck.poddy.util.EpisodePathHelperImpl
 import com.bakkenbaeck.poddy.util.PlayerQueue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel

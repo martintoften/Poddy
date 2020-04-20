@@ -1,6 +1,5 @@
 package com.bakkenbaeck.poddy
 
-import com.bakkenbaeck.poddy.extensions.getEpisodePath
 import com.bakkenbaeck.poddy.notification.PlayerNotificationHandler
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
@@ -152,7 +151,7 @@ class PlayerHandler(
                 playerChannel.send(action)
             }
             is ViewPlayerAction.Pause, is ViewPlayerAction.Play -> playerChannel.send(action)
-            else -> {}//Log.e("PlayerService", "Invalid action at this stage")
+            else -> {} // Log
         }
     }
 

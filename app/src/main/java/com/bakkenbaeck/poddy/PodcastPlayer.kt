@@ -3,7 +3,6 @@ package com.bakkenbaeck.poddy
 import android.media.MediaPlayer
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import java.io.FileNotFoundException
-import java.lang.Exception
 
 interface PodcastPlayer {
     fun load(
@@ -12,6 +11,7 @@ interface PodcastPlayer {
         onStartListener: () -> Unit,
         onCompletedListener: () -> Unit
     )
+
     fun seekTo(progressInPercent: Int)
     fun start()
     fun pause()
@@ -38,7 +38,7 @@ class PodcastPlayerImpl(
             try {
                 mediaPlayer.setDataSource(episode.audio)
             } catch (e: Exception) {
-               // Log and show error somehow
+                // Log and show error somehow
             }
         }
 
