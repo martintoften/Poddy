@@ -5,14 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sheet"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="?attr/colorAccent">
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingVertical="50dp">
+        android:paddingVertical="30dp">
 
         <ImageView
             android:id="@+id/image"
