@@ -2,6 +2,8 @@ package com.bakkenbaeck.poddy
 
 import android.media.MediaPlayer
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
+import java.io.FileNotFoundException
+import java.lang.Exception
 
 class PodcastPlayer(
     private val mediaPlayer: MediaPlayer = MediaPlayer()
@@ -13,7 +15,16 @@ class PodcastPlayer(
         onCompletedListener: () -> Unit
     ) {
         mediaPlayer.reset()
-        mediaPlayer.setDataSource(path)
+        try {
+            mediaPlayer.setDataSource(path)
+        } catch (ex: FileNotFoundException) {
+            try {
+                mediaPlayer.setDataSource(episode.audio)
+            } catch (e: Exception) {
+               // Log and show error somehow
+            }
+        }
+
         mediaPlayer.setOnPreparedListener {
             onStartListener()
             mediaPlayer.seekTo(episode.progress.toInt())
