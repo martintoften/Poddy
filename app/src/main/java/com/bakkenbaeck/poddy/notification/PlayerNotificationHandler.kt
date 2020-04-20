@@ -14,9 +14,15 @@ const val PLAYER_NOTIFICATION_ID = 2
 const val PLAYER_CHANNEL_ID = "102"
 const val PLAYER_CHANNEL_NAME = "Player channel"
 
-class PlayerNotificationHandler(
+interface PlayerNotificationHandler {
+    fun showPauseNotification(podcastName: String)
+    fun showPlayNotification(podcastName: String)
+    fun initNotification(podcastName: String)
+}
+
+class PlayerNotificationHandlerImpl(
     private val context: Service
-) {
+) : PlayerNotificationHandler {
 
     private var channel: NotificationChannel? = null
 
@@ -45,13 +51,13 @@ class PlayerNotificationHandler(
         return builder.build()
     }
 
-    fun showPauseNotification(podcastName: String) {
+    override fun showPauseNotification(podcastName: String) {
         val action = generatePauseAction()
         val notification = buildNotification(podcastName, action)
         context.notifyNotification(PLAYER_NOTIFICATION_ID, notification)
     }
 
-    fun showPlayNotification(podcastName: String) {
+    override fun showPlayNotification(podcastName: String) {
         val action = generatePlayAction()
         val notification = buildNotification(podcastName, action)
         context.notifyNotification(PLAYER_NOTIFICATION_ID, notification)
@@ -82,7 +88,7 @@ class PlayerNotificationHandler(
         return PendingIntent.getActivity(context, 0, notificationIntent, 0)
     }
 
-    fun initNotification(podcastName: String) {
+    override fun initNotification(podcastName: String) {
         createChannel()
         val action = generatePauseAction()
         val notification = buildNotification(podcastName, action)

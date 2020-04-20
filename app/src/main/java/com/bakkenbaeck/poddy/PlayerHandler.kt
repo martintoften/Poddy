@@ -1,7 +1,5 @@
 package com.bakkenbaeck.poddy
 
-import android.content.Intent
-import android.util.Log
 import com.bakkenbaeck.poddy.extensions.getEpisodePath
 import com.bakkenbaeck.poddy.notification.PlayerNotificationHandler
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
@@ -18,6 +16,7 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 const val EPISODE = "EPISODE"
 
@@ -32,14 +31,15 @@ class PlayerHandler(
     private val queueRepository: QueueRepository,
     private val progressRepository: ProgressRepository,
     private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction>,
-    private val playerNotificationHandler: PlayerNotificationHandler
+    private val playerNotificationHandler: PlayerNotificationHandler,
+    private val podcastPlayer: PodcastPlayer,
+    private val mainDispatcher: CoroutineContext
 ) {
     private var isQueueListenerInitialised = false
 
     private val scope by lazy { CoroutineScope(Dispatchers.Main) }
-    private val podcastPlayer by lazy { PodcastPlayer() }
 
-    private val tickerChannel by lazy { ticker(delayMillis = 1000, context = Dispatchers.Main) }
+    private val tickerChannel by lazy { ticker(delayMillis = 1000, context = mainDispatcher) }
     private val playerQueue by lazy { PlayerQueue() }
     private val playerActionBuilder by lazy { PlayerActionBuilder(playerQueue) }
 
@@ -112,10 +112,8 @@ class PlayerHandler(
         podcastPlayer.pause()
     }
 
-    fun handleIntent(intent: Intent) {
-        val action = intent.action ?: return
-        val episode = intent.getParcelableExtra<ViewEpisode?>(EPISODE)
-
+    fun handleIntent(action: String?, episode: ViewEpisode?) {
+        if (action == null) return
         handleAction(action, episode)
         buildAndBroadcastAction(action, episode)
     }
@@ -152,7 +150,7 @@ class PlayerHandler(
                 playerChannel.send(action)
             }
             is ViewPlayerAction.Pause, is ViewPlayerAction.Play -> playerChannel.send(action)
-            else -> Log.e("PlayerService", "Invalid action at this stage")
+            else -> {}//Log.e("PlayerService", "Invalid action at this stage")
         }
     }
 

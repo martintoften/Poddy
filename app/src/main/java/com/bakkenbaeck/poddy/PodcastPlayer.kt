@@ -5,10 +5,27 @@ import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import java.io.FileNotFoundException
 import java.lang.Exception
 
-class PodcastPlayer(
-    private val mediaPlayer: MediaPlayer = MediaPlayer()
-) {
+interface PodcastPlayer {
     fun load(
+        episode: ViewEpisode,
+        path: String,
+        onStartListener: () -> Unit,
+        onCompletedListener: () -> Unit
+    )
+    fun seekTo(progressInPercent: Int)
+    fun start()
+    fun pause()
+    fun isPlaying(): Boolean
+    fun getDuration(): Int
+    fun getProgress(): Int
+    fun getProgressAndDuration(): Pair<Int, Int>
+    fun destroy()
+}
+
+class PodcastPlayerImpl(
+    private val mediaPlayer: MediaPlayer = MediaPlayer()
+) : PodcastPlayer {
+    override fun load(
         episode: ViewEpisode,
         path: String,
         onStartListener: () -> Unit,
@@ -34,24 +51,24 @@ class PodcastPlayer(
         mediaPlayer.setOnCompletionListener { onCompletedListener() }
     }
 
-    fun seekTo(progressInPercent: Int) {
+    override fun seekTo(progressInPercent: Int) {
         val progress = (mediaPlayer.duration) * (progressInPercent.toDouble() / 100)
         mediaPlayer.seekTo(progress.toInt())
     }
 
-    fun start() = mediaPlayer.start()
+    override fun start() = mediaPlayer.start()
 
-    fun pause() = mediaPlayer.pause()
+    override fun pause() = mediaPlayer.pause()
 
-    fun isPlaying() = mediaPlayer.isPlaying
+    override fun isPlaying(): Boolean = mediaPlayer.isPlaying
 
-    fun getDuration() = mediaPlayer.duration
+    override fun getDuration(): Int = mediaPlayer.duration
 
-    fun getProgress() = mediaPlayer.currentPosition
+    override fun getProgress(): Int = mediaPlayer.currentPosition
 
-    fun getProgressAndDuration(): Pair<Int, Int> = Pair(getProgress(), getDuration())
+    override fun getProgressAndDuration(): Pair<Int, Int> = Pair(getProgress(), getDuration())
 
-    fun destroy() {
+    override fun destroy() {
         mediaPlayer.release()
     }
 }
