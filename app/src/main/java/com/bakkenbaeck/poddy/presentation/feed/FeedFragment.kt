@@ -1,5 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -40,7 +42,7 @@ abstract class FeedFragment : BackableFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform(requireContext()).apply {
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
             duration = 500
             fadeMode = MaterialContainerTransform.FADE_MODE_OUT
             startShapeAppearanceModel = ShapeAppearanceModel().withCornerSize(0f)
@@ -57,7 +59,7 @@ abstract class FeedFragment : BackableFragment() {
             }
         }
 
-        sharedElementReturnTransition = MaterialContainerTransform(requireContext()).apply {
+        sharedElementReturnTransition = MaterialContainerTransform().apply {
             duration = 500
             startShapeAppearanceModel =
                 ShapeAppearanceModel().withCornerSize(getDimen(R.dimen.radius_default))
@@ -105,6 +107,7 @@ abstract class FeedFragment : BackableFragment() {
     }
 
     private fun initFloatingActionButton() {
+        subscribeButton.hide()
         subscribeButton.setOnClickListener { subscribe() }
     }
 
@@ -181,5 +184,27 @@ abstract class FeedFragment : BackableFragment() {
                     ColorStateList.valueOf(getColorById(R.color.negative))
             }
         }
+
+        subscribeButton.show()
+        animateSubscribeButton()
+    }
+
+    private var hasAnimatedFab = false
+
+    private fun animateSubscribeButton() {
+        if (hasAnimatedFab) return
+
+        subscribeButton.scaleX = 0.3f
+        subscribeButton.scaleY = 0.3f
+
+        AnimatorSet().apply {
+            duration = 300
+            playTogether(
+                ObjectAnimator.ofFloat(subscribeButton, "scaleX", 1f),
+                ObjectAnimator.ofFloat(subscribeButton, "scaleY", 1f)
+            )
+        }.start()
+
+        hasAnimatedFab = true
     }
 }

@@ -1,10 +1,13 @@
 package com.bakkenbaeck.poddy.extensions
 
+import android.app.Activity
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
@@ -64,4 +67,13 @@ fun Fragment.dpToPx(dp: Float): Float {
 
 fun Fragment.pxToDp(px: Float): Float {
     return requireContext().pxToDp(px)
+}
+
+fun Fragment.hideKeyboard() {
+    val imm: InputMethodManager = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    var view = activity?.currentFocus
+    if (view == null) {
+        view = View(activity)
+    }
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
 }

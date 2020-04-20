@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.hideKeyboard
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.feed.PODCAST_DESCRIPTION
@@ -67,6 +68,7 @@ class SearchFragment : BackableFragment() {
             putString(PODCAST_DESCRIPTION, searchItem.description)
         }
         val extras = FragmentNavigatorExtras(view to searchItem.id)
+        hideKeyboard()
         navigate(id = R.id.to_details_fragment, args = bundle, extras = extras)
     }
 
