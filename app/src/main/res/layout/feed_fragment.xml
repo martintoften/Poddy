@@ -28,7 +28,7 @@
         app:showBackArrow="true" />
 
     <!-- Invisible imageView to load the image into so the image is ready when the transition finishes -->
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/podcastImagePlaceHolder"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -39,7 +39,7 @@
         android:translationZ="0dp"
         android:visibility="invisible"/>
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/podcastImage"
         android:layout_width="140dp"
         android:layout_height="140dp"
@@ -50,7 +50,7 @@
         app:layout_constraintBottom_toTopOf="@id/episodeList"
         android:translationZ="1dp"/>
 
-   <TextView
+   <com.google.android.material.textview.MaterialTextView
        android:id="@+id/podcastDescription"
        android:layout_width="0dp"
        android:layout_height="wrap_content"

@@ -11,7 +11,7 @@
     android:paddingBottom="@dimen/margin_three_quarters"
     android:background="?attr/selectableItemBackground">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         app:layout_constraintEnd_toStartOf="@id/isDownloaded"
         tools:text="August 29"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         app:layout_constraintEnd_toStartOf="@id/isDownloaded"
         tools:text="The crime machineufhuehfherfheufh hef uherfiu hefuh ierfh h fiueh fiuehf "/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/length"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         app:layout_constraintEnd_toStartOf="@id/isDownloaded"
         tools:text="47 min"/>
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/isDownloaded"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

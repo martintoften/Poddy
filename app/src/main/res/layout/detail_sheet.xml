@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:paddingVertical="30dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image"
             android:layout_width="160dp"
             android:layout_height="160dp"
@@ -21,7 +21,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/episodeName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
             app:layout_constraintTop_toBottomOf="@id/image"
             tools:text="Kissing the concreate" />
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/play"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -48,7 +48,7 @@
             app:layout_constraintTop_toBottomOf="@id/episodeName"
             app:srcCompat="@drawable/ic_player_play" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/queue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
             app:layout_constraintStart_toEndOf="@id/play"
             app:layout_constraintTop_toBottomOf="@id/play" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
             app:layout_constraintTop_toBottomOf="@id/play"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/downloadProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
             tools:text="55%"
             tools:visibility="visible"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

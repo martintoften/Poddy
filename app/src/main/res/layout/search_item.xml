@@ -11,7 +11,7 @@
     android:gravity="center_vertical"
     android:background="?attr/selectableItemBackground">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image"
         android:layout_width="60dp"
         android:layout_height="60dp" />
@@ -23,7 +23,7 @@
         android:layout_marginStart="@dimen/margin_half"
         android:gravity="center_vertical">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/showName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:textSize="@dimen/text_primary"
             tools:text="Reply all"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

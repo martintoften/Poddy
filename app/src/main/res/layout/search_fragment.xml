@@ -9,7 +9,7 @@
     android:background="?attr/colorAccent"
     app:layoutDescription="@xml/search_fragment_scene">
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
