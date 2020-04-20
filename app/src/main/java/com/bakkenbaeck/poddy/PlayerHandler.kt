@@ -9,6 +9,7 @@ import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.service.PlayerActionBuilder
 import com.bakkenbaeck.poddy.util.EpisodePathHelper
 import com.bakkenbaeck.poddy.util.PlayerQueue
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -16,7 +17,6 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 const val EPISODE = "EPISODE"
 

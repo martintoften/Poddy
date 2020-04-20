@@ -1,10 +1,10 @@
 package com.bakkenbaeck.poddy.db.handlers
 
 import db.PoddyDB
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.withContext
 import org.db.Podcast
 import org.db.Subscription
-import kotlin.coroutines.CoroutineContext
 
 interface SubscriptionDBHandler {
     suspend fun getSubscribedPodcasts(): List<Podcast>

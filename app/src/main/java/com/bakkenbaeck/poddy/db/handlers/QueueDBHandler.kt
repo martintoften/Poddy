@@ -1,10 +1,10 @@
 package com.bakkenbaeck.poddy.db.handlers
 
 import db.PoddyDB
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.withContext
 import org.db.Episode
 import org.db.Queue
-import kotlin.coroutines.CoroutineContext
 
 interface QueueDBHandler {
     suspend fun getQueue(): List<Episode>

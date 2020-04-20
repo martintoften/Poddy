@@ -2,9 +2,9 @@ package com.bakkenbaeck.poddy.db.handlers
 
 import com.bakkenbaeck.poddy.presentation.model.DownloadState
 import db.PoddyDB
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.withContext
 import org.db.Episode
-import kotlin.coroutines.CoroutineContext
 
 interface EpisodeDBHandler {
     suspend fun getEpisodes(podcastId: String): List<Episode>

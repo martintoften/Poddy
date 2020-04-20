@@ -2,7 +2,6 @@ package com.bakkenbaeck.poddy.util
 
 import androidx.recyclerview.widget.RecyclerView
 
-
 interface ItemTouchHelperAdapter {
 
     /**
@@ -13,14 +12,13 @@ interface ItemTouchHelperAdapter {
      * adjusting the underlying data to reflect this move.
      *
      * @param fromPosition The start position of the moved item.
-     * @param toPosition   Then resolved position of the moved item.
+     * @param toPosition Then resolved position of the moved item.
      * @return True if the item was moved to the new adapter position.
      *
      * @see RecyclerView.getAdapterPositionFor
      * @see RecyclerView.ViewHolder.getAdapterPosition
      */
     fun onItemMove(fromPosition: Int, toPosition: Int): Boolean
-
 
     /**
      * Called when an item has been dismissed by a swipe.<br></br>

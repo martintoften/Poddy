@@ -18,7 +18,6 @@ import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import java.io.File
 
-
 fun Fragment.navigate(
     id: Int,
     args: Bundle? = null,

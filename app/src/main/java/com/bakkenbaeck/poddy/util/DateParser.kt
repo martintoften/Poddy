@@ -1,7 +1,8 @@
 package com.bakkenbaeck.poddy.util
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 const val OUTPUT_DATE_FORMAT = "MMMM d, yyyy"
 const val INPUT_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z"

@@ -1,11 +1,11 @@
 package com.bakkenbaeck.poddy.db.handlers
 
 import db.PoddyDB
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import org.db.Episode
 import org.db.Podcast
-import kotlin.coroutines.CoroutineContext
 
 interface PodcastDBHandler {
     suspend fun getPodcastWithEpisodes(id: String): Pair<Podcast?, List<Episode>>

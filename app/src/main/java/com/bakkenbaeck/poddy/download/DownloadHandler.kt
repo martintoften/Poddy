@@ -1,11 +1,11 @@
 package com.bakkenbaeck.poddy.download
 
 import com.bakkenbaeck.poddy.network.DownloadApi
+import java.io.File
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.sink
-import java.io.File
-import kotlin.coroutines.CoroutineContext
 
 class DownloadHandler(
     private val downloadApi: DownloadApi,

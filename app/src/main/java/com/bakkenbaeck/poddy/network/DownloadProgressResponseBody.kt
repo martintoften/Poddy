@@ -47,7 +47,5 @@ class DownloadProgressResponseBody(
                 return bytesRead
             }
         }
-
     }
-
 }

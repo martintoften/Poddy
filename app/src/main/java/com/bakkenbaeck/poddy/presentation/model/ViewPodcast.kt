@@ -30,7 +30,6 @@ data class ViewEpisode(
     val progress: Long
 ) : Diffable, Parcelable
 
-
 enum class DownloadState(val value: Int) {
     NOT_DOWNLOADED(0),
     IN_PROGRESS(1),

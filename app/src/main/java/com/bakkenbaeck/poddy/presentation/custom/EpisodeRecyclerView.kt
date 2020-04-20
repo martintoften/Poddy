@@ -7,7 +7,9 @@ import com.bakkenbaeck.poddy.extensions.findLastCompletelyVisibleItemPosition
 import com.bakkenbaeck.poddy.extensions.isLastVisible
 
 class EpisodeRecyclerView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
     private var lastSeenPosition: Int = -1

@@ -2,7 +2,6 @@ package com.bakkenbaeck.poddy.util
 
 import androidx.recyclerview.widget.RecyclerView
 
-
 interface OnStartDragListener {
 
     /**
@@ -11,5 +10,4 @@ interface OnStartDragListener {
      * @param viewHolder The holder of the view to drag.
      */
     fun onStartDrag(viewHolder: RecyclerView.ViewHolder)
-
 }

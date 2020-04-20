@@ -3,9 +3,9 @@ package com.bakkenbaeck.poddy.repository.mappers
 import com.bakkenbaeck.poddy.network.model.PodcastResponse
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
+import java.util.*
 import org.db.Episode
 import org.db.Podcast
-import java.util.*
 
 fun mapPodcastFromNetworkToDB(podcast: PodcastResponse): Podcast.Impl {
     return Podcast.Impl(
@@ -35,7 +35,6 @@ fun mapEpisodesFromNetworkToDB(podcast: PodcastResponse): List<Episode.Impl> {
         )
     }
 }
-
 
 fun mapPodcastFromViewToDB(podcast: ViewPodcast): Podcast.Impl {
     return Podcast.Impl(

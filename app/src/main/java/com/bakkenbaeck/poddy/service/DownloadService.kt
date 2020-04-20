@@ -15,13 +15,13 @@ import com.bakkenbaeck.poddy.repository.DownloadRepository
 import com.bakkenbaeck.poddy.util.DownloadTask
 import com.bakkenbaeck.poddy.util.SafeQueue
 import com.bakkenbaeck.poddy.util.createNewFile
+import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
-import java.io.File
 
 const val NOTIFICATION_ID = 1
 const val DEFAULT_NOTIFICATION_TITLE = "Downloading..."

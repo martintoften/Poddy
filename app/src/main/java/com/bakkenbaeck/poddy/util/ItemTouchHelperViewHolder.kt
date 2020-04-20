@@ -2,7 +2,6 @@ package com.bakkenbaeck.poddy.util
 
 import androidx.recyclerview.widget.ItemTouchHelper
 
-
 interface ItemTouchHelperViewHolder {
 
     /**
@@ -10,7 +9,6 @@ interface ItemTouchHelperViewHolder {
      * Implementations should update the item view to indicate it's active state.
      */
     fun onItemSelected()
-
 
     /**
      * Called when the [ItemTouchHelper] has completed the move or swipe, and the active item

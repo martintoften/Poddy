@@ -47,10 +47,10 @@ class FeedViewModel(
     fun isEpisodePlaying(episode: ViewEpisode): Boolean {
         val currentEpisode = playerQueue.current() ?: return false
         val action = playerChannel.valueOrNull ?: return false
-        return episode.id == currentEpisode.id
-                && (action is ViewPlayerAction.Play
-                || action is ViewPlayerAction.Start
-                || action is ViewPlayerAction.Progress)
+        return episode.id == currentEpisode.id &&
+                (action is ViewPlayerAction.Play ||
+                action is ViewPlayerAction.Start ||
+                action is ViewPlayerAction.Progress)
     }
 
     private fun listenForDownloadUpdates() {
