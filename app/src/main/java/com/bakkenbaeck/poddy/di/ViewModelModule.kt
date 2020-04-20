@@ -27,7 +27,8 @@ val viewModelModule = module {
             queueRepository = get(),
             downloadRepository = get(),
             progressChannel = get(named("progressChannel")),
-            playerChannel = get(named("playerChannel"))
+            playerChannel = get(named("playerChannel")),
+            playerQueue = get()
         )
     }
 

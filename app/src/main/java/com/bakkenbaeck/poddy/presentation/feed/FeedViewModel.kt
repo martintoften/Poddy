@@ -11,6 +11,7 @@ import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.repository.DownloadRepository
 import com.bakkenbaeck.poddy.repository.PodcastRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
+import com.bakkenbaeck.poddy.util.PlayerQueue
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
 import kotlinx.coroutines.Dispatchers
@@ -23,19 +24,18 @@ class FeedViewModel(
     private val queueRepository: QueueRepository,
     private val downloadRepository: DownloadRepository,
     private val progressChannel: ConflatedBroadcastChannel<ProgressEvent>,
-    private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction>
+    private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction>,
+    private val playerQueue: PlayerQueue
 ) : ViewModel() {
 
-    var selectedEpisode: ViewEpisode? = null
-    val feedResult by lazy { MutableLiveData<Resource<ViewPodcast>>() }
-    val downloadUpdates by lazy { MutableLiveData<ProgressEvent>() }
+    private var selectedEpisode: ViewEpisode? = null
+    private val downloadUpdates by lazy { MutableLiveData<ProgressEvent>() }
     val playerUpdates by lazy { MutableLiveData<ViewPlayerAction>() }
 
     init {
         listenForPlayerAction()
         listenForDownloadUpdates()
         listenForFinishedDownloads()
-        listenForPodcastUpdates()
     }
 
     private fun listenForPlayerAction() {
@@ -47,9 +47,12 @@ class FeedViewModel(
     }
 
     fun isEpisodePlaying(episode: ViewEpisode): Boolean {
+        val currentEpisode = playerQueue.current() ?: return false
         val action = playerChannel.valueOrNull ?: return false
-        return episode.id == action.episode.id
-                && (action is ViewPlayerAction.Play || action is ViewPlayerAction.Start)
+        return episode.id == currentEpisode.id
+                && (action is ViewPlayerAction.Play
+                || action is ViewPlayerAction.Start
+                || action is ViewPlayerAction.Progress)
     }
 
     private fun listenForDownloadUpdates() {
@@ -65,25 +68,6 @@ class FeedViewModel(
             downloadRepository.listenForDownloadStateUpdates()
                 .filterNotNull()
                 .collect { podcastRepository.broadcastUpdatedPodcast(it) }
-        }
-    }
-
-    private fun listenForPodcastUpdates() {
-        viewModelScope.launch {
-            podcastRepository.listenForPodcastUpdates()
-                .filterNotNull()
-                .flatMapMerge { podcast ->
-                    podcastRepository.hasSubscribed(podcast.first)
-                        .map { hasSubscribed ->
-                            mapToViewPodcastFromDB(
-                                podcast.first,
-                                podcast.second,
-                                hasSubscribed
-                            )
-                        }
-                }
-                .flowOn(Dispatchers.IO)
-                .collect { feedResult.value = Success(it) }
         }
     }
 

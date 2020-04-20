@@ -35,14 +35,14 @@ class PlayerHandler(
     private val playerNotificationHandler: PlayerNotificationHandler,
     private val podcastPlayer: PodcastPlayer,
     private val mainDispatcher: CoroutineContext,
-    private val episodeHelper: EpisodePathHelper
+    private val episodeHelper: EpisodePathHelper,
+    private val playerQueue: PlayerQueue
 ) {
     private var isQueueListenerInitialised = false
 
     private val scope by lazy { CoroutineScope(Dispatchers.Main) }
 
     private val tickerChannel by lazy { ticker(delayMillis = 1000, context = mainDispatcher) }
-    private val playerQueue by lazy { PlayerQueue() }
     private val playerActionBuilder by lazy { PlayerActionBuilder(playerQueue) }
 
     fun init() {

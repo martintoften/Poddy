@@ -2,13 +2,16 @@ package com.bakkenbaeck.poddy.presentation.modal
 
 import android.os.Bundle
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.Observer
 import com.bakkenbaeck.poddy.ACTION_START
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.getPlayIcon
 import com.bakkenbaeck.poddy.extensions.getScreenHeight
 import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
 import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.presentation.feed.FeedViewModel
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
+import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.service.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.detail_sheet.*
@@ -35,6 +38,7 @@ class DetailsFragment : BaseBottomDialogFragment() {
     override fun init(bundle: Bundle?) {
         initViewHeight()
         initView()
+        initObservers()
         val episode = getEpisode()
         updateSheetStateToExpanded(episode)
     }
@@ -74,6 +78,26 @@ class DetailsFragment : BaseBottomDialogFragment() {
             putExtra(ID, episode.id)
             putExtra(URL, episode.audio)
             putExtra(NAME, episode.title)
+        }
+    }
+
+    private fun initObservers() {
+        feedViewModel.playerUpdates.observe(this, Observer {
+            handlePlayerUpdates(it)
+        })
+    }
+
+    private fun handlePlayerUpdates(action: ViewPlayerAction) {
+        when (action) {
+            is ViewPlayerAction.Progress -> {} // Do nothing
+            else -> updatePlayerUi(action)
+        }
+    }
+
+    private fun updatePlayerUi(action: ViewPlayerAction) {
+        val drawable = action.getPlayIcon() ?: return
+        sheet.apply {
+            play.setImageResource(drawable)
         }
     }
 
