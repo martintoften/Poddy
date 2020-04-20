@@ -11,6 +11,7 @@ import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.ProgressRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
+import com.bakkenbaeck.poddy.util.EpisodePathHelperImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import org.koin.android.ext.android.inject
@@ -30,7 +31,8 @@ class PlayerService : Service() {
             playerChannel = playerChannel,
             playerNotificationHandler = playerNotificationHandler,
             podcastPlayer = PodcastPlayerImpl(),
-            mainDispatcher = Dispatchers.Main
+            mainDispatcher = Dispatchers.Main,
+            episodeHelper = EpisodePathHelperImpl()
         )
     }
 

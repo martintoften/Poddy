@@ -8,6 +8,7 @@ import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.ProgressRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.service.PlayerActionBuilder
+import com.bakkenbaeck.poddy.util.EpisodePathHelper
 import com.bakkenbaeck.poddy.util.PlayerQueue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,8 @@ class PlayerHandler(
     private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction>,
     private val playerNotificationHandler: PlayerNotificationHandler,
     private val podcastPlayer: PodcastPlayer,
-    private val mainDispatcher: CoroutineContext
+    private val mainDispatcher: CoroutineContext,
+    private val episodeHelper: EpisodePathHelper
 ) {
     private var isQueueListenerInitialised = false
 
@@ -82,7 +84,7 @@ class PlayerHandler(
     }
 
     private fun loadPlayerAndNotification(episode: ViewEpisode) {
-        val podcastPath = episode.getEpisodePath()
+        val podcastPath = episodeHelper.getPath(episode)
         podcastPlayer.load(episode, podcastPath, { onStart(episode) }, { onFinished() })
         playerNotificationHandler.initNotification(episode.title)
     }
