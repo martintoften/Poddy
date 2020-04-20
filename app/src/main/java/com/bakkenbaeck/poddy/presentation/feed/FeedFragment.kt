@@ -40,7 +40,7 @@ abstract class FeedFragment : BackableFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform(requireContext()).apply {
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
             duration = 500
             fadeMode = MaterialContainerTransform.FADE_MODE_OUT
             startShapeAppearanceModel = ShapeAppearanceModel().withCornerSize(0f)
@@ -57,7 +57,7 @@ abstract class FeedFragment : BackableFragment() {
             }
         }
 
-        sharedElementReturnTransition = MaterialContainerTransform(requireContext()).apply {
+        sharedElementReturnTransition = MaterialContainerTransform().apply {
             duration = 500
             startShapeAppearanceModel =
                 ShapeAppearanceModel().withCornerSize(getDimen(R.dimen.radius_default))
