@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigationBar() {
-        val navGraphIds = listOf(R.navigation.podcast, R.navigation.queue, R.navigation.search)
+        val navGraphIds = listOf(R.navigation.search, R.navigation.queue, R.navigation.podcast)
         val controller = bottomNavigationView.setupWithNavController(
             navGraphIds = navGraphIds,
             fragmentManager = supportFragmentManager,
