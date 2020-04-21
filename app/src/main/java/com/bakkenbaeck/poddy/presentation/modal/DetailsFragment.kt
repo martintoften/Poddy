@@ -9,7 +9,7 @@ import com.bakkenbaeck.poddy.extensions.getPlayIcon
 import com.bakkenbaeck.poddy.extensions.getScreenHeight
 import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
 import com.bakkenbaeck.poddy.extensions.startForegroundService
-import com.bakkenbaeck.poddy.presentation.feed.FeedViewModel
+import com.bakkenbaeck.poddy.presentation.feed.DetailViewModel
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.service.*
@@ -31,7 +31,7 @@ class DetailsFragment : BaseBottomDialogFragment() {
         }
     }
 
-    private val feedViewModel: FeedViewModel by viewModel()
+    private val detailViewModel: DetailViewModel by viewModel()
 
     override fun getLayout() = R.layout.detail_sheet
 
@@ -56,7 +56,7 @@ class DetailsFragment : BaseBottomDialogFragment() {
     private fun initView() {
         play.setOnClickListener { handlePlayClicked() }
         download.setOnClickListener { handleDownloadClicked() }
-        queue.setOnClickListener { feedViewModel.addToQueue() }
+        queue.setOnClickListener { detailViewModel.addToQueue() }
     }
 
     private fun handleDownloadClicked() {
@@ -82,7 +82,7 @@ class DetailsFragment : BaseBottomDialogFragment() {
     }
 
     private fun initObservers() {
-        feedViewModel.playerUpdates.observe(this, Observer {
+        detailViewModel.playerUpdates.observe(this, Observer {
             handlePlayerUpdates(it)
         })
     }
@@ -110,11 +110,11 @@ class DetailsFragment : BaseBottomDialogFragment() {
         )
         downloadProgress.text = ""
 
-        val isSelectedEpisodePlaying = feedViewModel.isEpisodePlaying(episode)
+        val isSelectedEpisodePlaying = detailViewModel.isEpisodePlaying(episode)
         val playResource =
             if (isSelectedEpisodePlaying) R.drawable.ic_player_pause else R.drawable.ic_player_play
         play.setImageResource(playResource)
 
-        feedViewModel.setCurrentEpisode(episode)
+        detailViewModel.setCurrentEpisode(episode)
     }
 }

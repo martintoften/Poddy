@@ -33,6 +33,10 @@ class SearchFeedFragment : FeedFragment() {
         viewModel.subscriptionState.observe(viewLifecycleOwner, Observer {
             updateSubscriptionState(it)
         })
+
+        viewModel.downloadResult.observe(viewLifecycleOwner, Observer {
+            handleEpisodeUpdate(it)
+        })
     }
 
     override fun subscribe() {

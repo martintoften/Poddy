@@ -17,10 +17,8 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
-class FeedViewModel(
-    private val podcastRepository: PodcastRepository,
+class DetailViewModel(
     private val queueRepository: QueueRepository,
-    private val downloadRepository: DownloadRepository,
     private val progressChannel: ConflatedBroadcastChannel<ProgressEvent>,
     private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction>,
     private val playerQueue: PlayerQueue
@@ -33,7 +31,6 @@ class FeedViewModel(
     init {
         listenForPlayerAction()
         listenForDownloadUpdates()
-        listenForFinishedDownloads()
     }
 
     private fun listenForPlayerAction() {
@@ -58,14 +55,6 @@ class FeedViewModel(
             progressChannel
                 .asFlow()
                 .collect { downloadUpdates.value = it }
-        }
-    }
-
-    private fun listenForFinishedDownloads() {
-        viewModelScope.launch {
-            downloadRepository.listenForDownloadStateUpdates()
-                .filterNotNull()
-                .collect { podcastRepository.broadcastUpdatedPodcast(it) }
         }
     }
 

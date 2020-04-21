@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 import org.db.Episode
 
 interface EpisodeDBHandler {
+    suspend fun getEpisode(episodeId: String): Episode?
     suspend fun getEpisodes(podcastId: String): List<Episode>
     suspend fun deleteEpisode(episodeId: String)
     suspend fun insertEpisodes(episodes: List<Episode>)
@@ -20,6 +21,12 @@ class EpisodeDBHandlerImpl(
     private val db: PoddyDB,
     private val context: CoroutineContext
 ) : EpisodeDBHandler {
+    override suspend fun getEpisode(episodeId: String): Episode? {
+        return withContext(context) {
+            return@withContext db.episodeQueries.selectById(episodeId).executeAsOneOrNull()
+        }
+    }
+
     override suspend fun getEpisodes(podcastId: String): List<Episode> {
         return withContext(context) {
             return@withContext db.episodeQueries.selectByPodcastId(podcastId).executeAsList()

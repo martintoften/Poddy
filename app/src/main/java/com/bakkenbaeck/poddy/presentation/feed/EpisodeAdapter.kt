@@ -2,6 +2,7 @@ package com.bakkenbaeck.poddy.presentation.feed
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.layoutInflater
@@ -14,10 +15,18 @@ class EpisodeAdapter(
 
     private val items by lazy { mutableListOf<ViewEpisode>() }
 
-    fun setItems(episodeItems: List<ViewEpisode>) {
+    fun setItems(episodes: List<ViewEpisode>) {
+        val diffResult = DiffUtil.calculateDiff(EpisodeDiffer(items, episodes))
         items.clear()
-        items.addAll(episodeItems)
-        notifyDataSetChanged()
+        items.addAll(episodes)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun setItem(episode: ViewEpisode) {
+        val index = items.indexOfFirst { it.id == episode.id }
+        if (index == -1) return
+        items[index] = episode
+        notifyItemChanged(index)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodeViewHolder {

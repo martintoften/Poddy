@@ -14,8 +14,7 @@ val repositoryModule = module {
             get(),
             get(),
             get(),
-            get(named("subscriptionChannel")),
-            get(named("podcastChannel"))
+            get(named("subscriptionChannel"))
         )
     }
     factory { QueueRepository(get(), get(), get(named("queueChannel"))) }
