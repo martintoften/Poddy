@@ -172,6 +172,11 @@ abstract class FeedFragment : BackableFragment() {
         adapter?.setItems(podcast.episodes)
     }
 
+    protected fun handleEpisodeUpdate(episode: ViewEpisode) {
+        val adapter = episodeList.adapter as? EpisodeAdapter?
+        adapter?.setItem(episode)
+    }
+
     protected fun updateSubscriptionState(subscriptionState: SubscriptionState) {
         when (subscriptionState) {
             is Unsubscribed -> {

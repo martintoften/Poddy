@@ -24,8 +24,7 @@ class PodcastRepository(
     private val podcastDBHandler: PodcastDBHandler,
     private val episodeDBHandler: EpisodeDBHandler,
     private val subscriptionDBHandler: SubscriptionDBHandler,
-    private val subscriptionsChannel: ConflatedBroadcastChannel<List<Podcast>>,
-    private val singlePodcastChannel: ConflatedBroadcastChannel<Pair<Podcast, List<Episode>>?>
+    private val subscriptionsChannel: ConflatedBroadcastChannel<List<Podcast>>
 ) {
 
     suspend fun search(query: String): Flow<SearchResponse> {
@@ -35,16 +34,8 @@ class PodcastRepository(
         }
     }
 
-    suspend fun listenForPodcastUpdates(): Flow<Pair<Podcast, List<Episode>>?> {
-        singlePodcastChannel.send(null)
-        return singlePodcastChannel.asFlow()
-    }
-
-    suspend fun broadcastUpdatedPodcast(episodeId: String) {
-        val podcast = podcastDBHandler.getPodcastFromEpisodeId(episodeId) ?: return
-        val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcast.id)
-        if (dbPodcast == null) return
-        singlePodcastChannel.send(Pair(dbPodcast, dbEpisodes))
+    suspend fun getEpisode(episodeId: String): Episode? {
+        return episodeDBHandler.getEpisode(episodeId)
     }
 
     suspend fun getPodcastFlow(
