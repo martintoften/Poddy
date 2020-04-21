@@ -122,6 +122,10 @@ class PlayerHandler(
     private fun handleAction(action: String, episode: ViewEpisode?) {
         if (action == ACTION_SEEK_TO && episode != null) {
             podcastPlayer.seekTo(episode.progress.toInt())
+        } else if (action == ACTION_REWIND) {
+            podcastPlayer.goBack(10000)
+        } else if (action == ACTION_FAST_FORWARD) {
+            podcastPlayer.goForward(30000)
         }
     }
 

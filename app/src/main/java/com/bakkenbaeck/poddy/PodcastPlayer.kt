@@ -19,6 +19,8 @@ interface PodcastPlayer {
     fun getDuration(): Int
     fun getProgress(): Int
     fun getProgressAndDuration(): Pair<Int, Int>
+    fun goBack(milliseconds: Int)
+    fun goForward(milliseconds: Int)
     fun destroy()
 }
 
@@ -67,6 +69,14 @@ class PodcastPlayerImpl(
     override fun getProgress(): Int = mediaPlayer.currentPosition
 
     override fun getProgressAndDuration(): Pair<Int, Int> = Pair(getProgress(), getDuration())
+
+    override fun goBack(milliseconds: Int) {
+        mediaPlayer.seekTo(mediaPlayer.currentPosition - milliseconds)
+    }
+
+    override fun goForward(milliseconds: Int) {
+        mediaPlayer.seekTo(mediaPlayer.currentPosition + milliseconds)
+    }
 
     override fun destroy() {
         mediaPlayer.release()

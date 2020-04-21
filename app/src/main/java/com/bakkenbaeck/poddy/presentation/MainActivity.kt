@@ -11,10 +11,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import com.bakkenbaeck.poddy.ACTION_SEEK_TO
-import com.bakkenbaeck.poddy.ACTION_START
-import com.bakkenbaeck.poddy.EPISODE
-import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.*
 import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.service.PlayerService
@@ -70,6 +67,8 @@ class MainActivity : AppCompatActivity() {
     private fun initView() {
         sheet.playBig.setOnClickListener { handlePlayClicked() }
         sheet.playSmall.setOnClickListener { handlePlayClicked() }
+        sheet.back.setOnClickListener { startForegroundService<PlayerService>(ACTION_REWIND) }
+        sheet.forward.setOnClickListener { startForegroundService<PlayerService>(ACTION_FAST_FORWARD) }
     }
 
     private fun handlePlayClicked() {
