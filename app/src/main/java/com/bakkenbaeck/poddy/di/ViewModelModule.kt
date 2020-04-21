@@ -30,6 +30,14 @@ val viewModelModule = module {
         )
     }
 
-    viewModel { SearchFeedViewModel(podcastRepository = get(), downloadRepository = get()) }
-    viewModel { PodcastFeedViewModel(podcastRepository = get(), downloadRepository = get()) }
+    viewModel { SearchFeedViewModel(
+        podcastRepository = get(),
+        downloadRepository = get(),
+        downloadProgressChannel = get(named("progressChannel"))
+    ) }
+    viewModel { PodcastFeedViewModel(
+        podcastRepository = get(),
+        downloadRepository = get(),
+        downloadProgressChannel = get(named("progressChannel"))
+    ) }
 }

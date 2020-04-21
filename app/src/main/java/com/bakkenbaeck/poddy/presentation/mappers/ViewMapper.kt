@@ -60,7 +60,7 @@ fun mapToViewEpisodeFromDB(db: List<Episode>): List<ViewEpisode> {
     return db.map { mapToViewEpisodeFromDB(it) }
 }
 
-fun mapToViewEpisodeFromDB(it: Episode): ViewEpisode {
+fun mapToViewEpisodeFromDB(it: Episode, downloadProgress: String = ""): ViewEpisode {
     return ViewEpisode(
         id = it.id,
         podcastId = it.podcast_id,
@@ -71,6 +71,7 @@ fun mapToViewEpisodeFromDB(it: Episode): ViewEpisode {
         image = it.image,
         audio = it.audio,
         isDownloaded = DownloadState.intToEnum(it.is_downloaded.toInt()),
+        downloadProgress = downloadProgress,
         progress = it.progress
     )
 }

@@ -12,7 +12,12 @@ import kotlinx.android.synthetic.main.episode_item.*
 class EpisodeViewHolder(override val containerView: View) :
     ClickableViewHolder<ViewEpisode>(containerView) {
     fun setEpisode(episode: ViewEpisode) {
-        date.text = episode.pubDate.toDate()
+        val downloadProgressText = when(episode.isDownloaded) {
+            DownloadState.IN_PROGRESS -> episode.downloadProgress
+            else -> ""
+        }
+
+        date.text = episode.pubDate.toDate() +  " $downloadProgressText"
         name.text = episode.title
         length.text = "${episode.duration.toSeconds()} min"
 

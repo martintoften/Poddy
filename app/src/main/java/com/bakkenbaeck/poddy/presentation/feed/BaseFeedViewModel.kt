@@ -1,9 +1,9 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.presentation.model.*
@@ -14,19 +14,24 @@ import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 abstract class BaseFeedViewModel(
     private val podcastRepository: PodcastRepository,
-    private val downloadRepository: DownloadRepository
+    private val downloadRepository: DownloadRepository,
+    private val downloadProgressChannel: ConflatedBroadcastChannel<ProgressEvent>
 ) : ViewModel() {
+
     val downloadResult by lazy { MutableLiveData<ViewEpisode>() }
+    val downloadProgress by lazy { MutableLiveData<ViewEpisode>() }
     val feedResult by lazy { MutableLiveData<Resource<ViewPodcast>>() }
     val subscriptionState by lazy { MutableLiveData<SubscriptionState>() }
 
     init {
         listenForDownloadUpdates()
+        listenForDownloadProgressUpdates()
     }
 
     fun getFeed(id: String, lastTimestamp: Long? = null) {
@@ -91,6 +96,19 @@ abstract class BaseFeedViewModel(
                 .map { mapToViewEpisodeFromDB(it) }
                 .flowOn(Dispatchers.IO)
                 .collect { downloadResult.value = it }
+        }
+    }
+
+    private fun listenForDownloadProgressUpdates() {
+        viewModelScope.launch {
+            downloadProgressChannel.asFlow()
+                .map {
+                    val episode = podcastRepository.getEpisode(it.identifier) ?: return@map null
+                    return@map mapToViewEpisodeFromDB(episode, it.getFormattedProgress())
+                }
+                .filterNotNull()
+                .flowOn(Dispatchers.IO)
+                .collect { downloadProgress.value = it }
         }
     }
 }
