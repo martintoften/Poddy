@@ -17,57 +17,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <com.bakkenbaeck.poddy.presentation.custom.SmallPlayer
             android:id="@+id/player"
             android:layout_width="0dp"
             android:layout_height="56dp"
-            android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/thumbnail"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/margin_primary"
-            app:layout_constraintStart_toStartOf="@id/player"
-            app:layout_constraintTop_toTopOf="@id/player"
-            app:layout_constraintBottom_toBottomOf="@id/player"/>
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/playSmall"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:srcCompat="@drawable/ic_player_play"
-            app:layout_constraintStart_toStartOf="@id/player"
-            app:layout_constraintEnd_toEndOf="@id/player"
-            app:layout_constraintTop_toTopOf="@id/player"
-            app:layout_constraintBottom_toBottomOf="@id/player"/>
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/smallBack"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginEnd="@dimen/margin_primary"
-            app:srcCompat="@drawable/ic_back_10"
-            app:layout_constraintTop_toTopOf="@id/player"
-            app:layout_constraintEnd_toStartOf="@id/playSmall"
-            app:layout_constraintBottom_toBottomOf="@id/player" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/smallForward"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginStart="@dimen/margin_primary"
-            app:srcCompat="@drawable/ic_forward_30"
-            app:layout_constraintTop_toTopOf="@id/player"
-            app:layout_constraintStart_toEndOf="@id/playSmall"
-            app:layout_constraintBottom_toBottomOf="@id/player" />
 
         <View
             android:id="@+id/smallProgressBack"

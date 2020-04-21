@@ -66,11 +66,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun initView() {
         sheet.playBig.setOnClickListener { handlePlayClicked() }
-        sheet.playSmall.setOnClickListener { handlePlayClicked() }
-        sheet.smallBack.setOnClickListener { startForegroundService<PlayerService>(ACTION_REWIND) }
+        player.setOnPlayListener { handlePlayClicked() }
+        player.setOnRewindListener { startForegroundService<PlayerService>(ACTION_REWIND) }
         sheet.back.setOnClickListener { startForegroundService<PlayerService>(ACTION_REWIND) }
         sheet.forward.setOnClickListener { startForegroundService<PlayerService>(ACTION_FAST_FORWARD) }
-        sheet.smallForward.setOnClickListener { startForegroundService<PlayerService>(ACTION_FAST_FORWARD) }
+        player.setOnFastForwardListener { startForegroundService<PlayerService>(ACTION_FAST_FORWARD) }
     }
 
     private fun handlePlayClicked() {
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {}
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 val newAlpha = 1f - slideOffset
-                updateSmallPlayerVisibility(newAlpha)
+                player.alpha = newAlpha
                 sheet.smallProgressFront.alpha = newAlpha
                 sheet.smallProgressBack.alpha = newAlpha
             }
@@ -101,14 +101,6 @@ class MainActivity : AppCompatActivity() {
                 handleProgressChanged(progress)
             }
         })
-    }
-
-    // Move player to custom view
-    private fun updateSmallPlayerVisibility(alpha: Float) {
-        sheet.thumbnail.alpha = alpha
-        sheet.playSmall.alpha = alpha
-        sheet.smallBack.alpha = alpha
-        sheet.smallForward.alpha = alpha
     }
 
     private fun handleProgressChanged(progress: Int) {
@@ -165,10 +157,10 @@ class MainActivity : AppCompatActivity() {
         val drawable = action.getPlayIcon() ?: return
         sheet.apply {
             playBig.setImageResource(drawable)
-            playSmall.setImageResource(drawable)
+            player.setPlayImageResource(drawable)
             episodeName.text = action.episode.title
             image.loadWithRoundCorners(action.episode.image, R.dimen.radius_small)
-            thumbnail.loadWithRoundCorners(action.episode.image, R.dimen.radius_small)
+            player.setThumbnail(action.episode.image)
         }
     }
 }
