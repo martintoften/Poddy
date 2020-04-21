@@ -1,9 +1,12 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
+import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.repository.DownloadRepository
 import com.bakkenbaeck.poddy.repository.PodcastRepository
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 
 class SearchFeedViewModel(
     podcastRepository: PodcastRepository,
-    downloadRepository: DownloadRepository
-) : BaseFeedViewModel(podcastRepository, downloadRepository)
+    downloadRepository: DownloadRepository,
+    downloadProgressChannel: ConflatedBroadcastChannel<ProgressEvent>
+) : BaseFeedViewModel(podcastRepository, downloadRepository, downloadProgressChannel)

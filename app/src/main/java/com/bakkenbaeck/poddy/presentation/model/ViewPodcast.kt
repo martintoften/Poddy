@@ -27,6 +27,7 @@ data class ViewEpisode(
     val image: String,
     val audio: String,
     val isDownloaded: DownloadState,
+    val downloadProgress: String = "",
     val progress: Long
 ) : Diffable, Parcelable
 

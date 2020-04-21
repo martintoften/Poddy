@@ -37,6 +37,10 @@ class PodcastFeedFragment : FeedFragment() {
         viewModel.downloadResult.observe(viewLifecycleOwner, Observer {
             handleEpisodeUpdate(it)
         })
+
+        viewModel.downloadProgress.observe(viewLifecycleOwner, Observer {
+            handleEpisodeUpdate(it)
+        })
     }
 
     override fun subscribe() {
