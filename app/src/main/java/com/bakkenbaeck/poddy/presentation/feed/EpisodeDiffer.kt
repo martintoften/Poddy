@@ -17,8 +17,8 @@ class EpisodeDiffer(
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = old[oldItemPosition]
         val newItem = new[newItemPosition]
-        return oldItem.id == newItem.id
-                && oldItem.isDownloaded == newItem.isDownloaded
-                && oldItem.progress == newItem.progress
+        return oldItem.id == newItem.id &&
+                oldItem.isDownloaded == newItem.isDownloaded &&
+                oldItem.progress == newItem.progress
     }
 }

@@ -13,22 +13,17 @@ data class DownloadTask(
 class SafeQueue<V : Task> {
     private val workQueue = mutableListOf<V>()
 
-    @Synchronized
     fun getTopTask() = workQueue.firstOrNull()
 
-    @Synchronized
     fun addTask(task: V) {
         workQueue.add(task)
     }
 
-    @Synchronized
     fun removeTask(id: String) {
         workQueue.removeAll { it.id == id }
     }
 
-    @Synchronized
     fun isEmpty() = workQueue.isEmpty()
 
-    @Synchronized
     fun size() = workQueue.size
 }
