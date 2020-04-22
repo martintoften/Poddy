@@ -31,7 +31,8 @@ data class ViewEpisode(
     val audio: String,
     val isDownloaded: DownloadState,
     val downloadProgress: String = "",
-    val progress: Long
+    val progress: Long,
+    val podcastTitle: String
 ) : Diffable, Parcelable
 
 enum class DownloadState(val value: Int) {
@@ -93,7 +94,8 @@ fun Episode.toViewModel(downloadProgress: String = ""): ViewEpisode {
         audio = audio,
         isDownloaded = DownloadState.intToEnum(is_downloaded.toInt()),
         downloadProgress = downloadProgress,
-        progress = progress
+        progress = progress,
+        podcastTitle = ""
     )
 }
 
@@ -109,7 +111,8 @@ fun ByIdEpisode.toViewModel(downloadProgress: String = ""): ViewEpisode {
         audio = audio,
         isDownloaded = DownloadState.intToEnum(is_downloaded.toInt()),
         downloadProgress = downloadProgress,
-        progress = progress
+        progress = progress,
+        podcastTitle = title_
     )
 }
 
@@ -129,7 +132,8 @@ fun ByIdsEpisodes.toViewModel(downloadProgress: String = ""): ViewEpisode {
         audio = audio,
         isDownloaded = DownloadState.intToEnum(is_downloaded.toInt()),
         downloadProgress = downloadProgress,
-        progress = progress
+        progress = progress,
+        podcastTitle = title_
     )
 }
 
@@ -145,7 +149,8 @@ fun AllEpisodes.toViewModel(downloadProgress: String = ""): ViewEpisode {
         audio = audio,
         isDownloaded = DownloadState.intToEnum(is_downloaded.toInt()),
         downloadProgress = downloadProgress,
-        progress = progress
+        progress = progress,
+        podcastTitle = title_
     )
 }
 

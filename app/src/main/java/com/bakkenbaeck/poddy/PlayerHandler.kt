@@ -88,11 +88,11 @@ class PlayerHandler(
     private fun loadPlayerAndNotification(episode: ViewEpisode) {
         val podcastPath = episodeHelper.getPath(episode)
         podcastPlayer.load(episode, podcastPath, { onStart(episode) }, { onFinished() })
-        playerNotificationHandler.initNotification(episode.title)
+        playerNotificationHandler.initNotification(episode.podcastTitle, episode.title)
     }
 
     private fun onStart(episode: ViewEpisode) {
-        playerNotificationHandler.showPauseNotification(episode.title)
+        playerNotificationHandler.showPauseNotification(episode.podcastTitle, episode.title)
     }
 
     private fun onFinished() {
@@ -106,13 +106,13 @@ class PlayerHandler(
 
     private fun onPlay() {
         val episode = playerQueue.current() ?: return
-        playerNotificationHandler.showPauseNotification(episode.title)
+        playerNotificationHandler.showPauseNotification(episode.podcastTitle, episode.title)
         podcastPlayer.start()
     }
 
     private fun onPause() {
         val episode = playerQueue.current() ?: return
-        playerNotificationHandler.showPlayNotification(episode.title)
+        playerNotificationHandler.showPlayNotification(episode.podcastTitle, episode.title)
         podcastPlayer.pause()
     }
 

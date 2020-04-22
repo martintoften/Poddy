@@ -16,9 +16,9 @@ const val PLAYER_CHANNEL_ID = "102"
 const val PLAYER_CHANNEL_NAME = "Player channel"
 
 interface PlayerNotificationHandler {
-    fun showPauseNotification(podcastName: String)
-    fun showPlayNotification(podcastName: String)
-    fun initNotification(podcastName: String)
+    fun showPauseNotification(podcastName: String, episodeName: String)
+    fun showPlayNotification(podcastName: String, episodeName: String)
+    fun initNotification(podcastName: String, episodeName: String)
 }
 
 class PlayerNotificationHandlerImpl(
@@ -27,13 +27,13 @@ class PlayerNotificationHandlerImpl(
 
     private var channel: NotificationChannel? = null
 
-    private fun buildNotification(podcastName: String, action: NotificationCompat.Action): Notification {
+    private fun buildNotification(podcastName: String, episodeName: String, action: NotificationCompat.Action): Notification {
         val style = androidx.media.app.NotificationCompat.MediaStyle()
             .setShowActionsInCompactView(0, 1, 2)
 
         val builder = NotificationCompat.Builder(context, PLAYER_CHANNEL_ID)
             .setContentTitle(podcastName)
-            .setContentText("hallo")
+            .setContentText(episodeName)
             .setSmallIcon(R.drawable.ic_queue)
             .setContentIntent(getPendingIntent())
             .setStyle(style)
@@ -63,15 +63,15 @@ class PlayerNotificationHandlerImpl(
         }
     }
 
-    override fun showPauseNotification(podcastName: String) {
+    override fun showPauseNotification(podcastName: String, episodeName: String) {
         val action = generatePauseAction()
-        val notification = buildNotification(podcastName, action)
+        val notification = buildNotification(podcastName, episodeName, action)
         context.notifyNotification(PLAYER_NOTIFICATION_ID, notification)
     }
 
-    override fun showPlayNotification(podcastName: String) {
+    override fun showPlayNotification(podcastName: String, episodeName: String) {
         val action = generatePlayAction()
-        val notification = buildNotification(podcastName, action)
+        val notification = buildNotification(podcastName, episodeName, action)
         context.notifyNotification(PLAYER_NOTIFICATION_ID, notification)
     }
 
@@ -100,10 +100,10 @@ class PlayerNotificationHandlerImpl(
         return PendingIntent.getActivity(context, 0, notificationIntent, 0)
     }
 
-    override fun initNotification(podcastName: String) {
+    override fun initNotification(podcastName: String, episodeName: String) {
         createChannel()
         val action = generatePauseAction()
-        val notification = buildNotification(podcastName, action)
+        val notification = buildNotification(podcastName, episodeName, action)
         context.startForeground(PLAYER_NOTIFICATION_ID, notification)
         context.stopForeground(false) // Makes the notification cancelable
     }
