@@ -24,7 +24,7 @@ class PlayerService : Service() {
     private val playerHandler by lazy {
         val queueRepository by inject<QueueRepository>()
         val progressRepository by inject<ProgressRepository>()
-        val playerChannel by inject<ConflatedBroadcastChannel<ViewPlayerAction>>(named("playerChannel"))
+        val playerChannel by inject<ConflatedBroadcastChannel<ViewPlayerAction?>>(named("playerChannel"))
         val playerQueue by inject<PlayerQueue>()
         val episodePathHelper by inject<EpisodePathHelper>()
         val podcastPlayer by inject<PodcastPlayer>()
@@ -52,6 +52,7 @@ class PlayerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
             if (intent.action == ACTION_NOTIFICATION_DISMISSED ) {
+                stopForeground(true)
                 stopSelf()
                 return@let
             }

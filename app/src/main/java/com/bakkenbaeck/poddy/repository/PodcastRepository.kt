@@ -5,10 +5,10 @@ import com.bakkenbaeck.poddy.db.handlers.PodcastDBHandler
 import com.bakkenbaeck.poddy.db.handlers.SubscriptionDBHandler
 import com.bakkenbaeck.poddy.network.SearchApi
 import com.bakkenbaeck.poddy.network.model.SearchResponse
-import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
+import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
+import com.bakkenbaeck.poddy.presentation.model.*
 import com.bakkenbaeck.poddy.repository.mappers.mapEpisodesFromNetworkToDB
 import com.bakkenbaeck.poddy.repository.mappers.mapPodcastFromNetworkToDB
-import com.bakkenbaeck.poddy.repository.mappers.mapPodcastFromViewToDB
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -24,7 +24,7 @@ class PodcastRepository(
     private val podcastDBHandler: PodcastDBHandler,
     private val episodeDBHandler: EpisodeDBHandler,
     private val subscriptionDBHandler: SubscriptionDBHandler,
-    private val subscriptionsChannel: ConflatedBroadcastChannel<List<Podcast>>
+    private val subscriptionsChannel: ConflatedBroadcastChannel<List<ViewPodcast>>
 ) {
 
     suspend fun search(query: String): Flow<SearchResponse> {
@@ -34,18 +34,21 @@ class PodcastRepository(
         }
     }
 
-    suspend fun getEpisode(episodeId: String): Episode? {
-        return episodeDBHandler.getEpisode(episodeId)
+    suspend fun getEpisode(episodeId: String): ViewEpisode? {
+        return episodeDBHandler.getEpisode(episodeId)?.toViewModel()
     }
 
-    suspend fun getPodcastFlow(
-        podcastId: String,
-        nextDate: Long? = null
-    ): Flow<Pair<Podcast, List<Episode>>?> {
+    suspend fun getPodcastFlow(podcastId: String, nextDate: Long? = null): Flow<ViewPodcast> {
         return flow {
             val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcastId)
+            val hasSubscribed = subscriptionDBHandler.doesSubscribedPodcastAlreadyExist(podcastId)
             if (dbPodcast != null) {
-                emit(Pair(dbPodcast, dbEpisodes))
+                val mappedPodcast = mapToViewPodcastFromDB(
+                    dbPodcast,
+                    dbEpisodes.toPodcastEpisodeViewModel(),
+                    hasSubscribed
+                )
+                emit(mappedPodcast)
             }
 
             val podcastResponse = searchApi.getEpisodes(podcastId, EPISODE, nextDate)
@@ -53,23 +56,28 @@ class PodcastRepository(
             val episodes = mapEpisodesFromNetworkToDB(podcastResponse)
 
             val isFirstRequest = nextDate == null
-            if (isFirstRequest) updateEpisodes(podcast, episodes, dbEpisodes)
+            if (isFirstRequest) updateEpisodes(podcast, episodes)
             else podcastDBHandler.insertPodcast(podcast, episodes)
 
             val updatedDbEpisodes = episodeDBHandler.getEpisodes(podcast.id)
 
-            emit(Pair(podcast, updatedDbEpisodes))
+            val mappedPodcast = mapToViewPodcastFromDB(
+                podcast,
+                updatedDbEpisodes.toPodcastEpisodeViewModel(),
+                hasSubscribed
+            )
+
+            emit(mappedPodcast)
         }
     }
 
     // Temp, find a way to update episodes
     private suspend fun updateEpisodes(
         podcast: Podcast,
-        episodes: List<Episode>,
-        dbEpisodes: List<Episode>
+        episodes: List<Episode>
     ) {
         val hasAllLatestEpisodes = episodeDBHandler.doesEpisodesAlreadyExist(episodes.map { it.id })
-        val hasAlmostAllEpisodes = podcast.total_episodes - dbEpisodes.count() <= 10
+        val hasAlmostAllEpisodes = podcast.total_episodes - episodes.count() <= 10
 
         if (hasAllLatestEpisodes && hasAlmostAllEpisodes) {
             podcastDBHandler.insertPodcast(podcast, episodes)
@@ -83,31 +91,24 @@ class PodcastRepository(
         }
     }
 
-    suspend fun hasSubscribed(podcast: Podcast): Flow<Boolean> {
-        return flow {
-            val result = subscriptionDBHandler.doesSubscribedPodcastAlreadyExist(podcast.id)
-            emit(result)
-        }
-    }
-
     suspend fun toggleSubscription(podcast: ViewPodcast): Flow<Boolean> {
         return flow {
             val hasAlreadySubscribed =
                 subscriptionDBHandler.doesSubscribedPodcastAlreadyExist(podcast.id)
-            val dbPodcast = mapPodcastFromViewToDB(podcast)
+            val dbPodcast = podcast.toDbModel()
 
             if (hasAlreadySubscribed) subscriptionDBHandler.deleteSubscribedPodcast(podcast.id)
             else subscriptionDBHandler.insertSubscribedPodcast(dbPodcast)
 
             emit(hasAlreadySubscribed)
 
-            val dbPodcasts = subscriptionDBHandler.getSubscribedPodcasts()
+            val dbPodcasts = subscriptionDBHandler.getSubscribedPodcasts().toPodcastViewModel()
             subscriptionsChannel.send(dbPodcasts)
         }
     }
 
-    suspend fun getSubscribedPodcasts(): Flow<List<Podcast>> {
-        val podcasts = subscriptionDBHandler.getSubscribedPodcasts()
+    suspend fun getSubscribedPodcasts(): Flow<List<ViewPodcast>> {
+        val podcasts = subscriptionDBHandler.getSubscribedPodcasts().toPodcastViewModel()
         subscriptionsChannel.send(podcasts)
         return subscriptionsChannel.asFlow()
     }

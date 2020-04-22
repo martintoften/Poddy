@@ -2,7 +2,10 @@ package com.bakkenbaeck.poddy.presentation.mappers
 
 import com.bakkenbaeck.poddy.network.model.SearchItem
 import com.bakkenbaeck.poddy.network.model.SearchResponse
-import com.bakkenbaeck.poddy.presentation.model.*
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearch
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearchItem
+import com.bakkenbaeck.poddy.presentation.model.toViewModel
 import org.db.Episode
 import org.db.Podcast
 
@@ -35,10 +38,6 @@ fun mapToViewPodcastSearchFromNetworkToView(network: List<SearchItem>): List<Vie
     }
 }
 
-fun mapToViewPodcastFromDB(db: List<Podcast>): List<ViewPodcast> {
-    return db.map { mapToViewPodcastFromDB(it, emptyList(), true) }
-}
-
 fun mapToViewPodcastFromDB(
     db: Podcast,
     episodes: List<Episode>,
@@ -50,28 +49,8 @@ fun mapToViewPodcastFromDB(
         description = db.description,
         image = db.image,
         nextEpisodePubDate = 0L,
-        episodes = mapToViewEpisodeFromDB(episodes),
+        episodes = episodes.toViewModel(),
         hasSubscribed = hasSubscribed,
         totalEpisodes = db.total_episodes.toInt()
-    )
-}
-
-fun mapToViewEpisodeFromDB(db: List<Episode>): List<ViewEpisode> {
-    return db.map { mapToViewEpisodeFromDB(it) }
-}
-
-fun mapToViewEpisodeFromDB(it: Episode, downloadProgress: String = ""): ViewEpisode {
-    return ViewEpisode(
-        id = it.id,
-        podcastId = it.podcast_id,
-        title = it.title,
-        description = it.description,
-        pubDate = it.pub_date,
-        duration = it.duration.toInt(),
-        image = it.image,
-        audio = it.audio,
-        isDownloaded = DownloadState.intToEnum(it.is_downloaded.toInt()),
-        downloadProgress = downloadProgress,
-        progress = it.progress
     )
 }

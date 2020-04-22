@@ -12,17 +12,17 @@ CREATE TABLE episode (
     progress INTEGER NOT NULL
 );
 
-selectAll:
-SELECT * FROM episode;
+allEpisodes:
+SELECT episode.*, podcast.title FROM episode INNER JOIN podcast ON episode.podcast_id = podcast.id;
 
-selectById:
-SELECT * FROM episode WHERE id = ?;
+byIdEpisode:
+SELECT episode.*, podcast.title FROM episode INNER JOIN podcast ON episode.podcast_id = podcast.id WHERE episode.id = ?;
 
-selectByIds:
-SELECT * FROM episode WHERE id IN ?;
+byIdsEpisodes:
+SELECT episode.*, podcast.title FROM episode INNER JOIN podcast ON episode.podcast_id = podcast.id WHERE episode.id IN ?;
 
-selectByPodcastId:
-SELECT * FROM episode WHERE podcast_id = ? ORDER BY pub_date DESC;
+byPodcastIdEpisodes:
+SELECT episode.*, podcast.title FROM episode INNER JOIN podcast ON episode.podcast_id = podcast.id WHERE episode.podcast_id = ? ORDER BY pub_date DESC;
 
 insert:
 INSERT OR IGNORE INTO episode(
@@ -43,3 +43,4 @@ UPDATE episode SET is_downloaded = ? WHERE id = ?;
 
 updateProgressState:
 UPDATE episode SET progress = ? WHERE id = ?;
+

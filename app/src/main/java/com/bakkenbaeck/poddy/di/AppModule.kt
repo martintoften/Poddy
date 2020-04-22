@@ -23,7 +23,7 @@ val appModule = module {
     factory(named("IO")) { Dispatchers.IO }
 
     // Channels
-    single(named("progressChannel")) { ConflatedBroadcastChannel<ProgressEvent>() }
+    single(named("progressChannel")) { ConflatedBroadcastChannel<ProgressEvent?>() }
     single(named("playerChannel")) { ConflatedBroadcastChannel<ViewPlayerAction>() }
     single(named("subscriptionChannel")) { ConflatedBroadcastChannel<List<Podcast>>() }
     single(named("podcastChannel")) { ConflatedBroadcastChannel<Pair<Podcast, List<Episode>>?>() }

@@ -12,12 +12,13 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 class DetailViewModel(
     private val queueRepository: QueueRepository,
     private val progressChannel: ConflatedBroadcastChannel<ProgressEvent>,
-    private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction>,
+    private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction?>,
     private val playerQueue: PlayerQueue
 ) : ViewModel() {
 
@@ -33,6 +34,7 @@ class DetailViewModel(
     private fun listenForPlayerAction() {
         viewModelScope.launch {
             playerChannel.asFlow()
+                .filterNotNull()
                 .filter { it.episode.id == selectedEpisode?.id }
                 .collect { playerUpdates.value = it }
         }

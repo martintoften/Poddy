@@ -1,7 +1,6 @@
 package com.bakkenbaeck.poddy
 
 import com.bakkenbaeck.poddy.notification.PlayerNotificationHandler
-import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.ProgressRepository
@@ -9,7 +8,6 @@ import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.service.PlayerActionBuilder
 import com.bakkenbaeck.poddy.util.EpisodePathHelper
 import com.bakkenbaeck.poddy.util.PlayerQueue
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -17,6 +15,7 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 const val EPISODE = "EPISODE"
 
@@ -31,7 +30,7 @@ const val ACTION_NOTIFICATION_DISMISSED = "action_notification_dismissed"
 class PlayerHandler(
     private val queueRepository: QueueRepository,
     private val progressRepository: ProgressRepository,
-    private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction>,
+    private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction?>,
     private val playerNotificationHandler: PlayerNotificationHandler,
     private val podcastPlayer: PodcastPlayer,
     private val mainDispatcher: CoroutineContext,
@@ -70,12 +69,16 @@ class PlayerHandler(
 
     private fun listenForPlayerAction() {
         scope.launch {
+            playerChannel.offer(null) // Make sure the channel is cleared when starting a new session.
             playerChannel.asFlow()
+                .filterNotNull()
                 .collect { handlePlayerAction(it) }
         }
     }
 
     private fun handlePlayerAction(playerAction: ViewPlayerAction) {
+        if (playerAction is ViewPlayerAction.Progress) return
+
         when (playerAction) {
             is ViewPlayerAction.Start -> loadPlayerAndNotification(playerAction.episode)
             is ViewPlayerAction.Play -> onPlay()
@@ -86,11 +89,11 @@ class PlayerHandler(
     private fun loadPlayerAndNotification(episode: ViewEpisode) {
         val podcastPath = episodeHelper.getPath(episode)
         podcastPlayer.load(episode, podcastPath, { onStart(episode) }, { onFinished() })
-        playerNotificationHandler.initNotification(episode.title)
+        playerNotificationHandler.initNotification(episode.podcastTitle, episode.title)
     }
 
     private fun onStart(episode: ViewEpisode) {
-        playerNotificationHandler.showPauseNotification(episode.title)
+        playerNotificationHandler.showPauseNotification(episode.podcastTitle, episode.title)
     }
 
     private fun onFinished() {
@@ -104,13 +107,13 @@ class PlayerHandler(
 
     private fun onPlay() {
         val episode = playerQueue.current() ?: return
-        playerNotificationHandler.showPauseNotification(episode.title)
+        playerNotificationHandler.showPauseNotification(episode.podcastTitle, episode.title)
         podcastPlayer.start()
     }
 
     private fun onPause() {
         val episode = playerQueue.current() ?: return
-        playerNotificationHandler.showPlayNotification(episode.title)
+        playerNotificationHandler.showPlayNotification(episode.podcastTitle, episode.title)
         podcastPlayer.pause()
     }
 
@@ -172,7 +175,6 @@ class PlayerHandler(
         scope.launch {
             queueRepository.listenForQueueUpdates()
                 .flowOn(Dispatchers.IO)
-                .map { mapToViewEpisodeFromDB(it) }
                 .collect { handleQueue(it) }
         }
     }
@@ -193,9 +195,9 @@ class PlayerHandler(
     }
 
     fun destroy() {
+        playerQueue.clearCurrentEpisode()
         podcastPlayer.destroy()
         tickerChannel.cancel()
-        playerChannel.cancel()
         scope.cancel()
     }
 }
