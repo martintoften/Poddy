@@ -52,6 +52,7 @@ class PlayerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
             if (intent.action == ACTION_NOTIFICATION_DISMISSED ) {
+                stopForeground(true)
                 stopSelf()
                 return@let
             }

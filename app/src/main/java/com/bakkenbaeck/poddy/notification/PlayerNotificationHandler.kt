@@ -56,23 +56,20 @@ class PlayerNotificationHandlerImpl(
     private fun createOnDismissedIntent(context: Context): PendingIntent? {
         val intent: Intent = Intent(context, PlayerService::class.java)
             .setAction(ACTION_NOTIFICATION_DISMISSED)
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            PendingIntent.getForegroundService(context, 100, intent, 0)
-        } else {
-            PendingIntent.getService(context, 100, intent, 0)
-        }
+        return PendingIntent.getService(context, 100, intent, 0)
     }
 
     override fun showPauseNotification(podcastName: String, episodeName: String) {
         val action = generatePauseAction()
         val notification = buildNotification(podcastName, episodeName, action)
-        context.notifyNotification(PLAYER_NOTIFICATION_ID, notification)
+        context.startForeground(PLAYER_NOTIFICATION_ID, notification)
     }
 
     override fun showPlayNotification(podcastName: String, episodeName: String) {
         val action = generatePlayAction()
         val notification = buildNotification(podcastName, episodeName, action)
         context.notifyNotification(PLAYER_NOTIFICATION_ID, notification)
+        context.stopForeground(false)
     }
 
     private fun generatePauseAction(): NotificationCompat.Action {
@@ -105,7 +102,6 @@ class PlayerNotificationHandlerImpl(
         val action = generatePauseAction()
         val notification = buildNotification(podcastName, episodeName, action)
         context.startForeground(PLAYER_NOTIFICATION_ID, notification)
-        context.stopForeground(false) // Makes the notification cancelable
     }
 
     private fun createChannel() {
