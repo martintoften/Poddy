@@ -13,10 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ticker
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -33,7 +30,7 @@ const val ACTION_NOTIFICATION_DISMISSED = "action_notification_dismissed"
 class PlayerHandler(
     private val queueRepository: QueueRepository,
     private val progressRepository: ProgressRepository,
-    private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction>,
+    private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction?>,
     private val playerNotificationHandler: PlayerNotificationHandler,
     private val podcastPlayer: PodcastPlayer,
     private val mainDispatcher: CoroutineContext,
@@ -72,12 +69,16 @@ class PlayerHandler(
 
     private fun listenForPlayerAction() {
         scope.launch {
+            playerChannel.offer(null) // Make sure the channel is cleared when starting a new session.
             playerChannel.asFlow()
+                .filterNotNull()
                 .collect { handlePlayerAction(it) }
         }
     }
 
     private fun handlePlayerAction(playerAction: ViewPlayerAction) {
+        if (playerAction is ViewPlayerAction.Progress) return
+
         when (playerAction) {
             is ViewPlayerAction.Start -> loadPlayerAndNotification(playerAction.episode)
             is ViewPlayerAction.Play -> onPlay()
@@ -194,9 +195,9 @@ class PlayerHandler(
     }
 
     fun destroy() {
+        playerQueue.clearCurrentEpisode()
         podcastPlayer.destroy()
         tickerChannel.cancel()
-        playerChannel.cancel()
         scope.cancel()
     }
 }

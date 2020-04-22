@@ -6,14 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction>,
+    private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction?>,
     private val queueRepository: QueueRepository
 ) : ViewModel() {
 
@@ -29,6 +26,7 @@ class MainViewModel(
         viewModelScope.launch {
             playerChannel.asFlow()
                 .onStart { addTopEpisodeFromQueueIfPlayerIsEmpty() }
+                .filterNotNull()
                 .collect { handlePlayerAction(it) }
         }
     }
