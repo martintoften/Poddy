@@ -79,10 +79,16 @@ class PodcastFragment : BackableFragment() {
     }
 
     private fun handlePodcasts(podcasts: List<ViewPodcast>) {
-        val adapter = podcastList.adapter as? PodcastAdapter?
-        adapter?.addItems(podcasts)
-
-        loadImages(podcasts)
+        if (podcasts.isNotEmpty()) {
+            val adapter = podcastList.adapter as? PodcastAdapter?
+            adapter?.addItems(podcasts)
+            loadImages(podcasts)
+            podcastList.visibility = View.VISIBLE
+            emptyState.visibility = View.GONE
+        } else {
+            podcastList.visibility = View.GONE
+            emptyState.visibility = View.VISIBLE
+        }
     }
 
     private fun loadImages(podcasts: List<ViewPodcast>) {

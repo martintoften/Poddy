@@ -71,8 +71,15 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
     }
 
     private fun handleQueue(episodes: List<ViewEpisode>) {
-        val adapter = queueList.adapter as? QueueAdapter?
-        adapter?.addItems(episodes)
+        if (episodes.isNotEmpty()) {
+            val adapter = queueList.adapter as? QueueAdapter?
+            adapter?.addItems(episodes)
+            emptyState.visibility = View.GONE
+            queueList.visibility = View.VISIBLE
+        } else {
+            emptyState.visibility = View.VISIBLE
+            queueList.visibility = View.GONE
+        }
     }
 
     private fun initItemTouchHelper() {
