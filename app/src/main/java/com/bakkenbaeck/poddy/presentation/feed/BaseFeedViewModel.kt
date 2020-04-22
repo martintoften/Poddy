@@ -4,8 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.network.ProgressEvent
-import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
-import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.presentation.model.*
 import com.bakkenbaeck.poddy.repository.DownloadRepository
 import com.bakkenbaeck.poddy.repository.PodcastRepository
@@ -41,16 +39,6 @@ abstract class BaseFeedViewModel(
             feedResult.value = Loading()
             podcastRepository.getPodcastFlow(id, lastTimestamp)
                 .filterNotNull()
-                .flatMapMerge { podcast ->
-                    podcastRepository.hasSubscribed(podcast.first)
-                        .map { hasSubscribed ->
-                            mapToViewPodcastFromDB(
-                                podcast.first,
-                                podcast.second,
-                                hasSubscribed
-                            )
-                        }
-                }
                 .flowOn(Dispatchers.IO)
                 .catch { handleFeedError(it) }
                 .collect { handleFeed(it) }
@@ -93,7 +81,6 @@ abstract class BaseFeedViewModel(
                 .filterNotNull()
                 .map { podcastRepository.getEpisode(it) }
                 .filterNotNull()
-                .map { mapToViewEpisodeFromDB(it) }
                 .flowOn(Dispatchers.IO)
                 .collect { downloadResult.value = it }
         }
@@ -104,7 +91,7 @@ abstract class BaseFeedViewModel(
             downloadProgressChannel.asFlow()
                 .map {
                     val episode = podcastRepository.getEpisode(it.identifier) ?: return@map null
-                    return@map mapToViewEpisodeFromDB(episode, it.getFormattedProgress())
+                    return@map episode.copy(downloadProgress = it.getFormattedProgress())
                 }
                 .filterNotNull()
                 .flowOn(Dispatchers.IO)

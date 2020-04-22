@@ -1,7 +1,6 @@
 package com.bakkenbaeck.poddy
 
 import com.bakkenbaeck.poddy.notification.PlayerNotificationHandler
-import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.ProgressRepository
@@ -9,14 +8,17 @@ import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.service.PlayerActionBuilder
 import com.bakkenbaeck.poddy.util.EpisodePathHelper
 import com.bakkenbaeck.poddy.util.PlayerQueue
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ticker
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 const val EPISODE = "EPISODE"
 
@@ -172,7 +174,6 @@ class PlayerHandler(
         scope.launch {
             queueRepository.listenForQueueUpdates()
                 .flowOn(Dispatchers.IO)
-                .map { mapToViewEpisodeFromDB(it) }
                 .collect { handleQueue(it) }
         }
     }

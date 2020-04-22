@@ -3,7 +3,6 @@ package com.bakkenbaeck.poddy.presentation
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bakkenbaeck.poddy.presentation.mappers.mapToViewEpisodeFromDB
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -39,12 +38,12 @@ class MainViewModel(
         val queue = queueRepository.getQueue()
 
         if (queue.isNotEmpty() && playerChannel.valueOrNull == null) {
-            val topEpisode = mapToViewEpisodeFromDB(queue.first())
+            val topEpisode = queue.first()
             val playerAction = ViewPlayerAction.Pause(topEpisode)
             playerChannel.send(playerAction)
         } else if (queue.isNotEmpty() && playerChannel.valueOrNull != null) {
             val currentPlayerAction = playerChannel.value
-            val topEpisode = mapToViewEpisodeFromDB(queue.first())
+            val topEpisode = queue.first()
 
             if (currentPlayerAction is ViewPlayerAction.Progress) {
                 val playerAction = ViewPlayerAction.Play(topEpisode)
