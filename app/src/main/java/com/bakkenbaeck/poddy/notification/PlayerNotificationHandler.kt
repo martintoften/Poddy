@@ -27,7 +27,7 @@ class PlayerNotificationHandlerImpl(
 
     private var channel: NotificationChannel? = null
 
-    fun buildNotification(podcastName: String, action: NotificationCompat.Action): Notification {
+    private fun buildNotification(podcastName: String, action: NotificationCompat.Action): Notification {
         val style = androidx.media.app.NotificationCompat.MediaStyle()
             .setShowActionsInCompactView(0, 1, 2)
 

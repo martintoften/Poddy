@@ -27,7 +27,7 @@ class PlayerService : Service() {
         val playerChannel by inject<ConflatedBroadcastChannel<ViewPlayerAction>>(named("playerChannel"))
         val playerQueue by inject<PlayerQueue>()
         val episodePathHelper by inject<EpisodePathHelper>()
-        val podcastPlayerImpl by inject<PodcastPlayer>()
+        val podcastPlayer by inject<PodcastPlayer>()
         val playerNotificationHandler = PlayerNotificationHandlerImpl(this)
 
         PlayerHandler(
@@ -35,7 +35,7 @@ class PlayerService : Service() {
             progressRepository = progressRepository,
             playerChannel = playerChannel,
             playerNotificationHandler = playerNotificationHandler,
-            podcastPlayer = podcastPlayerImpl,
+            podcastPlayer = podcastPlayer,
             mainDispatcher = Dispatchers.Main,
             episodeHelper = episodePathHelper,
             playerQueue = playerQueue
