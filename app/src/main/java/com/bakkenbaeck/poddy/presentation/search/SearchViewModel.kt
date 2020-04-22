@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 const val DEBOUNCE_DELAY = 500L
-const val MIN_QUERY_LENGTH = 2
 
 class SearchViewModel(
     private val podcastRepository: PodcastRepository
@@ -31,7 +30,6 @@ class SearchViewModel(
     private fun initQueryObserver() {
         viewModelScope.launch {
             channel.asFlow()
-                .filter { it.length > MIN_QUERY_LENGTH }
                 .debounce(DEBOUNCE_DELAY)
                 .map { podcastRepository.search(it) }
                 .flowOn(Dispatchers.IO)

@@ -8,4 +8,5 @@
     <string name="unsubscribe">Unsubscribe</string>
     <string name="queue_empty">Your queue is empty</string>
     <string name="podcast_empty">You have no subscriptions</string>
+    <string name="search_hint">Search…</string>
 </resources>

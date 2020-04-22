@@ -1,30 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/root"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorAccent"
-    app:layoutDescription="@xml/search_fragment_scene">
+    android:background="?attr/colorAccent">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/search"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/search"
-        android:layout_marginStart="@dimen/margin_primary"
-        android:layout_marginEnd="@dimen/margin_primary"
-        android:layout_marginTop="@dimen/margin_primary"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textColorHint="?android:attr/textColorHint"
-        android:hint="@string/search"
-        android:padding="@dimen/margin_three_quarters"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:translationZ="1dp"/>
+   <com.bakkenbaeck.poddy.presentation.custom.Toolbar
+       android:id="@+id/search"
+       android:layout_width="0dp"
+       android:layout_height="56dp"
+       app:showInput="true"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchList"
@@ -35,4 +26,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

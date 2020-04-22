@@ -73,15 +73,8 @@ class SearchFragment : BackableFragment() {
     }
 
     private fun initView() {
-        search.addTextChangedListener(object : TextListener() {
-            override fun onTextChanged(value: String) {
-                viewModel.search(value)
-            }
-        })
-
-        search.setOnFocusChangeListener { _, _ ->
-            root.transitionToEnd()
-        }
+        search.addTextChangedListener { viewModel.search(it) }
+        search.setOnClearClickedListener { it.setText("") }
     }
 
     private fun initObservers() {

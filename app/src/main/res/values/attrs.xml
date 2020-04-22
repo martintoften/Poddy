@@ -6,5 +6,6 @@
     <declare-styleable name="Toolbar">
         <attr name="titleText" format="string"/>
         <attr name="showBackArrow" format="boolean"/>
+        <attr name="showInput" format="boolean" />
     </declare-styleable>
 </resources>

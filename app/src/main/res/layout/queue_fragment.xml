@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:text="@string/queue_empty"
         android:textSize="@dimen/text_large"
+        android:textColor="?android:attr/textColorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

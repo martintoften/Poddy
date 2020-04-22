@@ -3,15 +3,23 @@ package com.bakkenbaeck.poddy.presentation.custom
 import android.content.Context
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.MotionEvent
+import android.view.View
+import android.view.View.OnTouchListener
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.clearDrawables
 import com.bakkenbaeck.poddy.extensions.getColorFromAttr
+import com.bakkenbaeck.poddy.extensions.setRightDrawable
+import com.bakkenbaeck.poddy.util.TextListener
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.view_toolbar.view.*
 
 class Toolbar : ConstraintLayout {
 
     private var title: String = ""
     private var showBackArrow = false
+    private var showInput = false
 
     constructor(context: Context) : super(context)
 
@@ -33,6 +41,7 @@ class Toolbar : ConstraintLayout {
         val a = context.obtainStyledAttributes(attrs, R.styleable.Toolbar)
         title = a.getString(R.styleable.Toolbar_titleText).orEmpty()
         showBackArrow = a.getBoolean(R.styleable.Toolbar_showBackArrow, false)
+        showInput = a.getBoolean(R.styleable.Toolbar_showInput, false)
         a.recycle()
     }
 
@@ -40,6 +49,7 @@ class Toolbar : ConstraintLayout {
         inflate(context, R.layout.view_toolbar, this)
         initBackArrow()
         initTitle()
+        initText()
         setBackgroundColor(getColorFromAttr(R.attr.colorPrimary))
     }
 
@@ -49,6 +59,16 @@ class Toolbar : ConstraintLayout {
 
     private fun initTitle() {
         titleView.text = title
+    }
+
+    private fun initText() {
+        if (showInput) {
+            input.visibility = View.VISIBLE
+            titleView.visibility = View.GONE
+        } else {
+            input.visibility = View.GONE
+            titleView.visibility = View.VISIBLE
+        }
     }
 
     fun setOnBackClickedListener(action: () -> Unit) {
@@ -61,5 +81,30 @@ class Toolbar : ConstraintLayout {
 
     fun setTextSize(size: Float) {
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size)
+    }
+
+    fun addTextChangedListener(cb: (String) -> Unit) {
+        input.addTextChangedListener(object : TextListener() {
+            override fun onTextChanged(value: String) {
+                if (!input.text.isNullOrEmpty()) {
+                    input.setRightDrawable(R.drawable.ic_clear_24px)
+                } else {
+                    input.clearDrawables()
+                }
+                cb(value)
+            }
+        })
+    }
+
+    fun setOnClearClickedListener(cb: (TextInputEditText) -> Unit) {
+        input.setOnTouchListener(OnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP && !input.text.isNullOrEmpty()) {
+                if (event.rawX >= input.right - input.totalPaddingRight) {
+                    cb(input)
+                    return@OnTouchListener true
+                }
+            }
+            return@OnTouchListener false
+        })
     }
 }

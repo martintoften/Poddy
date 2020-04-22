@@ -31,4 +31,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Title here"/>
 
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_primary"
+        android:visibility="gone"
+        android:background="@null"
+        android:hint="@string/search_hint"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/backButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingEnd="10dp"/>
+
 </merge>
