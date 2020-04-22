@@ -13,6 +13,8 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
+import org.db.ByIdEpisode
+import org.db.ByPodcastIdEpisodes
 import org.db.Episode
 import org.db.Podcast
 
@@ -34,14 +36,14 @@ class PodcastRepository(
         }
     }
 
-    suspend fun getEpisode(episodeId: String): Episode? {
+    suspend fun getEpisode(episodeId: String): ByIdEpisode? {
         return episodeDBHandler.getEpisode(episodeId)
     }
 
     suspend fun getPodcastFlow(
         podcastId: String,
         nextDate: Long? = null
-    ): Flow<Pair<Podcast, List<Episode>>?> {
+    ): Flow<Pair<Podcast, List<ByPodcastIdEpisodes>>> {
         return flow {
             val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcastId)
             if (dbPodcast != null) {

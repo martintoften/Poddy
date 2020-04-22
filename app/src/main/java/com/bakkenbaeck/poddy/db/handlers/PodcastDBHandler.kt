@@ -4,11 +4,12 @@ import db.PoddyDB
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import org.db.ByPodcastIdEpisodes
 import org.db.Episode
 import org.db.Podcast
 
 interface PodcastDBHandler {
-    suspend fun getPodcastWithEpisodes(id: String): Pair<Podcast?, List<Episode>>
+    suspend fun getPodcastWithEpisodes(id: String): Pair<Podcast?, List<ByPodcastIdEpisodes>>
     suspend fun getPodcast(id: String): Podcast?
     suspend fun deletePodcast(podcastId: String)
     suspend fun insertPodcast(podcast: Podcast, episodes: List<Episode>)
@@ -19,10 +20,10 @@ class PodcastDBHandlerImpl(
     private val db: PoddyDB,
     private val context: CoroutineContext
 ) : PodcastDBHandler {
-    override suspend fun getPodcastWithEpisodes(id: String): Pair<Podcast?, List<Episode>> {
+    override suspend fun getPodcastWithEpisodes(id: String): Pair<Podcast?, List<ByPodcastIdEpisodes>> {
         return withContext(context) {
             val podcast = async { db.podcastQueries.selectById(id).executeAsOneOrNull() }
-            val episodes = async { db.episodeQueries.selectByPodcastId(id).executeAsList() }
+            val episodes = async { db.episodeQueries.byPodcastIdEpisodes(id).executeAsList() }
             return@withContext Pair(podcast.await(), episodes.await())
         }
     }

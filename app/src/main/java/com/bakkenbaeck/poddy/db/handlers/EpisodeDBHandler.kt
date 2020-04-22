@@ -4,11 +4,13 @@ import com.bakkenbaeck.poddy.presentation.model.DownloadState
 import db.PoddyDB
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.withContext
+import org.db.ByIdEpisode
+import org.db.ByPodcastIdEpisodes
 import org.db.Episode
 
 interface EpisodeDBHandler {
-    suspend fun getEpisode(episodeId: String): Episode?
-    suspend fun getEpisodes(podcastId: String): List<Episode>
+    suspend fun getEpisode(episodeId: String): ByIdEpisode?
+    suspend fun getEpisodes(podcastId: String): List<ByPodcastIdEpisodes>
     suspend fun deleteEpisode(episodeId: String)
     suspend fun insertEpisodes(episodes: List<Episode>)
     suspend fun deletePodcastEpisodes(podcastId: String)
@@ -21,15 +23,15 @@ class EpisodeDBHandlerImpl(
     private val db: PoddyDB,
     private val context: CoroutineContext
 ) : EpisodeDBHandler {
-    override suspend fun getEpisode(episodeId: String): Episode? {
+    override suspend fun getEpisode(episodeId: String): ByIdEpisode? {
         return withContext(context) {
-            return@withContext db.episodeQueries.selectById(episodeId).executeAsOneOrNull()
+            return@withContext db.episodeQueries.byIdEpisode(episodeId).executeAsOneOrNull()
         }
     }
 
-    override suspend fun getEpisodes(podcastId: String): List<Episode> {
+    override suspend fun getEpisodes(podcastId: String): List<ByPodcastIdEpisodes> {
         return withContext(context) {
-            return@withContext db.episodeQueries.selectByPodcastId(podcastId).executeAsList()
+            return@withContext db.episodeQueries.byPodcastIdEpisodes(podcastId).executeAsList()
         }
     }
 

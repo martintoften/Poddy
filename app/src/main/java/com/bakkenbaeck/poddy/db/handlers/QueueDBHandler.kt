@@ -3,11 +3,12 @@ package com.bakkenbaeck.poddy.db.handlers
 import db.PoddyDB
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.withContext
+import org.db.ByIdsEpisodes
 import org.db.Episode
 import org.db.Queue
 
 interface QueueDBHandler {
-    suspend fun getQueue(): List<Episode>
+    suspend fun getQueue(): List<ByIdsEpisodes>
     suspend fun insertQueueItem(queue: Queue, episode: Episode)
     suspend fun reorderQueue(queueIds: List<String>)
     suspend fun doesEpisodeAlreadyExist(episodeId: String): Boolean
@@ -17,10 +18,10 @@ class QueueDBHandlerImpl(
     private val db: PoddyDB,
     private val context: CoroutineContext
 ) : QueueDBHandler {
-    override suspend fun getQueue(): List<Episode> {
+    override suspend fun getQueue(): List<ByIdsEpisodes> {
         return withContext(context) {
             val queue = db.queueQueries.selectEpisodeIdAll().executeAsList()
-            val episodeResult = db.episodeQueries.selectByIds(queue).executeAsList()
+            val episodeResult = db.episodeQueries.byIdsEpisodes(queue).executeAsList()
             return@withContext queue.map {
                 episodeResult.first { episode -> it == episode.id } // Query order is ignored for episodes
             }

@@ -33,7 +33,7 @@ class PlayerNotificationHandlerImpl(
 
         val builder = NotificationCompat.Builder(context, PLAYER_CHANNEL_ID)
             .setContentTitle(podcastName)
-            .setContentText("")
+            .setContentText("hallo")
             .setSmallIcon(R.drawable.ic_queue)
             .setContentIntent(getPendingIntent())
             .setStyle(style)
