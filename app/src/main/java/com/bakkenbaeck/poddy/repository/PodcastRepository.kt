@@ -5,6 +5,7 @@ import com.bakkenbaeck.poddy.db.handlers.PodcastDBHandler
 import com.bakkenbaeck.poddy.db.handlers.SubscriptionDBHandler
 import com.bakkenbaeck.poddy.network.SearchApi
 import com.bakkenbaeck.poddy.network.model.SearchResponse
+import com.bakkenbaeck.poddy.presentation.mappers.mapFromNetworkToView
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.presentation.model.*
 import com.bakkenbaeck.poddy.repository.mappers.mapEpisodesFromNetworkToDB
@@ -27,11 +28,9 @@ class PodcastRepository(
     private val subscriptionsChannel: ConflatedBroadcastChannel<List<ViewPodcast>>
 ) {
 
-    suspend fun search(query: String): Flow<SearchResponse> {
-        return flow {
-            val result = searchApi.search(query, PODCAST)
-            emit(result)
-        }
+    suspend fun search(query: String): ViewPodcastSearch {
+        val result = searchApi.search(query, PODCAST)
+        return mapFromNetworkToView(result)
     }
 
     suspend fun getEpisode(episodeId: String): ViewEpisode? {

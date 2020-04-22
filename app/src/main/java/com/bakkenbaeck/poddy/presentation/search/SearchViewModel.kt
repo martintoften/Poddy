@@ -31,8 +31,7 @@ class SearchViewModel(
             channel.asFlow()
                 .filter { it.length > MIN_QUERY_LENGTH }
                 .debounce(DEBOUNCE_DELAY)
-                .flatMapMerge { podcastRepository.search(it) }
-                .map { mapFromNetworkToView(it) }
+                .map { podcastRepository.search(it) }
                 .flowOn(Dispatchers.IO)
                 .collect { handleSearchResult(it) }
         }
