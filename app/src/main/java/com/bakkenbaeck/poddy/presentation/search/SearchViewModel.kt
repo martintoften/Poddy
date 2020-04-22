@@ -1,8 +1,10 @@
 package com.bakkenbaeck.poddy.presentation.search
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.presentation.mappers.mapFromNetworkToView
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearch
 import com.bakkenbaeck.poddy.repository.PodcastRepository
@@ -37,8 +39,11 @@ class SearchViewModel(
         }
     }
 
-    private fun handleSearchResult(searchResult: ViewPodcastSearch) {
-        queryResult.value = searchResult
+    private fun handleSearchResult(searchResult: Result<ViewPodcastSearch>) {
+        when (searchResult) {
+            is Result.Success -> { queryResult.value = searchResult.value }
+            is Result.Error -> Log.e("Error while searching", searchResult.throwable.message.orEmpty())
+        }
     }
 
     fun search(query: String) {

@@ -3,8 +3,9 @@ package com.bakkenbaeck.poddy.repository
 import com.bakkenbaeck.poddy.db.handlers.EpisodeDBHandler
 import com.bakkenbaeck.poddy.db.handlers.PodcastDBHandler
 import com.bakkenbaeck.poddy.db.handlers.SubscriptionDBHandler
+import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.network.SearchApi
-import com.bakkenbaeck.poddy.network.model.SearchResponse
+import com.bakkenbaeck.poddy.network.safeApiCall
 import com.bakkenbaeck.poddy.presentation.mappers.mapFromNetworkToView
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.presentation.model.*
@@ -28,9 +29,11 @@ class PodcastRepository(
     private val subscriptionsChannel: ConflatedBroadcastChannel<List<ViewPodcast>>
 ) {
 
-    suspend fun search(query: String): ViewPodcastSearch {
-        val result = searchApi.search(query, PODCAST)
-        return mapFromNetworkToView(result)
+    suspend fun search(query: String): Result<ViewPodcastSearch> {
+        return safeApiCall {
+            val result = searchApi.search(query, PODCAST)
+            return@safeApiCall mapFromNetworkToView(result)
+        }
     }
 
     suspend fun getEpisode(episodeId: String): ViewEpisode? {
@@ -50,23 +53,26 @@ class PodcastRepository(
                 emit(mappedPodcast)
             }
 
-            val podcastResponse = searchApi.getEpisodes(podcastId, EPISODE, nextDate)
-            val podcast = mapPodcastFromNetworkToDB(podcastResponse)
-            val episodes = mapEpisodesFromNetworkToDB(podcastResponse)
+            val podcastResponse = safeApiCall { searchApi.getEpisodes(podcastId, EPISODE, nextDate) }
 
-            val isFirstRequest = nextDate == null
-            if (isFirstRequest) updateEpisodes(podcast, episodes)
-            else podcastDBHandler.insertPodcast(podcast, episodes)
+            if (podcastResponse is Result.Success) {
+                val podcast = mapPodcastFromNetworkToDB(podcastResponse.value)
+                val episodes = mapEpisodesFromNetworkToDB(podcastResponse.value)
 
-            val updatedDbEpisodes = episodeDBHandler.getEpisodes(podcast.id)
+                val isFirstRequest = nextDate == null
+                if (isFirstRequest) updateEpisodes(podcast, episodes)
+                else podcastDBHandler.insertPodcast(podcast, episodes)
 
-            val mappedPodcast = mapToViewPodcastFromDB(
-                podcast,
-                updatedDbEpisodes.toPodcastEpisodeViewModel(),
-                hasSubscribed
-            )
+                val updatedDbEpisodes = episodeDBHandler.getEpisodes(podcast.id)
 
-            emit(mappedPodcast)
+                val mappedPodcast = mapToViewPodcastFromDB(
+                    podcast,
+                    updatedDbEpisodes.toPodcastEpisodeViewModel(),
+                    hasSubscribed
+                )
+
+                emit(mappedPodcast)
+            }
         }
     }
 
