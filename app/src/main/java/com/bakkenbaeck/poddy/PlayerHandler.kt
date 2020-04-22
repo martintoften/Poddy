@@ -26,6 +26,7 @@ const val ACTION_PAUSE = "action_pause"
 const val ACTION_REWIND = "action_rewind"
 const val ACTION_FAST_FORWARD = "action_fast_forward"
 const val ACTION_SEEK_TO = "action_seek_to"
+const val ACTION_NOTIFICATION_DISMISSED = "action_notification_dismissed"
 
 class PlayerHandler(
     private val queueRepository: QueueRepository,

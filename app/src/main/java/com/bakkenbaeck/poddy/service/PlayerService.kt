@@ -3,6 +3,7 @@ package com.bakkenbaeck.poddy.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.bakkenbaeck.poddy.ACTION_NOTIFICATION_DISMISSED
 import com.bakkenbaeck.poddy.EPISODE
 import com.bakkenbaeck.poddy.PlayerHandler
 import com.bakkenbaeck.poddy.PodcastPlayer
@@ -50,6 +51,11 @@ class PlayerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
+            if (intent.action == ACTION_NOTIFICATION_DISMISSED ) {
+                stopSelf()
+                return@let
+            }
+
             val action = intent.action
             val episode = intent.getParcelableExtra<ViewEpisode?>(EPISODE)
             playerHandler.handleIntent(action = action, episode = episode)
