@@ -5,13 +5,16 @@ import com.bakkenbaeck.poddy.db.handlers.PodcastDBHandler
 import com.bakkenbaeck.poddy.db.handlers.SubscriptionDBHandler
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.network.SearchApi
+import com.bakkenbaeck.poddy.network.model.toDbModel
+import com.bakkenbaeck.poddy.network.model.toEpisodeDbModel
+import com.bakkenbaeck.poddy.network.model.toViewModel
 import com.bakkenbaeck.poddy.network.safeApiCall
 import com.bakkenbaeck.poddy.presentation.mappers.mapFromNetworkToView
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.presentation.model.*
-import com.bakkenbaeck.poddy.repository.mappers.mapEpisodesFromNetworkToDB
-import com.bakkenbaeck.poddy.repository.mappers.mapPodcastFromNetworkToDB
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
@@ -20,6 +23,7 @@ import org.db.Podcast
 
 const val PODCAST = "podcast"
 const val EPISODE = "episode"
+val CATEGORIES_TO_IGNORE = listOf("144", "151") // Returns an empty array
 
 class PodcastRepository(
     private val searchApi: SearchApi,
@@ -40,10 +44,30 @@ class PodcastRepository(
         return episodeDBHandler.getEpisode(episodeId)?.toViewModel()
     }
 
-    suspend fun getPodcastFlow(podcastId: String, nextDate: Long? = null): Flow<ViewPodcast> {
+    suspend fun getCategories(): Result<List<ViewCategory>> {
+        return safeApiCall {
+            coroutineScope {
+                val genresResult = async { searchApi.getGenres() }
+                val topPodcastResult = async { searchApi.getBestPodcasts().toViewModel() }
+                val genres = genresResult.await()
+                val topPodcasts = ViewCategory(0, "Top", topPodcastResult.await())
+                val categoryPodcasts = genres.genres
+                    .filter { !CATEGORIES_TO_IGNORE.contains(it.id) }
+                    .take(5)
+                    .map { it.id }
+                    .map { async { searchApi.getCategoryById(it) } }
+                    .map { it.await() }
+                    .map { ViewCategory(it.id, it.name, it.toViewModel()) }
+
+                return@coroutineScope listOf(topPodcasts) + categoryPodcasts
+            }
+        }
+    }
+
+    suspend fun getPodcast(podcastId: String, nextDate: Long? = null): Flow<ViewPodcast> {
         return flow {
             val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcastId)
-            val hasSubscribed = subscriptionDBHandler.doesSubscribedPodcastAlreadyExist(podcastId)
+            val hasSubscribed = subscriptionDBHandler.hasSubscribed(podcastId)
             if (dbPodcast != null) {
                 val mappedPodcast = mapToViewPodcastFromDB(
                     dbPodcast,
@@ -56,8 +80,8 @@ class PodcastRepository(
             val podcastResponse = safeApiCall { searchApi.getEpisodes(podcastId, EPISODE, nextDate) }
 
             if (podcastResponse is Result.Success) {
-                val podcast = mapPodcastFromNetworkToDB(podcastResponse.value)
-                val episodes = mapEpisodesFromNetworkToDB(podcastResponse.value)
+                val podcast = podcastResponse.value.toDbModel()
+                val episodes = podcastResponse.value.toEpisodeDbModel()
 
                 val isFirstRequest = nextDate == null
                 if (isFirstRequest) updateEpisodes(podcast, episodes)
@@ -98,8 +122,7 @@ class PodcastRepository(
 
     suspend fun toggleSubscription(podcast: ViewPodcast): Flow<Boolean> {
         return flow {
-            val hasAlreadySubscribed =
-                subscriptionDBHandler.doesSubscribedPodcastAlreadyExist(podcast.id)
+            val hasAlreadySubscribed = subscriptionDBHandler.hasSubscribed(podcast.id)
             val dbPodcast = podcast.toDbModel()
 
             if (hasAlreadySubscribed) subscriptionDBHandler.deleteSubscribedPodcast(podcast.id)

@@ -8,7 +8,7 @@ import org.db.Subscription
 
 interface SubscriptionDBHandler {
     suspend fun getSubscribedPodcasts(): List<Podcast>
-    suspend fun doesSubscribedPodcastAlreadyExist(podcastId: String): Boolean
+    suspend fun hasSubscribed(podcastId: String): Boolean
     suspend fun insertSubscribedPodcast(podcast: Podcast)
     suspend fun deleteSubscribedPodcast(podcastId: String)
 }
@@ -24,7 +24,7 @@ class SubscriptionDBHandlerImpl(
         }
     }
 
-    override suspend fun doesSubscribedPodcastAlreadyExist(podcastId: String): Boolean {
+    override suspend fun hasSubscribed(podcastId: String): Boolean {
         return withContext(context) {
             val result = db.subQueries.doesAlreadyExist(podcastId).executeAsOne()
             return@withContext result > 0

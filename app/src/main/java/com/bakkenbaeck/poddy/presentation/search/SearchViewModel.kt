@@ -5,9 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.network.Result
-import com.bakkenbaeck.poddy.presentation.mappers.mapFromNetworkToView
+import com.bakkenbaeck.poddy.presentation.model.ViewCategory
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearch
 import com.bakkenbaeck.poddy.repository.PodcastRepository
+import com.bakkenbaeck.poddy.util.Failure
+import com.bakkenbaeck.poddy.util.Loading
+import com.bakkenbaeck.poddy.util.Resource
+import com.bakkenbaeck.poddy.util.Success
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
@@ -22,9 +26,21 @@ class SearchViewModel(
 
     private val channel = BroadcastChannel<String>(Channel.CONFLATED)
     val queryResult = MutableLiveData<ViewPodcastSearch>()
+    val categoriesResult = MutableLiveData<Resource<List<ViewCategory>>>()
 
     init {
+        getCategories()
         initQueryObserver()
+    }
+
+    private fun getCategories() {
+        viewModelScope.launch {
+            categoriesResult.value = Loading()
+            when (val result = podcastRepository.getCategories()) {
+                is Result.Success -> categoriesResult.value = Success(result.value)
+                is Result.Error -> categoriesResult.value = Failure(result.throwable)
+            }
+        }
     }
 
     private fun initQueryObserver() {
