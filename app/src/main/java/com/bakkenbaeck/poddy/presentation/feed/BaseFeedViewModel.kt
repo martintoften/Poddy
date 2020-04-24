@@ -37,7 +37,7 @@ abstract class BaseFeedViewModel(
 
         viewModelScope.launch {
             feedResult.value = Loading()
-            podcastRepository.getPodcastFlow(id, lastTimestamp)
+            podcastRepository.getPodcast(id, lastTimestamp)
                 .filterNotNull()
                 .flowOn(Dispatchers.IO)
                 .catch { handleFeedError(it) }

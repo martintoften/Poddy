@@ -12,13 +12,13 @@ data class ViewPodcastSearch(
 
 data class ViewPodcastSearchItem(
     override val id: String,
-    val rss: String,
-    val description: String,
-    val title: String,
+    override val description: String,
+    override val title: String,
+    override val image: String,
     val publisher: String,
-    val image: String,
+    val rss: String,
     val thumbnail: String,
     val genreIds: List<Int>,
     val totalEpisodes: Int,
     val email: String?
-) : Diffable
+) : Diffable, ViewBasePodcast

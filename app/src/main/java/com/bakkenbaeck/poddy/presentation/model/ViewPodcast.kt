@@ -10,14 +10,14 @@ import java.util.*
 @Parcelize
 data class ViewPodcast(
     override val id: String,
-    val title: String,
-    val description: String,
-    val image: String,
+    override val title: String,
+    override val description: String,
+    override val image: String,
     val nextEpisodePubDate: Long?,
     val episodes: List<ViewEpisode>,
     val hasSubscribed: Boolean,
     val totalEpisodes: Int
-) : Diffable, Parcelable
+) : Diffable, ViewBasePodcast, Parcelable
 
 @Parcelize
 data class ViewEpisode(
