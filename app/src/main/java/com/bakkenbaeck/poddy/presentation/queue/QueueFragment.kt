@@ -33,8 +33,8 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
         return inflater.inflate(R.layout.queue_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View, inState: Bundle?) {
+        super.onViewCreated(view, inState)
         init()
     }
 

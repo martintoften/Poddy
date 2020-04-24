@@ -21,6 +21,10 @@
         android:label="Feed"
         tools:layout="@layout/feed_fragment">
 
+        <argument
+            android:name="podcast"
+            app:argType="com.bakkenbaeck.poddy.presentation.model.ViewBasePodcastImpl" />
+
         <action
             android:id="@+id/to_podcastDetailsFragment"
             app:destination="@id/podcastDetailFragment"

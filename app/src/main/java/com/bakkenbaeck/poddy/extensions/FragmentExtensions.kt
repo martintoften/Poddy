@@ -27,8 +27,15 @@ fun Fragment.navigate(
     findNavController().navigate(id, args, navOptions, extras)
 }
 
-fun Fragment.navigate(directions: NavDirections, navOptions: NavOptions? = null) {
-    findNavController().navigate(directions, navOptions)
+fun Fragment.navigate(directions: NavDirections) {
+    findNavController().navigate(directions)
+}
+
+fun Fragment.navigate(
+    directions: NavDirections,
+    extras: FragmentNavigator.Extras
+) {
+    findNavController().navigate(directions, extras)
 }
 
 fun Fragment.pop(): Boolean {

@@ -183,3 +183,12 @@ fun ViewPodcast.toDbModel(): Podcast {
         total_episodes = totalEpisodes.toLong()
     )
 }
+
+fun ViewPodcast.toBaseViewModel(): ViewBasePodcastImpl {
+    return ViewBasePodcastImpl(
+        id = id,
+        title = title,
+        description = description,
+        image = image
+    )
+}
