@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.network.model
 
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import org.db.Episode
 import org.db.Podcast
 import java.util.*
@@ -40,6 +41,21 @@ data class EpisodeItem(
     val listennotes_edit_url: String,
     val explicit_content: Boolean
 )
+
+fun List<PodcastResponse>.toViewModel(): List<ViewPodcast> {
+    return map {
+        ViewPodcast(
+            id = it.id,
+            title = it.title,
+            description = it.description,
+            image = it.image,
+            totalEpisodes = it.total_episodes,
+            nextEpisodePubDate = it.next_episode_pub_date,
+            episodes = emptyList(),
+            hasSubscribed = false
+        )
+    }
+}
 
 fun PodcastResponse.toDbModel(): Podcast {
     return Podcast.Impl(

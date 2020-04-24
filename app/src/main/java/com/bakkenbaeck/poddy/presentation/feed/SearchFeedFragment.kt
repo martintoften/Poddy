@@ -19,6 +19,8 @@ class SearchFeedFragment : FeedFragment() {
         init()
     }
 
+    override fun getPodcast() = viewModel.getPodcast()
+
     private fun init() {
         initObservers()
     }

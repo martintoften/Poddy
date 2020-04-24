@@ -3,6 +3,7 @@ package com.bakkenbaeck.poddy.presentation.feed
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.util.Success
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -17,6 +18,8 @@ class PodcastFeedFragment : FeedFragment() {
         super.onViewCreated(view, inState)
         init()
     }
+
+    override fun getPodcast() = viewModel.getPodcast()
 
     private fun init() {
         initObservers()

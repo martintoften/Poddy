@@ -17,6 +17,7 @@ import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.modal.DetailsFragment
+import com.bakkenbaeck.poddy.presentation.modal.PodcastDetailsFragment
 import com.bakkenbaeck.poddy.presentation.model.*
 import com.bakkenbaeck.poddy.service.DownloadService
 import com.bakkenbaeck.poddy.service.ID
@@ -83,6 +84,7 @@ abstract class FeedFragment : BackableFragment() {
 
     private fun init(arguments: Bundle?) {
         initTransition()
+        initClickListener()
         initToolbar()
         initFloatingActionButton()
         initAdapter()
@@ -92,6 +94,19 @@ abstract class FeedFragment : BackableFragment() {
     private fun initTransition() {
         postponeEnterTransition()
     }
+
+    private fun initClickListener() {
+        podcastDescription.setOnClickListener { showPodcastDetailFragment() }
+        podcastImage.setOnClickListener { showPodcastDetailFragment() }
+    }
+
+    private fun showPodcastDetailFragment() {
+        val podcast = getPodcast() ?: return
+        val directions = PodcastFeedFragmentDirections.toPodcastDetailsFragment(podcast)
+        navigate(directions)
+    }
+
+    abstract fun getPodcast(): ViewPodcast?
 
     private fun initToolbar() {
         loadImage()

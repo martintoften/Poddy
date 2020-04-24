@@ -20,6 +20,21 @@
         android:name="com.bakkenbaeck.poddy.presentation.feed.PodcastFeedFragment"
         android:label="Feed"
         tools:layout="@layout/feed_fragment">
+
+        <action
+            android:id="@+id/to_podcastDetailsFragment"
+            app:destination="@id/podcastDetailFragment"
+            app:popUpTo="@id/podcastDetailFragment" />
     </fragment>
 
+    <dialog
+        android:id="@+id/podcastDetailFragment"
+        android:name="com.bakkenbaeck.poddy.presentation.modal.PodcastDetailsFragment"
+        android:label="podcastDetailFragment"
+        tools:layout="@layout/podcast_detail_sheet" >
+
+        <argument
+            android:name="podcast"
+            app:argType="com.bakkenbaeck.poddy.presentation.model.ViewPodcast" />
+    </dialog>
 </navigation>

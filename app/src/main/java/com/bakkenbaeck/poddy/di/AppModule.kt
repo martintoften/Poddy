@@ -19,9 +19,6 @@ val appModule = module {
     single { buildDownloadApi(get()) }
     single { DownloadProgressInterceptor(get(named("progressChannel"))) }
 
-    // Dispatchers
-    factory(named("IO")) { Dispatchers.IO }
-
     // Channels
     single(named("progressChannel")) { ConflatedBroadcastChannel<ProgressEvent?>() }
     single(named("playerChannel")) { ConflatedBroadcastChannel<ViewPlayerAction>() }
@@ -31,5 +28,5 @@ val appModule = module {
     single(named("queueChannel")) { ConflatedBroadcastChannel<List<Episode>>() }
 
     // Download
-    factory { DownloadHandler(get(), get(named("IO"))) }
+    factory { DownloadHandler(get(), Dispatchers.IO) }
 }
