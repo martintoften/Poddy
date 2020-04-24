@@ -16,8 +16,7 @@ import coil.api.load
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.BackableFragment
-import com.bakkenbaeck.poddy.presentation.modal.DetailsFragment
-import com.bakkenbaeck.poddy.presentation.modal.PodcastDetailsFragment
+import com.bakkenbaeck.poddy.presentation.modal.EpisodeDetailsFragment
 import com.bakkenbaeck.poddy.presentation.model.*
 import com.bakkenbaeck.poddy.service.DownloadService
 import com.bakkenbaeck.poddy.service.ID
@@ -147,7 +146,7 @@ abstract class FeedFragment : BackableFragment() {
     private fun initAdapter() {
         episodeList.apply {
             adapter = EpisodeAdapter(
-                { view, episode -> handleEpisodeClicked(view, episode) },
+                { _, episode -> handleEpisodeClicked(episode) },
                 { handleDownloadClicked(it) }
             )
             layoutManager = LinearLayoutManager(context)
@@ -170,9 +169,9 @@ abstract class FeedFragment : BackableFragment() {
         getFeed(podcastId, episode.pubDate)
     }
 
-    private fun handleEpisodeClicked(view: View, episode: ViewEpisode) {
-        val detailsFragment = DetailsFragment.newInstance(episode)
-        detailsFragment.show(parentFragmentManager, DETAIL_TAG)
+    private fun handleEpisodeClicked(episode: ViewEpisode) {
+        val directions = PodcastFeedFragmentDirections.toEpisodeDetailsFragment(episode)
+        navigate(directions)
     }
 
     private fun getEpisodes(arguments: Bundle?) {

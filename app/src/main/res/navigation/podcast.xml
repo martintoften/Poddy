@@ -22,9 +22,14 @@
         tools:layout="@layout/feed_fragment">
 
         <action
-            android:id="@+id/to_podcastDetailsFragment"
+            android:id="@+id/to_podcast_detailsFragment"
             app:destination="@id/podcastDetailFragment"
             app:popUpTo="@id/podcastDetailFragment" />
+
+        <action
+            android:id="@+id/to_episode_detailsFragment"
+            app:destination="@id/episodeDetailFragment"
+            app:popUpTo="@id/episodeDetailFragment" />
     </fragment>
 
     <dialog
@@ -36,5 +41,16 @@
         <argument
             android:name="podcast"
             app:argType="com.bakkenbaeck.poddy.presentation.model.ViewPodcast" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/episodeDetailFragment"
+        android:name="com.bakkenbaeck.poddy.presentation.modal.EpisodeDetailsFragment"
+        android:label="episodeDetailFragment"
+        tools:layout="@layout/detail_sheet" >
+
+        <argument
+            android:name="episode"
+            app:argType="com.bakkenbaeck.poddy.presentation.model.ViewEpisode" />
     </dialog>
 </navigation>

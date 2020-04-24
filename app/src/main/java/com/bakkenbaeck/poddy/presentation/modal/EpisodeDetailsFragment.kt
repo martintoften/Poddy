@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
 import com.bakkenbaeck.poddy.ACTION_START
+import com.bakkenbaeck.poddy.EPISODE
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getPlayIcon
 import com.bakkenbaeck.poddy.extensions.getScreenHeight
@@ -17,19 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.detail_sheet.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-const val EPISODE = "EPISODE"
-
-class DetailsFragment : BaseBottomDialogFragment() {
-
-    companion object {
-        fun newInstance(episode: ViewEpisode): DetailsFragment {
-            return DetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EPISODE, episode)
-                }
-            }
-        }
-    }
+class EpisodeDetailsFragment : BaseBottomDialogFragment() {
 
     private val detailViewModel: DetailViewModel by viewModel()
 
@@ -39,13 +28,14 @@ class DetailsFragment : BaseBottomDialogFragment() {
         initViewHeight()
         initView()
         initObservers()
-        val episode = getEpisode()
+        val episode = getEpisode() ?: return
         updateSheetStateToExpanded(episode)
     }
 
-    private fun getEpisode(): ViewEpisode {
-        return arguments?.getParcelable(EPISODE)
-            ?: throw IllegalStateException("Episode can't be null")
+    private fun getEpisode(): ViewEpisode? {
+        val arguments = arguments ?: return null
+        val args = EpisodeDetailsFragmentArgs.fromBundle(arguments)
+        return args.episode
     }
 
     private fun initViewHeight() {
@@ -60,7 +50,7 @@ class DetailsFragment : BaseBottomDialogFragment() {
     }
 
     private fun handleDownloadClicked() {
-        val selectedEpisode = getEpisode()
+        val selectedEpisode = getEpisode() ?: return
         handleDownloadClicked(selectedEpisode)
     }
 
