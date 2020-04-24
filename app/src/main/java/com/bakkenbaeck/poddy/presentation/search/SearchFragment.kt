@@ -13,10 +13,6 @@ import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.hideKeyboard
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
-import com.bakkenbaeck.poddy.presentation.feed.PODCAST_DESCRIPTION
-import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID
-import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
-import com.bakkenbaeck.poddy.presentation.feed.PODCAST_TITLE
 import com.bakkenbaeck.poddy.presentation.model.*
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
@@ -37,8 +33,8 @@ class SearchFragment : BackableFragment() {
         return inflater.inflate(R.layout.search_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View, inState: Bundle?) {
+        super.onViewCreated(view, inState)
         init()
     }
 
@@ -69,19 +65,10 @@ class SearchFragment : BackableFragment() {
     }
 
     private fun goToPodcastView(view: View, podcast: ViewBasePodcast) {
-        val bundle = Bundle().apply {
-            putString(PODCAST_ID, podcast.id)
-            putString(PODCAST_IMAGE, podcast.image)
-            putString(PODCAST_TITLE, podcast.title)
-            putString(PODCAST_DESCRIPTION, podcast.description)
-        }
-        goTo(view, podcast.id, bundle)
-    }
-
-    private fun goTo(view: View, id: String, bundle: Bundle) {
-        val extras = FragmentNavigatorExtras(view to id)
         hideKeyboard()
-        navigate(id = R.id.to_details_fragment, args = bundle, extras = extras)
+        val extras = FragmentNavigatorExtras(view to podcast.id)
+        val directions = SearchFragmentDirections.toDetailsFragment(podcast.toViewModel())
+        navigate(directions, extras = extras)
     }
 
     private fun initView() {

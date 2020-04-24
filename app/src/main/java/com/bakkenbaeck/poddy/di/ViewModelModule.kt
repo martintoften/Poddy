@@ -1,7 +1,9 @@
 package com.bakkenbaeck.poddy.di
 
+import androidx.lifecycle.SavedStateHandle
 import com.bakkenbaeck.poddy.presentation.MainViewModel
 import com.bakkenbaeck.poddy.presentation.feed.DetailViewModel
+import com.bakkenbaeck.poddy.presentation.feed.PodcastDetailsViewModel
 import com.bakkenbaeck.poddy.presentation.feed.PodcastFeedViewModel
 import com.bakkenbaeck.poddy.presentation.feed.SearchFeedViewModel
 import com.bakkenbaeck.poddy.presentation.podcast.PodcastViewModel

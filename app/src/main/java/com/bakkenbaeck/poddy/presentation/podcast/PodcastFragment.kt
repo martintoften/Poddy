@@ -14,11 +14,8 @@ import coil.api.get
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
-import com.bakkenbaeck.poddy.presentation.feed.PODCAST_DESCRIPTION
-import com.bakkenbaeck.poddy.presentation.feed.PODCAST_ID
-import com.bakkenbaeck.poddy.presentation.feed.PODCAST_IMAGE
-import com.bakkenbaeck.poddy.presentation.feed.PODCAST_TITLE
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
+import com.bakkenbaeck.poddy.presentation.model.toBaseViewModel
 import kotlinx.android.synthetic.main.podcast_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,8 +33,8 @@ class PodcastFragment : BackableFragment() {
         return inflater.inflate(R.layout.podcast_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewCreated(view: View, inState: Bundle?) {
+        super.onViewCreated(view, inState)
         init()
     }
 
@@ -62,14 +59,9 @@ class PodcastFragment : BackableFragment() {
     }
 
     private fun goTo(view: View, podcast: ViewPodcast) {
-        val bundle = Bundle().apply {
-            putString(PODCAST_ID, podcast.id)
-            putString(PODCAST_IMAGE, podcast.image)
-            putString(PODCAST_TITLE, podcast.title)
-            putString(PODCAST_DESCRIPTION, podcast.description)
-        }
         val extras = FragmentNavigatorExtras(view to podcast.id)
-        navigate(id = R.id.to_details_fragment, args = bundle, extras = extras)
+        val directions = PodcastFragmentDirections.toDetailsFragment(podcast.toBaseViewModel())
+        navigate(directions = directions, extras = extras)
     }
 
     private fun initObservers() {

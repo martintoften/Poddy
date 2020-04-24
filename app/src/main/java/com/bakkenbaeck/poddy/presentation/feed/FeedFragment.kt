@@ -16,7 +16,6 @@ import coil.api.load
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.BackableFragment
-import com.bakkenbaeck.poddy.presentation.modal.DetailsFragment
 import com.bakkenbaeck.poddy.presentation.model.*
 import com.bakkenbaeck.poddy.service.DownloadService
 import com.bakkenbaeck.poddy.service.ID
@@ -26,19 +25,13 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.feed_fragment.*
 
-const val PODCAST_ID = "PODCAST_ID"
-const val PODCAST_IMAGE = "PODCAST_IMAGE"
-const val PODCAST_TITLE = "PODCAST_TITLE"
-const val PODCAST_DESCRIPTION = "PODCAST_DESCRIPTION"
-const val DETAIL_TAG = "DETAIL_TAG"
-
 abstract class FeedFragment : BackableFragment() {
 
-    private fun getPodcastId(arguments: Bundle?): String? = arguments?.getString(PODCAST_ID)
-    private fun getPodcastImage(arguments: Bundle?): String? = arguments?.getString(PODCAST_IMAGE)
-    private fun getPodcastTitle(arguments: Bundle?): String? = arguments?.getString(PODCAST_TITLE)
-    private fun getPodcastDescription(arguments: Bundle?): String? =
-        arguments?.getString(PODCAST_DESCRIPTION)
+    private val basePodcast: ViewBasePodcast? by lazy {
+        val arguments = arguments ?: return@lazy null
+        val args = PodcastFeedFragmentArgs.fromBundle(arguments)
+        return@lazy args.podcast
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,10 +45,7 @@ abstract class FeedFragment : BackableFragment() {
 
             // Load the cached image with corner radius when the transition is done
             doOnEnd {
-                podcastImage.loadWithRoundCorners(
-                    getPodcastImage(arguments),
-                    R.dimen.radius_default_coil
-                )
+                podcastImage.loadWithRoundCorners(basePodcast?.image, R.dimen.radius_default_coil)
             }
         }
 
@@ -78,29 +68,44 @@ abstract class FeedFragment : BackableFragment() {
 
     override fun onViewCreated(view: View, inState: Bundle?) {
         super.onViewCreated(view, inState)
-        init(arguments)
+        init()
     }
 
-    private fun init(arguments: Bundle?) {
+    private fun init() {
         initTransition()
+        initClickListener()
         initToolbar()
         initFloatingActionButton()
         initAdapter()
-        getEpisodes(arguments)
+        getEpisodes()
     }
 
     private fun initTransition() {
         postponeEnterTransition()
     }
 
+    private fun initClickListener() {
+        podcastDescription.setOnClickListener { showPodcastDetailFragment() }
+        podcastImage.setOnClickListener { showPodcastDetailFragment() }
+    }
+
+    private fun showPodcastDetailFragment() {
+        val podcast = getPodcast() ?: return
+        showPodcastDetails(podcast)
+    }
+
+    abstract fun showPodcastDetails(podcast: ViewPodcast)
+    abstract fun showEpisodeDetails(episode: ViewEpisode)
+    abstract fun getPodcast(): ViewPodcast?
+
     private fun initToolbar() {
         loadImage()
         toolbar.apply {
             setOnBackClickedListener { pop() }
-            setText(getPodcastTitle(arguments).orEmpty())
+            setText(basePodcast?.title.orEmpty())
         }
         val description = HtmlCompat.fromHtml(
-            getPodcastDescription(arguments).orEmpty(),
+            basePodcast?.description.orEmpty(),
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         podcastDescription.text = description
@@ -114,8 +119,8 @@ abstract class FeedFragment : BackableFragment() {
 
     private fun loadImage() {
         podcastImage.apply {
-            transitionName = getPodcastId(arguments)
-            load(getPodcastImage(arguments))
+            transitionName = basePodcast?.id
+            load(basePodcast?.image)
             doOnPreDraw {
                 startPostponedEnterTransition()
             }
@@ -123,7 +128,7 @@ abstract class FeedFragment : BackableFragment() {
 
         // Create a invisible image to load the image into. We need the cached image with corner radius
         podcastImagePlaceHolder.apply {
-            loadWithRoundCorners(getPodcastImage(arguments), R.dimen.radius_default_coil)
+            loadWithRoundCorners(basePodcast?.image, R.dimen.radius_default_coil)
         }
     }
 
@@ -132,7 +137,7 @@ abstract class FeedFragment : BackableFragment() {
     private fun initAdapter() {
         episodeList.apply {
             adapter = EpisodeAdapter(
-                { view, episode -> handleEpisodeClicked(view, episode) },
+                { _, episode -> showEpisodeDetails(episode) },
                 { handleDownloadClicked(it) }
             )
             layoutManager = LinearLayoutManager(context)
@@ -149,19 +154,14 @@ abstract class FeedFragment : BackableFragment() {
     }
 
     private fun handleOnLastElement() {
-        val podcastId = getPodcastId(arguments) ?: return
+        val podcastId = basePodcast?.id ?: return
         val adapter = episodeList.adapter as? EpisodeAdapter?
         val episode = adapter?.getLastItem() ?: return
         getFeed(podcastId, episode.pubDate)
     }
 
-    private fun handleEpisodeClicked(view: View, episode: ViewEpisode) {
-        val detailsFragment = DetailsFragment.newInstance(episode)
-        detailsFragment.show(parentFragmentManager, DETAIL_TAG)
-    }
-
-    private fun getEpisodes(arguments: Bundle?) {
-        val podcastId = getPodcastId(arguments) ?: return
+    private fun getEpisodes() {
+        val podcastId = basePodcast?.id ?: return
         getFeed(podcastId)
     }
 

@@ -5,6 +5,7 @@ import com.bakkenbaeck.poddy.db.handlers.PodcastDBHandler
 import com.bakkenbaeck.poddy.db.handlers.SubscriptionDBHandler
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.network.SearchApi
+import com.bakkenbaeck.poddy.network.model.PodcastRecommendationResponse
 import com.bakkenbaeck.poddy.network.model.toDbModel
 import com.bakkenbaeck.poddy.network.model.toEpisodeDbModel
 import com.bakkenbaeck.poddy.network.model.toViewModel
@@ -42,6 +43,12 @@ class PodcastRepository(
 
     suspend fun getEpisode(episodeId: String): ViewEpisode? {
         return episodeDBHandler.getEpisode(episodeId)?.toViewModel()
+    }
+
+    suspend fun getPodcastRecommendations(podcastId: String): Result<List<ViewPodcast>> {
+        return safeApiCall {
+            searchApi.getPodcastRecommendations(podcastId).recommendations.toViewModel()
+        }
     }
 
     suspend fun getCategories(): Result<List<ViewCategory>> {

@@ -68,7 +68,7 @@ abstract class BaseFeedViewModel(
         }
     }
 
-    private fun getPodcast(): ViewPodcast? {
+    fun getPodcast(): ViewPodcast? {
         return when (val podcast = feedResult.value) {
             is Success -> podcast.data
             else -> null
