@@ -1,6 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.modal
 
 import android.os.Bundle
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,7 +14,9 @@ import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
+import kotlinx.android.synthetic.main.detail_sheet.*
 import kotlinx.android.synthetic.main.podcast_detail_sheet.*
+import kotlinx.android.synthetic.main.podcast_detail_sheet.description
 import org.koin.android.ext.android.get
 
 class PodcastDetailsFragment : BaseBottomDialogFragment() {
@@ -32,8 +35,12 @@ class PodcastDetailsFragment : BaseBottomDialogFragment() {
     }
 
     private fun initDescription() {
-        val podcast = getPodcast()
-        description.text = podcast?.description.orEmpty()
+        val podcast = getPodcast() ?: return
+
+        description.text = HtmlCompat.fromHtml(
+            podcast.description,
+            HtmlCompat.FROM_HTML_MODE_LEGACY
+        )
     }
 
     private fun getPodcast(): ViewPodcast? {
