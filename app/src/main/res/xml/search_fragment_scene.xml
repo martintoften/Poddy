@@ -6,42 +6,67 @@
         <Constraint
             android:id="@+id/search"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="@dimen/toolbar_height"
+            app:showInput="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="@dimen/margin_primary"
-            android:layout_marginEnd="@dimen/margin_primary"
-            android:layout_marginTop="@dimen/margin_primary">
-            <CustomAttribute
-                app:attributeName="textSize"
-                app:customFloatValue="16" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
+        <Constraint android:id="@id/loadingIndicator">
+            <PropertySet
+                app:applyMotionScene="false"
+                app:visibilityMode="ignore" />
         </Constraint>
 
+        <Constraint android:id="@id/searchList">
+            <PropertySet
+                app:applyMotionScene="false"
+                app:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@id/categoryList">
+            <PropertySet
+                app:applyMotionScene="false"
+                app:visibilityMode="ignore" />
+        </Constraint>
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
         <Constraint
             android:id="@+id/search"
             android:layout_width="0dp"
-            android:layout_height="60dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="@dimen/toolbar_height"
+            app:showInput="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginTop="0dp">
-            <CustomAttribute
-                app:attributeName="textSize"
-                app:customFloatValue="20" />
+            app:layout_constraintBottom_toTopOf="parent"/>
 
+        <Constraint android:id="@id/loadingIndicator">
+            <PropertySet
+                app:applyMotionScene="false"
+                app:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@id/searchList">
+            <PropertySet
+                app:applyMotionScene="false"
+                app:visibilityMode="ignore" />
+        </Constraint>
+
+        <Constraint android:id="@id/categoryList">
+            <PropertySet
+                app:applyMotionScene="false"
+                app:visibilityMode="ignore" />
         </Constraint>
     </ConstraintSet>
 
     <Transition
-        app:duration="200"
-        app:motionInterpolator="easeIn"
+        app:constraintSetEnd="@id/end"
         app:constraintSetStart="@id/start"
-        app:constraintSetEnd="@id/end" />
+        app:motionInterpolator="linear">
+        <OnSwipe
+            app:dragDirection="dragUp"
+            app:touchAnchorId="@id/categoryList"
+            app:touchAnchorSide="top" />
+    </Transition>
 </MotionScene>
