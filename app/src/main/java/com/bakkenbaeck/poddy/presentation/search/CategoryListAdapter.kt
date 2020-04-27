@@ -14,7 +14,9 @@ class CategoryListAdapter(
 ) : RecyclerView.Adapter<CategoryListViewHolder>() {
 
     private val viewPool = RecyclerView.RecycledViewPool()
-    private val items by lazy { mutableListOf<ViewCategory>() }
+    private val items by lazy(mode = LazyThreadSafetyMode.NONE) {
+        mutableListOf<ViewCategory>()
+    }
 
     fun setItems(podcasts: List<ViewCategory>) {
         items.clear()

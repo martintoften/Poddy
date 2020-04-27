@@ -13,7 +13,9 @@ class PodcastAdapter(
     private val onItemClickedListener: (View, ViewPodcast) -> Unit
 ) : RecyclerView.Adapter<PodcastViewHolder>() {
 
-    private val items by lazy { mutableListOf<ViewPodcast>() }
+    private val items by lazy(mode = LazyThreadSafetyMode.NONE) {
+        mutableListOf<ViewPodcast>()
+    }
 
     fun addItems(podcasts: List<ViewPodcast>) {
         val diffResult = DiffUtil.calculateDiff(Differ(items, podcasts))

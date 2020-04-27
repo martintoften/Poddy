@@ -13,7 +13,9 @@ class CategoryAdapter(
     private val itemClickListener: (View, ViewPodcast) -> Unit
 ) : RecyclerView.Adapter<CategoryViewHolder>() {
 
-    private val items by lazy { mutableListOf<ViewPodcast>() }
+    private val items by lazy(mode = LazyThreadSafetyMode.NONE) {
+        mutableListOf<ViewPodcast>()
+    }
 
     fun setItems(podcasts: List<ViewPodcast>) {
         val diffResult = DiffUtil.calculateDiff(Differ(items, podcasts))

@@ -18,7 +18,9 @@ class QueueAdapter(
     private val onItemClickListener: (ViewEpisode) -> Unit
 ) : RecyclerView.Adapter<QueueViewHolder>(), ItemTouchHelperAdapter {
 
-    private val items by lazy { mutableListOf<ViewEpisode>() }
+    private val items by lazy(mode = LazyThreadSafetyMode.NONE) {
+        mutableListOf<ViewEpisode>()
+    }
 
     fun addItems(episodes: List<ViewEpisode>) {
         val diffResult = DiffUtil.calculateDiff(Differ(items, episodes))

@@ -13,7 +13,9 @@ class SearchAdapter(
     private val onItemClickedListener: (View, ViewPodcastSearchItem) -> Unit
 ) : RecyclerView.Adapter<SearchViewHolder>() {
 
-    private val items by lazy { mutableListOf<ViewPodcastSearchItem>() }
+    private val items by lazy(mode = LazyThreadSafetyMode.NONE) {
+        mutableListOf<ViewPodcastSearchItem>()
+    }
 
     fun add(searchItems: List<ViewPodcastSearchItem>) {
         val diffResult = DiffUtil.calculateDiff(Differ(items, searchItems))

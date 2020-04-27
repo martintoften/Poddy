@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.feed_fragment.*
 
 abstract class FeedFragment : BackableFragment() {
 
-    private val basePodcast: ViewBasePodcast? by lazy {
+    private val basePodcast: ViewBasePodcast? by lazy(mode = LazyThreadSafetyMode.NONE) {
         val arguments = arguments ?: return@lazy null
         val args = PodcastFeedFragmentArgs.fromBundle(arguments)
         return@lazy args.podcast

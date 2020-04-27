@@ -23,7 +23,7 @@ val placeholderList = MutableList(8) { placeholderPodcast }
 
 class RecommendationAdapter : RecyclerView.Adapter<RecommendationViewHolder>() {
 
-    private val items by lazy { placeholderList }
+    private val items by lazy(mode = LazyThreadSafetyMode.NONE) { placeholderList }
 
     fun setItems(podcasts: List<ViewPodcast>) {
         val diffResult = DiffUtil.calculateDiff(Differ(items, podcasts))
