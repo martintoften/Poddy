@@ -8,8 +8,13 @@ import org.db.ByPodcastIdEpisodes
 import org.db.Episode
 import org.db.Podcast
 
+data class PodcastWithEpisodes(
+    val podcast: Podcast,
+    val episodes: List<JoinedEpisode>
+)
+
 interface PodcastDBHandler {
-    suspend fun getPodcastWithEpisodes(id: String): Pair<Podcast?, List<ByPodcastIdEpisodes>>
+    suspend fun getPodcastWithEpisodes(id: String): PodcastWithEpisodes?
     suspend fun getPodcast(id: String): Podcast?
     suspend fun deletePodcast(podcastId: String)
     suspend fun insertPodcast(podcast: Podcast, episodes: List<Episode>)
@@ -20,11 +25,14 @@ class PodcastDBHandlerImpl(
     private val db: PoddyDB,
     private val context: CoroutineContext
 ) : PodcastDBHandler {
-    override suspend fun getPodcastWithEpisodes(id: String): Pair<Podcast?, List<ByPodcastIdEpisodes>> {
+    override suspend fun getPodcastWithEpisodes(id: String): PodcastWithEpisodes? {
         return withContext(context) {
             val podcast = async { db.podcastQueries.selectById(id).executeAsOneOrNull() }
-            val episodes = async { db.episodeQueries.byPodcastIdEpisodes(id).executeAsList() }
-            return@withContext Pair(podcast.await(), episodes.await())
+            val episodes = async { db.episodeQueries.byPodcastIdEpisodes(id).executeAsList().toJoinedModel() }
+            return@withContext PodcastWithEpisodes(
+                podcast.await() ?: return@withContext null,
+                episodes.await()
+            )
         }
     }
 

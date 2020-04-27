@@ -20,13 +20,16 @@ val viewModelModule = module {
             queueUseCase = QueueUseCase(get())
         )
     }
-    viewModel { SearchViewModel(podcastRepository = get()) }
+    viewModel { SearchViewModel(
+        searchPodcastUseCase = PodcastSearchUseCase(get()),
+        getCategoriesUseCase = GetCategoriesUseCase(get())
+    ) }
     viewModel { QueueViewModel(
         queueFlowUseCase = QueueFlowUseCase(get()),
         reorderQueueUseCase = ReorderQueueUseCase(get()),
         deleteQueueUseCase = DeleteQueueUseCase(get())
     ) }
-    viewModel { PodcastViewModel(podcastRepository = get()) }
+    viewModel { PodcastViewModel(getSubscribedPodcastsUseCase = GetSubscribedPodcastsUseCase(get())) }
     viewModel {
         DetailViewModel(
             progressChannel = get(named("progressChannel")),
@@ -37,13 +40,17 @@ val viewModelModule = module {
     }
 
     viewModel { SearchFeedViewModel(
-        podcastRepository = get(),
         downloadRepository = get(),
-        downloadProgressChannel = get(named("progressChannel"))
+        downloadProgressChannel = get(named("progressChannel")),
+        getPodcastUseCase = GetPodcastUseCase(get()),
+        getEpisodeUseCase = GetEpisodeUseCase(get()),
+        toggleSubscriptionUseCase = ToggleSubscriptionUseCase(get())
     ) }
     viewModel { PodcastFeedViewModel(
-        podcastRepository = get(),
         downloadRepository = get(),
-        downloadProgressChannel = get(named("progressChannel"))
+        downloadProgressChannel = get(named("progressChannel")),
+        getPodcastUseCase = GetPodcastUseCase(get()),
+        getEpisodeUseCase = GetEpisodeUseCase(get()),
+        toggleSubscriptionUseCase = ToggleSubscriptionUseCase(get())
     ) }
 }

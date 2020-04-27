@@ -4,14 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
-import com.bakkenbaeck.poddy.repository.PodcastRepository
+import com.bakkenbaeck.poddy.usecase.GetSubscribedPodcastsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class PodcastViewModel(
-    private val podcastRepository: PodcastRepository
+    private val getSubscribedPodcastsUseCase: GetSubscribedPodcastsUseCase
 ) : ViewModel() {
 
     val podcasts = MutableLiveData<List<ViewPodcast>>()
@@ -22,7 +22,7 @@ class PodcastViewModel(
 
     private fun getPodcast() {
         viewModelScope.launch {
-            podcastRepository.getSubscribedPodcasts()
+            getSubscribedPodcastsUseCase.execute()
                 .flowOn(Dispatchers.IO)
                 .collect { handlePodcasts(it) }
         }

@@ -1,6 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.model
 
 import android.os.Parcelable
+import com.bakkenbaeck.poddy.db.handlers.JoinedEpisode
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.util.Diffable
 import kotlinx.android.parcel.Parcelize
@@ -154,7 +155,7 @@ fun AllEpisodes.toViewModel(downloadProgress: String = ""): ViewEpisode {
     )
 }
 
-fun List<ByPodcastIdEpisodes>.toPodcastEpisodeViewModel(): List<Episode> {
+fun List<JoinedEpisode>.toPodcastEpisodeViewModel(): List<ViewEpisode> {
     return map { it.toViewModel() }
 }
 
@@ -190,5 +191,22 @@ fun ViewPodcast.toBaseViewModel(): ViewBasePodcastImpl {
         title = title,
         description = description,
         image = image
+    )
+}
+
+fun JoinedEpisode.toViewModel(downloadProgress: String? = null): ViewEpisode {
+    return ViewEpisode(
+        id = id,
+        podcastId = podcastId,
+        title = title,
+        description = description,
+        pubDate = pubDate,
+        audio = audio,
+        duration = duration.toInt(),
+        image = image,
+        isDownloaded = DownloadState.intToEnum(isDownloaded.toInt()),
+        progress = progress,
+        podcastTitle = podcastTitle,
+        downloadProgress = downloadProgress.orEmpty()
     )
 }

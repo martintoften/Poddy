@@ -1,19 +1,16 @@
 package com.bakkenbaeck.poddy.repository
 
-import com.bakkenbaeck.poddy.db.handlers.EpisodeDBHandler
-import com.bakkenbaeck.poddy.db.handlers.PodcastDBHandler
-import com.bakkenbaeck.poddy.db.handlers.SubscriptionDBHandler
+import com.bakkenbaeck.poddy.db.handlers.*
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.network.SearchApi
 import com.bakkenbaeck.poddy.network.model.*
 import com.bakkenbaeck.poddy.network.safeApiCall
-import com.bakkenbaeck.poddy.presentation.mappers.mapFromNetworkToView
-import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
-import com.bakkenbaeck.poddy.presentation.model.*
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
+import com.bakkenbaeck.poddy.presentation.model.toDbModel
+import com.bakkenbaeck.poddy.presentation.model.toPodcastViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
@@ -29,64 +26,56 @@ class PodcastRepository(
     private val podcastDBHandler: PodcastDBHandler,
     private val episodeDBHandler: EpisodeDBHandler,
     private val subscriptionDBHandler: SubscriptionDBHandler,
-    private val subscriptionsChannel: ConflatedBroadcastChannel<List<ViewPodcast>>
+    private val subscriptionsChannel: ConflatedBroadcastChannel<List<Podcast>>
 ) {
 
-    suspend fun search(query: String): Result<ViewPodcastSearch> {
-        return safeApiCall {
-            val result = searchApi.search(query, PODCAST)
-            return@safeApiCall mapFromNetworkToView(result)
-        }
+    suspend fun search(query: String): Result<SearchResponse> {
+        return safeApiCall { searchApi.search(query, PODCAST) }
     }
 
-    suspend fun getEpisode(episodeId: String): ViewEpisode? {
-        return episodeDBHandler.getEpisode(episodeId)?.toViewModel()
+    suspend fun getEpisode(episodeId: String): JoinedEpisode? {
+        return episodeDBHandler.getEpisode(episodeId)
     }
 
-    suspend fun getPodcastRecommendations(podcastId: String): Result<List<ViewPodcast>> {
-        return safeApiCall {
-            searchApi.getPodcastRecommendations(podcastId).recommendations.toViewModel()
-        }
+    suspend fun getPodcastRecommendations(podcastId: String): Result<PodcastRecommendationResponse> {
+        return safeApiCall { searchApi.getPodcastRecommendations(podcastId) }
     }
 
-    suspend fun getCategories(): Result<List<ViewCategory>> {
+    suspend fun getCategories(): Result<List<CategoryPodcastReponse>> {
         return safeApiCall {
             coroutineScope {
                 val genresResult = async { searchApi.getGenres() }
-                val topPodcastResult = async { searchApi.getBestPodcasts().toViewModel() }
+                val topPodcastResult = async { searchApi.getBestPodcasts() }
                 val genres = genresResult.await()
-                val topPodcasts = ViewCategory(0, "Top", topPodcastResult.await())
+                val topPodcasts = topPodcastResult.await() //ViewCategory(0, "Top", topPodcastResult.await())
                 val categoryPodcasts = genres.genres
                     .filter { !CATEGORIES_TO_IGNORE.contains(it.id) }
                     .take(5)
                     .map { it.id }
                     .map { async { searchApi.getCategoryById(it) } }
                     .map { it.await() }
-                    .map { ViewCategory(it.id, it.name, it.toViewModel()) }
 
                 return@coroutineScope listOf(topPodcasts) + categoryPodcasts
             }
         }
     }
 
-    suspend fun getPodcast(podcastId: String, nextDate: Long? = null): Flow<Result<ViewPodcast>> {
+    suspend fun hasSubscribed(podcastId: String): Boolean {
+        return subscriptionDBHandler.hasSubscribed(podcastId)
+    }
+
+    suspend fun getPodcast(podcastId: String, nextDate: Long? = null): Flow<Result<PodcastWithEpisodes>> {
         return flow {
-            val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcastId)
-            val hasSubscribed = subscriptionDBHandler.hasSubscribed(podcastId)
+            val dbPodcast = podcastDBHandler.getPodcastWithEpisodes(podcastId)
             if (dbPodcast != null) {
-                val mappedPodcast = mapToViewPodcastFromDB(
-                    dbPodcast,
-                    dbEpisodes.toPodcastEpisodeViewModel(),
-                    hasSubscribed
-                )
-                emit(Result.Success(mappedPodcast))
+                emit(Result.Success(dbPodcast))
             }
 
             val podcastResponse = safeApiCall { searchApi.getEpisodes(podcastId, EPISODE, nextDate) }
             when (podcastResponse) {
                 is Result.Success -> {
-                    val updatedEpisodes = updatePodcastEpisodes(podcastResponse.value, nextDate, hasSubscribed)
-                    emit(Result.Success(updatedEpisodes))
+                    val updatedPodcast = updatePodcastEpisodes(podcastResponse.value, nextDate)
+                    emit(Result.Success(updatedPodcast))
                 }
                 is Result.Error ->  emit(podcastResponse.copy())
             }
@@ -95,9 +84,8 @@ class PodcastRepository(
 
     private suspend fun updatePodcastEpisodes(
         podcastResponse: PodcastResponse,
-        nextDate: Long?,
-        hasSubscribed: Boolean
-    ): ViewPodcast {
+        nextDate: Long?
+    ): PodcastWithEpisodes {
         val podcast = podcastResponse.toDbModel()
         val episodes = podcastResponse.toEpisodeDbModel()
 
@@ -105,13 +93,9 @@ class PodcastRepository(
         if (isFirstRequest) updateEpisodes(podcast, episodes)
         else podcastDBHandler.insertPodcast(podcast, episodes)
 
-        val updatedDbEpisodes = episodeDBHandler.getEpisodes(podcast.id)
+        val dbEpisodes = episodeDBHandler.getEpisodes(podcast.id)
 
-        return mapToViewPodcastFromDB(
-            podcast,
-            updatedDbEpisodes.toPodcastEpisodeViewModel(),
-            hasSubscribed
-        )
+        return PodcastWithEpisodes(podcast, dbEpisodes)
     }
 
     // Temp, find a way to update episodes
@@ -144,13 +128,13 @@ class PodcastRepository(
 
             emit(hasAlreadySubscribed)
 
-            val dbPodcasts = subscriptionDBHandler.getSubscribedPodcasts().toPodcastViewModel()
+            val dbPodcasts = subscriptionDBHandler.getSubscribedPodcasts()//.toPodcastViewModel()
             subscriptionsChannel.send(dbPodcasts)
         }
     }
 
-    suspend fun getSubscribedPodcasts(): Flow<List<ViewPodcast>> {
-        val podcasts = subscriptionDBHandler.getSubscribedPodcasts().toPodcastViewModel()
+    suspend fun getSubscribedPodcasts(): Flow<List<Podcast>> {
+        val podcasts = subscriptionDBHandler.getSubscribedPodcasts()//.toPodcastViewModel()
         subscriptionsChannel.send(podcasts)
         return subscriptionsChannel.asFlow()
     }

@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
-import com.bakkenbaeck.poddy.repository.PodcastRepository
+import com.bakkenbaeck.poddy.usecase.GetPodcastRecommendationsUseCase
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
@@ -14,7 +14,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class PodcastDetailsModelFactory(
-    private val podcastRepository: PodcastRepository,
+    private val recommendationsUseCase: GetPodcastRecommendationsUseCase,
     private val podcast: ViewPodcast?,
     owner: SavedStateRegistryOwner,
     defaultArgs: Bundle? = null
@@ -24,13 +24,13 @@ class PodcastDetailsModelFactory(
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        return PodcastDetailsViewModel(podcast, podcastRepository) as T
+        return PodcastDetailsViewModel(podcast, recommendationsUseCase) as T
     }
 }
 
 class PodcastDetailsViewModel(
     private val podcast: ViewPodcast?,
-    private val podcastRepository: PodcastRepository
+    private val getPodcastRecommendationsUseCase: GetPodcastRecommendationsUseCase
 ) : ViewModel() {
 
     val recommendationsResult by lazy { MutableLiveData<Resource<List<ViewPodcast>>>() }
@@ -44,7 +44,7 @@ class PodcastDetailsViewModel(
 
         viewModelScope.launch {
             recommendationsResult.value = Loading()
-            val result = async { podcastRepository.getPodcastRecommendations(podcast.id) }
+            val result = async { getPodcastRecommendationsUseCase.execute(podcast.id) }
             when (val recommendations = result.await()) {
                 is Result.Success -> recommendationsResult.value = Success(recommendations.value)
                 is Result.Error -> recommendationsResult.value = Failure(recommendations.throwable)

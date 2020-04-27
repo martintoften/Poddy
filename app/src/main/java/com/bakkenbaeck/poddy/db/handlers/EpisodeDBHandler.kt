@@ -8,9 +8,59 @@ import org.db.ByIdEpisode
 import org.db.ByPodcastIdEpisodes
 import org.db.Episode
 
+data class JoinedEpisode(
+    val id: String,
+    val podcastId: String,
+    val title: String,
+    val description: String,
+    val pubDate: Long,
+    val audio: String,
+    val duration: Long,
+    val image: String,
+    val timestamp: Long,
+    val isDownloaded: Long,
+    val progress: Long,
+    val podcastTitle: String
+)
+
+fun ByIdEpisode.toJoinedModel(): JoinedEpisode {
+    return JoinedEpisode(
+        id = id,
+        podcastId = podcast_id,
+        title = title,
+        description = description,
+        pubDate = pub_date,
+        audio = audio,
+        duration = duration,
+        image = image,
+        timestamp = timestamp,
+        isDownloaded = is_downloaded,
+        progress = progress,
+        podcastTitle = title_
+    )
+}
+
+fun List<ByPodcastIdEpisodes>.toJoinedModel(): List<JoinedEpisode> {
+    return map { JoinedEpisode(
+        id = it.id,
+        podcastId = it.podcast_id,
+        title = it.title,
+        description = it.description,
+        pubDate = it.pub_date,
+        audio = it.audio,
+        duration = it.duration,
+        image = it.image,
+        timestamp = it.timestamp,
+        isDownloaded = it.is_downloaded,
+        progress = it.progress,
+        podcastTitle = it.title_
+    ) }
+}
+
+
 interface EpisodeDBHandler {
-    suspend fun getEpisode(episodeId: String): ByIdEpisode?
-    suspend fun getEpisodes(podcastId: String): List<ByPodcastIdEpisodes>
+    suspend fun getEpisode(episodeId: String): JoinedEpisode?
+    suspend fun getEpisodes(podcastId: String): List<JoinedEpisode>
     suspend fun deleteEpisode(episodeId: String)
     suspend fun insertEpisodes(episodes: List<Episode>)
     suspend fun deletePodcastEpisodes(podcastId: String)
@@ -23,15 +73,21 @@ class EpisodeDBHandlerImpl(
     private val db: PoddyDB,
     private val context: CoroutineContext
 ) : EpisodeDBHandler {
-    override suspend fun getEpisode(episodeId: String): ByIdEpisode? {
+    override suspend fun getEpisode(episodeId: String): JoinedEpisode? {
         return withContext(context) {
-            return@withContext db.episodeQueries.byIdEpisode(episodeId).executeAsOneOrNull()
+            return@withContext db.episodeQueries
+                .byIdEpisode(episodeId)
+                .executeAsOneOrNull()
+                ?.toJoinedModel()
         }
     }
 
-    override suspend fun getEpisodes(podcastId: String): List<ByPodcastIdEpisodes> {
+    override suspend fun getEpisodes(podcastId: String): List<JoinedEpisode> {
         return withContext(context) {
-            return@withContext db.episodeQueries.byPodcastIdEpisodes(podcastId).executeAsList()
+            return@withContext db.episodeQueries
+                .byPodcastIdEpisodes(podcastId)
+                .executeAsList()
+                .toJoinedModel()
         }
     }
 
