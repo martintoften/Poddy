@@ -18,7 +18,7 @@ class QueueRepository(
     private val queueChannel: ConflatedBroadcastChannel<List<ByIdsEpisodes>>
 ) {
     suspend fun getQueueFlow(): Flow<List<ByIdsEpisodes>> {
-        val queue = queueDBHandler.getQueue()//.toByIdsViewModel()
+        val queue = queueDBHandler.getQueue()
         queueChannel.send(queue)
         return queueChannel.asFlow()
     }
@@ -29,7 +29,7 @@ class QueueRepository(
         val dbEpisode = episode.toDbModel()
 
         queueDBHandler.insertQueueItem(dbQueueItem, dbEpisode)
-        val queue = queueDBHandler.getQueue()//.toByIdsViewModel()
+        val queue = queueDBHandler.getQueue()
         queueChannel.send(queue)
     }
 
@@ -38,12 +38,12 @@ class QueueRepository(
     }
 
     suspend fun getQueue(): List<ByIdsEpisodes> {
-        return queueDBHandler.getQueue()//.toByIdsViewModel()
+        return queueDBHandler.getQueue()
     }
 
     suspend fun deleteEpisodeFromQueue(episodeId: String) {
         episodeDBHandler.deleteEpisode(episodeId)
-        val queue = queueDBHandler.getQueue()//.toByIdsViewModel()
+        val queue = queueDBHandler.getQueue()
         queueChannel.send(queue)
     }
 }

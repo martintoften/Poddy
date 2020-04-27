@@ -11,7 +11,6 @@ import com.bakkenbaeck.poddy.notification.PlayerNotificationHandlerImpl
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.ProgressRepository
-import com.bakkenbaeck.poddy.repository.QueueRepository
 import com.bakkenbaeck.poddy.usecase.AddToQueueUseCase
 import com.bakkenbaeck.poddy.usecase.DeleteQueueUseCase
 import com.bakkenbaeck.poddy.usecase.QueueFlowUseCase
@@ -25,15 +24,14 @@ import org.koin.core.qualifier.named
 class PlayerService : Service() {
 
     private val playerHandler by lazy {
-        val queueRepository by inject<QueueRepository>()
         val progressRepository by inject<ProgressRepository>()
         val playerChannel by inject<ConflatedBroadcastChannel<ViewPlayerAction?>>(named("playerChannel"))
         val playerQueue by inject<PlayerQueue>()
         val episodePathHelper by inject<EpisodePathHelper>()
         val podcastPlayer by inject<PodcastPlayer>()
-        val queueFlowUseCase = QueueFlowUseCase(queueRepository)
-        val addToQueueFlow = AddToQueueUseCase(queueRepository)
-        val deleteQueueFlow = DeleteQueueUseCase(queueRepository)
+        val queueFlowUseCase  by inject<QueueFlowUseCase>()
+        val addToQueueFlow  by inject<AddToQueueUseCase>()
+        val deleteQueueFlow  by inject<DeleteQueueUseCase>()
         val playerNotificationHandler = PlayerNotificationHandlerImpl(this)
 
         PlayerHandler(

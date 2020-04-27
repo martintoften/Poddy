@@ -7,7 +7,6 @@ import com.bakkenbaeck.poddy.network.model.*
 import com.bakkenbaeck.poddy.network.safeApiCall
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.presentation.model.toDbModel
-import com.bakkenbaeck.poddy.presentation.model.toPodcastViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.coroutineScope
@@ -47,7 +46,7 @@ class PodcastRepository(
                 val genresResult = async { searchApi.getGenres() }
                 val topPodcastResult = async { searchApi.getBestPodcasts() }
                 val genres = genresResult.await()
-                val topPodcasts = topPodcastResult.await() //ViewCategory(0, "Top", topPodcastResult.await())
+                val topPodcasts = topPodcastResult.await()
                 val categoryPodcasts = genres.genres
                     .filter { !CATEGORIES_TO_IGNORE.contains(it.id) }
                     .take(5)
@@ -77,7 +76,7 @@ class PodcastRepository(
                     val updatedPodcast = updatePodcastEpisodes(podcastResponse.value, nextDate)
                     emit(Result.Success(updatedPodcast))
                 }
-                is Result.Error ->  emit(podcastResponse.copy())
+                is Result.Error -> emit(podcastResponse.copy())
             }
         }
     }
@@ -128,13 +127,13 @@ class PodcastRepository(
 
             emit(hasAlreadySubscribed)
 
-            val dbPodcasts = subscriptionDBHandler.getSubscribedPodcasts()//.toPodcastViewModel()
+            val dbPodcasts = subscriptionDBHandler.getSubscribedPodcasts()
             subscriptionsChannel.send(dbPodcasts)
         }
     }
 
     suspend fun getSubscribedPodcasts(): Flow<List<Podcast>> {
-        val podcasts = subscriptionDBHandler.getSubscribedPodcasts()//.toPodcastViewModel()
+        val podcasts = subscriptionDBHandler.getSubscribedPodcasts()
         subscriptionsChannel.send(podcasts)
         return subscriptionsChannel.asFlow()
     }
