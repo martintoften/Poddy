@@ -5,10 +5,7 @@ import com.bakkenbaeck.poddy.db.handlers.PodcastDBHandler
 import com.bakkenbaeck.poddy.db.handlers.SubscriptionDBHandler
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.network.SearchApi
-import com.bakkenbaeck.poddy.network.model.PodcastRecommendationResponse
-import com.bakkenbaeck.poddy.network.model.toDbModel
-import com.bakkenbaeck.poddy.network.model.toEpisodeDbModel
-import com.bakkenbaeck.poddy.network.model.toViewModel
+import com.bakkenbaeck.poddy.network.model.*
 import com.bakkenbaeck.poddy.network.safeApiCall
 import com.bakkenbaeck.poddy.presentation.mappers.mapFromNetworkToView
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
@@ -72,7 +69,7 @@ class PodcastRepository(
         }
     }
 
-    suspend fun getPodcast(podcastId: String, nextDate: Long? = null): Flow<ViewPodcast> {
+    suspend fun getPodcast(podcastId: String, nextDate: Long? = null): Flow<Result<ViewPodcast>> {
         return flow {
             val (dbPodcast, dbEpisodes) = podcastDBHandler.getPodcastWithEpisodes(podcastId)
             val hasSubscribed = subscriptionDBHandler.hasSubscribed(podcastId)
@@ -82,30 +79,39 @@ class PodcastRepository(
                     dbEpisodes.toPodcastEpisodeViewModel(),
                     hasSubscribed
                 )
-                emit(mappedPodcast)
+                emit(Result.Success(mappedPodcast))
             }
 
             val podcastResponse = safeApiCall { searchApi.getEpisodes(podcastId, EPISODE, nextDate) }
-
-            if (podcastResponse is Result.Success) {
-                val podcast = podcastResponse.value.toDbModel()
-                val episodes = podcastResponse.value.toEpisodeDbModel()
-
-                val isFirstRequest = nextDate == null
-                if (isFirstRequest) updateEpisodes(podcast, episodes)
-                else podcastDBHandler.insertPodcast(podcast, episodes)
-
-                val updatedDbEpisodes = episodeDBHandler.getEpisodes(podcast.id)
-
-                val mappedPodcast = mapToViewPodcastFromDB(
-                    podcast,
-                    updatedDbEpisodes.toPodcastEpisodeViewModel(),
-                    hasSubscribed
-                )
-
-                emit(mappedPodcast)
+            when (podcastResponse) {
+                is Result.Success -> {
+                    val updatedEpisodes = updatePodcastEpisodes(podcastResponse.value, nextDate, hasSubscribed)
+                    emit(Result.Success(updatedEpisodes))
+                }
+                is Result.Error ->  emit(podcastResponse.copy())
             }
         }
+    }
+
+    private suspend fun updatePodcastEpisodes(
+        podcastResponse: PodcastResponse,
+        nextDate: Long?,
+        hasSubscribed: Boolean
+    ): ViewPodcast {
+        val podcast = podcastResponse.toDbModel()
+        val episodes = podcastResponse.toEpisodeDbModel()
+
+        val isFirstRequest = nextDate == null
+        if (isFirstRequest) updateEpisodes(podcast, episodes)
+        else podcastDBHandler.insertPodcast(podcast, episodes)
+
+        val updatedDbEpisodes = episodeDBHandler.getEpisodes(podcast.id)
+
+        return mapToViewPodcastFromDB(
+            podcast,
+            updatedDbEpisodes.toPodcastEpisodeViewModel(),
+            hasSubscribed
+        )
     }
 
     // Temp, find a way to update episodes

@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.network.ProgressEvent
+import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.presentation.model.*
 import com.bakkenbaeck.poddy.repository.DownloadRepository
 import com.bakkenbaeck.poddy.repository.PodcastRepository
@@ -50,10 +51,15 @@ abstract class BaseFeedViewModel(
         feedResult.value = Failure(error)
     }
 
-    private fun handleFeed(podcast: ViewPodcast) {
-        val subState = if (podcast.hasSubscribed) Subscribed() else Unsubscribed()
-        subscriptionState.value = subState
-        feedResult.value = Success(podcast)
+    private fun handleFeed(podcast: Result<ViewPodcast>) {
+        when (podcast) {
+            is Result.Success -> {
+                val subState = if (podcast.value.hasSubscribed) Subscribed() else Unsubscribed()
+                subscriptionState.value = subState
+                feedResult.value = Success(podcast.value)
+            }
+            is Result.Error -> {} // Handle
+        }
     }
 
     fun addPodcast() {
