@@ -1,16 +1,16 @@
 package com.bakkenbaeck.poddy.db.handlers
 
+import com.bakkenbaeck.poddy.db.model.JoinedEpisode
+import com.bakkenbaeck.poddy.db.model.toJoinedModel
 import com.bakkenbaeck.poddy.presentation.model.DownloadState
 import db.PoddyDB
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.withContext
-import org.db.ByIdEpisode
-import org.db.ByPodcastIdEpisodes
 import org.db.Episode
+import kotlin.coroutines.CoroutineContext
 
 interface EpisodeDBHandler {
-    suspend fun getEpisode(episodeId: String): ByIdEpisode?
-    suspend fun getEpisodes(podcastId: String): List<ByPodcastIdEpisodes>
+    suspend fun getEpisode(episodeId: String): JoinedEpisode?
+    suspend fun getEpisodes(podcastId: String): List<JoinedEpisode>
     suspend fun deleteEpisode(episodeId: String)
     suspend fun insertEpisodes(episodes: List<Episode>)
     suspend fun deletePodcastEpisodes(podcastId: String)
@@ -23,15 +23,21 @@ class EpisodeDBHandlerImpl(
     private val db: PoddyDB,
     private val context: CoroutineContext
 ) : EpisodeDBHandler {
-    override suspend fun getEpisode(episodeId: String): ByIdEpisode? {
+    override suspend fun getEpisode(episodeId: String): JoinedEpisode? {
         return withContext(context) {
-            return@withContext db.episodeQueries.byIdEpisode(episodeId).executeAsOneOrNull()
+            return@withContext db.episodeQueries
+                .byIdEpisode(episodeId)
+                .executeAsOneOrNull()
+                ?.toJoinedModel()
         }
     }
 
-    override suspend fun getEpisodes(podcastId: String): List<ByPodcastIdEpisodes> {
+    override suspend fun getEpisodes(podcastId: String): List<JoinedEpisode> {
         return withContext(context) {
-            return@withContext db.episodeQueries.byPodcastIdEpisodes(podcastId).executeAsList()
+            return@withContext db.episodeQueries
+                .byPodcastIdEpisodes(podcastId)
+                .executeAsList()
+                .toJoinedModel()
         }
     }
 

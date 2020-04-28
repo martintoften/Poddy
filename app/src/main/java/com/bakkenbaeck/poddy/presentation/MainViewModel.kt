@@ -4,14 +4,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
-import com.bakkenbaeck.poddy.repository.QueueRepository
+import com.bakkenbaeck.poddy.useCase.QueueFlowUseCase
+import com.bakkenbaeck.poddy.useCase.QueueUseCase
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction?>,
-    private val queueRepository: QueueRepository
+    private val queueFlowUseCase: QueueFlowUseCase,
+    private val queueUseCase: QueueUseCase
 ) : ViewModel() {
 
     val playerUpdates by lazy { MutableLiveData<ViewPlayerAction>() }
@@ -33,7 +35,7 @@ class MainViewModel(
 
     // Add a player action if channel is empty or if the current action is a progress action
     private suspend fun addTopEpisodeFromQueueIfPlayerIsEmpty() {
-        val queue = queueRepository.getQueue()
+        val queue = queueUseCase.execute()
 
         if (queue.isNotEmpty() && playerChannel.valueOrNull == null) {
             val topEpisode = queue.first()
@@ -60,8 +62,7 @@ class MainViewModel(
 
     private fun listenForQueueUpdates() {
         viewModelScope.launch {
-            queueRepository.getQueue()
-            queueRepository.listenForQueueUpdates()
+            queueFlowUseCase.execute()
                 .distinctUntilChanged()
                 .collect {
                     queueSize.value = it.size

@@ -4,9 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.network.ProgressEvent
+import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.presentation.model.*
-import com.bakkenbaeck.poddy.repository.DownloadRepository
-import com.bakkenbaeck.poddy.repository.PodcastRepository
+import com.bakkenbaeck.poddy.useCase.*
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
@@ -17,9 +17,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 abstract class BaseFeedViewModel(
-    private val podcastRepository: PodcastRepository,
-    private val downloadRepository: DownloadRepository,
-    private val downloadProgressChannel: ConflatedBroadcastChannel<ProgressEvent>
+    private val downloadProgressChannel: ConflatedBroadcastChannel<ProgressEvent>,
+    private val getPodcastUseCase: GetPodcastUseCase,
+    private val getEpisodeUseCase: GetEpisodeUseCase,
+    private val toggleSubscriptionUseCase: ToggleSubscriptionUseCase,
+    private val downloadStateFlowUseCase: DownloadStateFlowUseCase
 ) : ViewModel() {
 
     val downloadResult by lazy { MutableLiveData<ViewEpisode>() }
@@ -37,7 +39,7 @@ abstract class BaseFeedViewModel(
 
         viewModelScope.launch {
             feedResult.value = Loading()
-            podcastRepository.getPodcast(id, lastTimestamp)
+            getPodcastUseCase.execute(GetPodcastQuery(id, lastTimestamp))
                 .filterNotNull()
                 .flowOn(Dispatchers.IO)
                 .catch { handleFeedError(it) }
@@ -50,18 +52,22 @@ abstract class BaseFeedViewModel(
         feedResult.value = Failure(error)
     }
 
-    private fun handleFeed(podcast: ViewPodcast) {
-        val subState = if (podcast.hasSubscribed) Subscribed() else Unsubscribed()
-        subscriptionState.value = subState
-        feedResult.value = Success(podcast)
+    private fun handleFeed(podcast: Result<ViewPodcast>) {
+        when (podcast) {
+            is Result.Success -> {
+                val subState = if (podcast.value.hasSubscribed) Subscribed() else Unsubscribed()
+                subscriptionState.value = subState
+                feedResult.value = Success(podcast.value)
+            }
+            is Result.Error -> {} // Handle
+        }
     }
 
     fun addPodcast() {
         val podcast = getPodcast() ?: return
 
         viewModelScope.launch {
-            podcastRepository.toggleSubscription(podcast)
-                .map { if (it) Unsubscribed() else Subscribed() }
+            toggleSubscriptionUseCase.execute(podcast)
                 .collect {
                     subscriptionState.value = it
                 }
@@ -77,9 +83,9 @@ abstract class BaseFeedViewModel(
 
     private fun listenForDownloadUpdates() {
         viewModelScope.launch {
-            downloadRepository.listenForDownloadStateUpdates()
+            downloadStateFlowUseCase.execute()
                 .filterNotNull()
-                .map { podcastRepository.getEpisode(it) }
+                .map { getEpisodeUseCase.execute(it) }
                 .filterNotNull()
                 .flowOn(Dispatchers.IO)
                 .collect { downloadResult.value = it }
@@ -90,7 +96,7 @@ abstract class BaseFeedViewModel(
         viewModelScope.launch {
             downloadProgressChannel.asFlow()
                 .map {
-                    val episode = podcastRepository.getEpisode(it.identifier) ?: return@map null
+                    val episode = getEpisodeUseCase.execute(it.identifier) ?: return@map null
                     return@map episode.copy(downloadProgress = it.getFormattedProgress())
                 }
                 .filterNotNull()

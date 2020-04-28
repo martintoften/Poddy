@@ -1,10 +1,13 @@
 package com.bakkenbaeck.poddy.presentation.model
 
 import android.os.Parcelable
+import com.bakkenbaeck.poddy.db.model.JoinedEpisode
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.util.Diffable
 import kotlinx.android.parcel.Parcelize
-import org.db.*
+import org.db.ByIdsEpisodes
+import org.db.Episode
+import org.db.Podcast
 import java.util.*
 
 @Parcelize
@@ -62,10 +65,6 @@ fun List<Podcast>.toPodcastViewModel(): List<ViewPodcast> {
     }
 }
 
-fun List<Episode>.toViewModel(): List<ViewEpisode> {
-    return map { it.toViewModel() }
-}
-
 fun ViewEpisode.toDbModel(timestamp: Long = Date().time): Episode {
     return Episode.Impl(
         id = id,
@@ -79,40 +78,6 @@ fun ViewEpisode.toDbModel(timestamp: Long = Date().time): Episode {
         audio = audio,
         is_downloaded = isDownloaded.value.toLong(),
         progress = progress
-    )
-}
-
-fun Episode.toViewModel(downloadProgress: String = ""): ViewEpisode {
-    return ViewEpisode(
-        id = id,
-        podcastId = podcast_id,
-        title = title,
-        description = description,
-        pubDate = pub_date,
-        duration = duration.toInt(),
-        image = image,
-        audio = audio,
-        isDownloaded = DownloadState.intToEnum(is_downloaded.toInt()),
-        downloadProgress = downloadProgress,
-        progress = progress,
-        podcastTitle = ""
-    )
-}
-
-fun ByIdEpisode.toViewModel(downloadProgress: String = ""): ViewEpisode {
-    return ViewEpisode(
-        id = id,
-        podcastId = podcast_id,
-        title = title,
-        description = description,
-        pubDate = pub_date,
-        duration = duration.toInt(),
-        image = image,
-        audio = audio,
-        isDownloaded = DownloadState.intToEnum(is_downloaded.toInt()),
-        downloadProgress = downloadProgress,
-        progress = progress,
-        podcastTitle = title_
     )
 }
 
@@ -137,41 +102,8 @@ fun ByIdsEpisodes.toViewModel(downloadProgress: String = ""): ViewEpisode {
     )
 }
 
-fun AllEpisodes.toViewModel(downloadProgress: String = ""): ViewEpisode {
-    return ViewEpisode(
-        id = id,
-        podcastId = podcast_id,
-        title = title,
-        description = description,
-        pubDate = pub_date,
-        duration = duration.toInt(),
-        image = image,
-        audio = audio,
-        isDownloaded = DownloadState.intToEnum(is_downloaded.toInt()),
-        downloadProgress = downloadProgress,
-        progress = progress,
-        podcastTitle = title_
-    )
-}
-
-fun List<ByPodcastIdEpisodes>.toPodcastEpisodeViewModel(): List<Episode> {
+fun List<JoinedEpisode>.toPodcastEpisodeViewModel(): List<ViewEpisode> {
     return map { it.toViewModel() }
-}
-
-fun ByPodcastIdEpisodes.toViewModel(): Episode {
-    return Episode.Impl(
-        id = id,
-        podcast_id = podcast_id,
-        title = title,
-        description = description,
-        pub_date = pub_date,
-        duration = duration,
-        image = image,
-        timestamp = timestamp,
-        audio = audio,
-        is_downloaded = is_downloaded,
-        progress = progress
-    )
 }
 
 fun ViewPodcast.toDbModel(): Podcast {
@@ -190,5 +122,22 @@ fun ViewPodcast.toBaseViewModel(): ViewBasePodcastImpl {
         title = title,
         description = description,
         image = image
+    )
+}
+
+fun JoinedEpisode.toViewModel(downloadProgress: String? = null): ViewEpisode {
+    return ViewEpisode(
+        id = id,
+        podcastId = podcastId,
+        title = title,
+        description = description,
+        pubDate = pubDate,
+        audio = audio,
+        duration = duration.toInt(),
+        image = image,
+        isDownloaded = DownloadState.intToEnum(isDownloaded.toInt()),
+        progress = progress,
+        podcastTitle = podcastTitle,
+        downloadProgress = downloadProgress.orEmpty()
     )
 }

@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.network.model
 
+import com.bakkenbaeck.poddy.presentation.model.ViewCategory
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 
 data class CategoryPodcastReponse(
@@ -15,6 +16,10 @@ data class CategoryPodcastReponse(
     val next_page_number: Int,
     val previous_page_number: Int
 )
+
+fun List<CategoryPodcastReponse>.toViewModel(): List<ViewCategory> {
+    return map {  ViewCategory(it.id, it.name, it.toViewModel()) }
+}
 
 fun CategoryPodcastReponse.toViewModel(): List<ViewPodcast> {
     return podcasts.map {

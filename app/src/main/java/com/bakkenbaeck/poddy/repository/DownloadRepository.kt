@@ -1,7 +1,7 @@
 package com.bakkenbaeck.poddy.repository
 
 import com.bakkenbaeck.poddy.db.handlers.EpisodeDBHandler
-import com.bakkenbaeck.poddy.download.DownloadHandler
+import com.bakkenbaeck.poddy.network.DownloadHandler
 import com.bakkenbaeck.poddy.presentation.model.DownloadState
 import java.io.File
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -13,7 +13,7 @@ class DownloadRepository(
     private val episodeDBHandler: EpisodeDBHandler,
     private val downloadStateChannel: ConflatedBroadcastChannel<String?>
 ) {
-    suspend fun listenForDownloadStateUpdates(): Flow<String?> {
+    suspend fun getDownloadStateFlow(): Flow<String?> {
         downloadStateChannel.send(null)
         return downloadStateChannel.asFlow()
     }

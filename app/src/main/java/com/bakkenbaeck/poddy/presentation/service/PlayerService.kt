@@ -1,19 +1,21 @@
-package com.bakkenbaeck.poddy.service
+package com.bakkenbaeck.poddy.presentation.service
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import com.bakkenbaeck.poddy.ACTION_NOTIFICATION_DISMISSED
-import com.bakkenbaeck.poddy.EPISODE
-import com.bakkenbaeck.poddy.PlayerHandler
-import com.bakkenbaeck.poddy.PodcastPlayer
-import com.bakkenbaeck.poddy.notification.PlayerNotificationHandlerImpl
+import com.bakkenbaeck.poddy.presentation.player.ACTION_NOTIFICATION_DISMISSED
+import com.bakkenbaeck.poddy.presentation.player.EPISODE
+import com.bakkenbaeck.poddy.presentation.player.PlayerHandler
+import com.bakkenbaeck.poddy.presentation.player.PodcastPlayer
+import com.bakkenbaeck.poddy.presentation.notification.PlayerNotificationHandlerImpl
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.ProgressRepository
-import com.bakkenbaeck.poddy.repository.QueueRepository
+import com.bakkenbaeck.poddy.useCase.AddToQueueUseCase
+import com.bakkenbaeck.poddy.useCase.DeleteQueueUseCase
+import com.bakkenbaeck.poddy.useCase.QueueFlowUseCase
 import com.bakkenbaeck.poddy.util.EpisodePathHelper
-import com.bakkenbaeck.poddy.util.PlayerQueue
+import com.bakkenbaeck.poddy.presentation.player.PlayerQueue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import org.koin.android.ext.android.inject
@@ -22,23 +24,27 @@ import org.koin.core.qualifier.named
 class PlayerService : Service() {
 
     private val playerHandler by lazy {
-        val queueRepository by inject<QueueRepository>()
         val progressRepository by inject<ProgressRepository>()
         val playerChannel by inject<ConflatedBroadcastChannel<ViewPlayerAction?>>(named("playerChannel"))
         val playerQueue by inject<PlayerQueue>()
         val episodePathHelper by inject<EpisodePathHelper>()
         val podcastPlayer by inject<PodcastPlayer>()
+        val queueFlowUseCase  by inject<QueueFlowUseCase>()
+        val addToQueueFlow  by inject<AddToQueueUseCase>()
+        val deleteQueueFlow  by inject<DeleteQueueUseCase>()
         val playerNotificationHandler = PlayerNotificationHandlerImpl(this)
 
         PlayerHandler(
-            queueRepository = queueRepository,
             progressRepository = progressRepository,
             playerChannel = playerChannel,
             playerNotificationHandler = playerNotificationHandler,
             podcastPlayer = podcastPlayer,
             mainDispatcher = Dispatchers.Main,
             episodeHelper = episodePathHelper,
-            playerQueue = playerQueue
+            playerQueue = playerQueue,
+            queueFlowUseCase = queueFlowUseCase,
+            addToQueueUseCase = addToQueueFlow,
+            deleteQueueUseCase = deleteQueueFlow
         )
     }
 
@@ -51,7 +57,7 @@ class PlayerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
-            if (intent.action == ACTION_NOTIFICATION_DISMISSED ) {
+            if (intent.action == ACTION_NOTIFICATION_DISMISSED) {
                 stopForeground(true)
                 stopSelf()
                 return@let

@@ -1,4 +1,4 @@
-package com.bakkenbaeck.poddy.util
+package com.bakkenbaeck.poddy.presentation.player
 
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 

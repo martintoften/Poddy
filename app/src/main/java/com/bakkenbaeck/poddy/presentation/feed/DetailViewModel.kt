@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
-import com.bakkenbaeck.poddy.repository.QueueRepository
-import com.bakkenbaeck.poddy.util.PlayerQueue
+import com.bakkenbaeck.poddy.useCase.AddToQueueUseCase
+import com.bakkenbaeck.poddy.presentation.player.PlayerQueue
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -16,10 +16,10 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 class DetailViewModel(
-    private val queueRepository: QueueRepository,
     private val progressChannel: ConflatedBroadcastChannel<ProgressEvent>,
     private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction?>,
-    private val playerQueue: PlayerQueue
+    private val playerQueue: PlayerQueue,
+    private val addToQueueUseCase: AddToQueueUseCase
 ) : ViewModel() {
 
     private var selectedEpisode: ViewEpisode? = null
@@ -65,7 +65,7 @@ class DetailViewModel(
         val episode = selectedEpisode ?: return
 
         viewModelScope.launch {
-            queueRepository.addToQueue(episode)
+            addToQueueUseCase.execute(episode)
         }
     }
 }

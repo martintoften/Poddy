@@ -1,13 +1,13 @@
-package com.bakkenbaeck.poddy
+package com.bakkenbaeck.poddy.presentation.player
 
-import com.bakkenbaeck.poddy.notification.PlayerNotificationHandler
+import com.bakkenbaeck.poddy.presentation.notification.PlayerNotificationHandler
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.ProgressRepository
-import com.bakkenbaeck.poddy.repository.QueueRepository
-import com.bakkenbaeck.poddy.service.PlayerActionBuilder
+import com.bakkenbaeck.poddy.useCase.AddToQueueUseCase
+import com.bakkenbaeck.poddy.useCase.DeleteQueueUseCase
+import com.bakkenbaeck.poddy.useCase.QueueFlowUseCase
 import com.bakkenbaeck.poddy.util.EpisodePathHelper
-import com.bakkenbaeck.poddy.util.PlayerQueue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -28,21 +28,27 @@ const val ACTION_SEEK_TO = "action_seek_to"
 const val ACTION_NOTIFICATION_DISMISSED = "action_notification_dismissed"
 
 class PlayerHandler(
-    private val queueRepository: QueueRepository,
     private val progressRepository: ProgressRepository,
     private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction?>,
     private val playerNotificationHandler: PlayerNotificationHandler,
     private val podcastPlayer: PodcastPlayer,
     private val mainDispatcher: CoroutineContext,
     private val episodeHelper: EpisodePathHelper,
-    private val playerQueue: PlayerQueue
+    private val playerQueue: PlayerQueue,
+    private val queueFlowUseCase: QueueFlowUseCase,
+    private val addToQueueUseCase: AddToQueueUseCase,
+    private val deleteQueueUseCase: DeleteQueueUseCase
 ) {
     private var isQueueListenerInitialised = false
 
     private val scope by lazy { CoroutineScope(Dispatchers.Main) }
 
     private val tickerChannel by lazy { ticker(delayMillis = 1000, context = mainDispatcher) }
-    private val playerActionBuilder by lazy { PlayerActionBuilder(playerQueue) }
+    private val playerActionBuilder by lazy {
+        PlayerActionBuilder(
+            playerQueue
+        )
+    }
 
     fun init() {
         listenForProgressUpdates()
@@ -101,7 +107,7 @@ class PlayerHandler(
         playerQueue.clearCurrentEpisode()
 
         scope.launch {
-            queueRepository.deleteEpisodeFromQueue(currentEpisode.id)
+            deleteQueueUseCase.execute(currentEpisode.id)
         }
     }
 
@@ -154,7 +160,7 @@ class PlayerHandler(
     private suspend fun broadcastAction(action: ViewPlayerAction) {
         when (action) {
             is ViewPlayerAction.Start -> {
-                queueRepository.addToQueue(action.episode)
+                addToQueueUseCase.execute(action.episode)
                 playerQueue.setCurrent(action.episode)
                 playerChannel.send(action)
             }
@@ -168,20 +174,13 @@ class PlayerHandler(
         isQueueListenerInitialised = true
 
         listenForQueueUpdates()
-        getQueue()
     }
 
     private fun listenForQueueUpdates() {
         scope.launch {
-            queueRepository.listenForQueueUpdates()
+            queueFlowUseCase.execute()
                 .flowOn(Dispatchers.IO)
                 .collect { handleQueue(it) }
-        }
-    }
-
-    private fun getQueue() {
-        scope.launch {
-            queueRepository.getQueue()
         }
     }
 

@@ -1,9 +1,7 @@
 package com.bakkenbaeck.poddy.di
 
-import androidx.lifecycle.SavedStateHandle
 import com.bakkenbaeck.poddy.presentation.MainViewModel
 import com.bakkenbaeck.poddy.presentation.feed.DetailViewModel
-import com.bakkenbaeck.poddy.presentation.feed.PodcastDetailsViewModel
 import com.bakkenbaeck.poddy.presentation.feed.PodcastFeedViewModel
 import com.bakkenbaeck.poddy.presentation.feed.SearchFeedViewModel
 import com.bakkenbaeck.poddy.presentation.podcast.PodcastViewModel
@@ -17,29 +15,41 @@ val viewModelModule = module {
     viewModel {
         MainViewModel(
             playerChannel = get(named("playerChannel")),
-            queueRepository = get()
+            queueFlowUseCase = get(),
+            queueUseCase = get()
         )
     }
-    viewModel { SearchViewModel(podcastRepository = get()) }
-    viewModel { QueueViewModel(queueRepository = get()) }
-    viewModel { PodcastViewModel(podcastRepository = get()) }
+    viewModel { SearchViewModel(
+        searchPodcastUseCase = get(),
+        getCategoriesUseCase = get()
+    ) }
+    viewModel { QueueViewModel(
+        queueFlowUseCase = get(),
+        reorderQueueUseCase = get(),
+        deleteQueueUseCase = get()
+    ) }
+    viewModel { PodcastViewModel(getSubscribedPodcastsUseCase = get()) }
     viewModel {
         DetailViewModel(
-            queueRepository = get(),
             progressChannel = get(named("progressChannel")),
             playerChannel = get(named("playerChannel")),
-            playerQueue = get()
+            playerQueue = get(),
+            addToQueueUseCase = get()
         )
     }
 
     viewModel { SearchFeedViewModel(
-        podcastRepository = get(),
-        downloadRepository = get(),
-        downloadProgressChannel = get(named("progressChannel"))
+        downloadStateFlowUseCase = get(),
+        downloadProgressChannel = get(named("progressChannel")),
+        getPodcastUseCase = get(),
+        getEpisodeUseCase = get(),
+        toggleSubscriptionUseCase = get()
     ) }
     viewModel { PodcastFeedViewModel(
-        podcastRepository = get(),
-        downloadRepository = get(),
-        downloadProgressChannel = get(named("progressChannel"))
+        downloadStateFlowUseCase = get(),
+        downloadProgressChannel = get(named("progressChannel")),
+        getPodcastUseCase = get(),
+        getEpisodeUseCase = get(),
+        toggleSubscriptionUseCase = get()
     ) }
 }

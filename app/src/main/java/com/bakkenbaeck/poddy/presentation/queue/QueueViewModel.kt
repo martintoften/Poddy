@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
-import com.bakkenbaeck.poddy.repository.QueueRepository
+import com.bakkenbaeck.poddy.useCase.DeleteQueueUseCase
+import com.bakkenbaeck.poddy.useCase.QueueFlowUseCase
+import com.bakkenbaeck.poddy.useCase.ReorderQueueUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -13,19 +15,20 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class QueueViewModel(
-    private val queueRepository: QueueRepository
+    private val queueFlowUseCase: QueueFlowUseCase,
+    private val reorderQueueUseCase: ReorderQueueUseCase,
+    private val deleteQueueUseCase: DeleteQueueUseCase
 ) : ViewModel() {
 
     val queue by lazy { MutableLiveData<List<ViewEpisode>>() }
 
     init {
         listenForQueueUpdates()
-        getQueue()
     }
 
     private fun listenForQueueUpdates() {
         viewModelScope.launch {
-            queueRepository.listenForQueueUpdates()
+            queueFlowUseCase.execute()
                 .flowOn(Dispatchers.IO)
                 .catch { Log.e("Handing error", it.toString()) }
                 .collect { handleQueue(it) }
@@ -36,21 +39,15 @@ class QueueViewModel(
         queue.value = queueResult
     }
 
-    private fun getQueue() {
-        viewModelScope.launch {
-            queueRepository.getQueue()
-        }
-    }
-
     fun reorderQueue(queue: List<ViewEpisode>) {
         viewModelScope.launch {
-            queueRepository.reorderQueue(queue)
+            reorderQueueUseCase.execute(queue)
         }
     }
 
     fun deleteEpisode(episode: ViewEpisode) {
         viewModelScope.launch {
-            queueRepository.deleteEpisodeFromQueue(episode.id)
+            deleteQueueUseCase.execute(episode.id)
         }
     }
 }

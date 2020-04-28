@@ -8,6 +8,5 @@ abstract class OnProgressChangesListener : SeekBar.OnSeekBarChangeListener {
     override fun onStopTrackingTouch(seekbar: SeekBar?) {
         onProgressChanged(seekbar?.progress ?: 0)
     }
-
     abstract fun onProgressChanged(progress: Int)
 }

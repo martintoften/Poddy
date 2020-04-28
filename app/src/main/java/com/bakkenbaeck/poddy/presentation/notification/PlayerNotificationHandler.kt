@@ -1,4 +1,4 @@
-package com.bakkenbaeck.poddy.notification
+package com.bakkenbaeck.poddy.presentation.notification
 
 import android.app.*
 import android.content.Context
@@ -9,7 +9,8 @@ import com.bakkenbaeck.poddy.*
 import com.bakkenbaeck.poddy.extensions.createNotificationChannel
 import com.bakkenbaeck.poddy.extensions.notifyNotification
 import com.bakkenbaeck.poddy.presentation.MainActivity
-import com.bakkenbaeck.poddy.service.PlayerService
+import com.bakkenbaeck.poddy.presentation.player.*
+import com.bakkenbaeck.poddy.presentation.service.PlayerService
 
 const val PLAYER_NOTIFICATION_ID = 2
 const val PLAYER_CHANNEL_ID = "102"
@@ -37,7 +38,9 @@ class PlayerNotificationHandlerImpl(
             .setSmallIcon(R.drawable.ic_queue)
             .setContentIntent(getPendingIntent())
             .setStyle(style)
-            .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+            .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind",
+                ACTION_REWIND
+            ))
             .addAction(action)
             .addAction(
                 generateAction(
@@ -73,11 +76,15 @@ class PlayerNotificationHandlerImpl(
     }
 
     private fun generatePauseAction(): NotificationCompat.Action {
-        return generateAction(android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE)
+        return generateAction(android.R.drawable.ic_media_pause, "Pause",
+            ACTION_PAUSE
+        )
     }
 
     private fun generatePlayAction(): NotificationCompat.Action {
-        return generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY)
+        return generateAction(android.R.drawable.ic_media_play, "Play",
+            ACTION_PLAY
+        )
     }
 
     private fun generateAction(

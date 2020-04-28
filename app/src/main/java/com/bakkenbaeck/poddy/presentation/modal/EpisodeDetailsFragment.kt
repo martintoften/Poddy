@@ -3,8 +3,8 @@ package com.bakkenbaeck.poddy.presentation.modal
 import android.os.Bundle
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
-import com.bakkenbaeck.poddy.ACTION_START
-import com.bakkenbaeck.poddy.EPISODE
+import com.bakkenbaeck.poddy.presentation.player.ACTION_START
+import com.bakkenbaeck.poddy.presentation.player.EPISODE
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.getPlayIcon
 import com.bakkenbaeck.poddy.extensions.getScreenHeight
@@ -13,7 +13,7 @@ import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.presentation.feed.DetailViewModel
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
-import com.bakkenbaeck.poddy.service.*
+import com.bakkenbaeck.poddy.presentation.service.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.detail_sheet.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
