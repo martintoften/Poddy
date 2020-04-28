@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.di
 
+import androidx.lifecycle.SavedStateHandle
 import com.bakkenbaeck.poddy.presentation.MainViewModel
 import com.bakkenbaeck.poddy.presentation.feed.DetailViewModel
 import com.bakkenbaeck.poddy.presentation.feed.PodcastFeedViewModel
@@ -19,7 +20,8 @@ val viewModelModule = module {
             queueUseCase = get()
         )
     }
-    viewModel { SearchViewModel(
+    viewModel { (savedState: SavedStateHandle) -> SearchViewModel(
+        savedState,
         searchPodcastUseCase = get(),
         getCategoriesUseCase = get()
     ) }

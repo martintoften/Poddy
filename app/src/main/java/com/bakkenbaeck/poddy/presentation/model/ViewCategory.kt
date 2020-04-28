@@ -1,7 +1,9 @@
 package com.bakkenbaeck.poddy.presentation.model
 
+import com.bakkenbaeck.poddy.util.Diffable
+
 data class ViewCategory(
-    val categoryId: Int,
+    override val id: String,
     val categoryName: String,
     val podcasts: List<ViewPodcast>
-)
+) : Diffable

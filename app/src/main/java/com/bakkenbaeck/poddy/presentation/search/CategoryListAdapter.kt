@@ -10,10 +10,10 @@ import com.bakkenbaeck.poddy.presentation.model.ViewCategory
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 
 class CategoryListAdapter(
+    private val scrollStates: HashMap<String, Parcelable> = hashMapOf(),
     private val listener: (View, ViewPodcast) -> Unit
 ) : RecyclerView.Adapter<CategoryListViewHolder>() {
 
-    private val scrollStates = hashMapOf<Int, Parcelable>()
     private val viewPool = RecyclerView.RecycledViewPool()
     private val items by lazy(mode = LazyThreadSafetyMode.NONE) {
         mutableListOf<ViewCategory>()
@@ -37,17 +37,19 @@ class CategoryListAdapter(
     }
 
     private fun restoreScrollPosition(category: ViewCategory, holder: CategoryListViewHolder) {
-        val savedState = scrollStates[category.categoryId]
+        val savedState = scrollStates[category.id]
         if (savedState != null) holder.getLayoutManager()?.onRestoreInstanceState(savedState)
         else holder.getLayoutManager()?.scrollToPosition(0)
     }
 
     override fun onViewRecycled(holder: CategoryListViewHolder) {
         super.onViewRecycled(holder)
-        val key = items[holder.adapterPosition].categoryId
+        val key = items[holder.adapterPosition].id
         val savedState = holder.getLayoutManager()?.onSaveInstanceState() ?: return
         scrollStates[key] = savedState
     }
 
     override fun getItemCount(): Int = items.size
+
+    fun getCategories(): List<ViewCategory> = items
 }

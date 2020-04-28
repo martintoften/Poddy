@@ -18,7 +18,7 @@ data class CategoryPodcastReponse(
 )
 
 fun List<CategoryPodcastReponse>.toViewModel(): List<ViewCategory> {
-    return map {  ViewCategory(it.id, it.name, it.toViewModel()) }
+    return map {  ViewCategory(it.id.toString(), it.name, it.toViewModel()) }
 }
 
 fun CategoryPodcastReponse.toViewModel(): List<ViewPodcast> {

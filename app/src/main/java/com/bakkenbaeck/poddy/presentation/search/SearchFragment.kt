@@ -1,6 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.search
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.getScrollStates
 import com.bakkenbaeck.poddy.extensions.hideKeyboard
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
@@ -19,11 +21,12 @@ import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
 import kotlinx.android.synthetic.main.search_fragment.*
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : BackableFragment() {
 
-    private val viewModel: SearchViewModel by viewModel()
+    private val viewModel: SearchViewModel by stateViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,10 +38,10 @@ class SearchFragment : BackableFragment() {
 
     override fun onViewCreated(view: View, inState: Bundle?) {
         super.onViewCreated(view, inState)
-        init()
+        init(inState)
     }
 
-    private fun init() {
+    private fun init(inState: Bundle?) {
         initTransition()
         initView()
         initAdapter()
@@ -59,7 +62,9 @@ class SearchFragment : BackableFragment() {
         }
 
         categoryList.apply {
-            adapter = CategoryListAdapter { view, podcast -> goToPodcastView(view, podcast) }
+            adapter = CategoryListAdapter(viewModel.getScrollState()) { view, podcast ->
+                goToPodcastView(view, podcast)
+            }
             layoutManager = LinearLayoutManager(context)
         }
     }
@@ -117,5 +122,16 @@ class SearchFragment : BackableFragment() {
                 Log.e("SearchFragment", result.throwable?.message.orEmpty())
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        setScrollState()
+    }
+
+    private fun setScrollState() {
+        val adapter = categoryList.adapter as? CategoryListAdapter ?: return
+        val scrollStates = adapter.getScrollStates(categoryList)
+        viewModel.setScrollState(scrollStates)
     }
 }
