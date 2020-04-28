@@ -33,6 +33,10 @@ abstract class FeedFragment : BackableFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initSharedTransition()
+    }
+
+    private fun initSharedTransition() {
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             duration = 500
             fadeMode = MaterialContainerTransform.FADE_MODE_OUT
