@@ -1,7 +1,5 @@
 package com.bakkenbaeck.poddy.presentation.feed
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -202,15 +200,7 @@ abstract class FeedFragment : BackableFragment() {
 
     private fun animateSubscribeButton() {
         if (hasAnimatedFab) return
-
-        AnimatorSet().apply {
-            duration = 300
-            playTogether(
-                ObjectAnimator.ofFloat(subscribeButton, "scaleX", 1f),
-                ObjectAnimator.ofFloat(subscribeButton, "scaleY", 1f)
-            )
-        }.start()
-
+        subscribeButton.scaleUp()
         hasAnimatedFab = true
     }
 }

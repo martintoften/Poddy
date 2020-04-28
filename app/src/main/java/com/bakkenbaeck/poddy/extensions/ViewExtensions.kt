@@ -1,5 +1,7 @@
 package com.bakkenbaeck.poddy.extensions
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +13,9 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bakkenbaeck.poddy.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.android.synthetic.main.feed_fragment.*
 import kotlinx.android.synthetic.main.view_toolbar.view.*
 
 fun View.getDimen(@DimenRes resource: Int): Float {
@@ -64,4 +68,13 @@ fun TextInputEditText.setRightDrawable(@DrawableRes drawable: Int) {
 
 fun TextInputEditText.clearDrawables() {
     setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+}
+
+fun FloatingActionButton.scaleUp() {
+    val xAnimator =  ObjectAnimator.ofFloat(this, "scaleX", 1f)
+    val yAnimator = ObjectAnimator.ofFloat(this, "scaleY", 1f)
+    AnimatorSet().apply {
+        duration = 300
+        playTogether(xAnimator, yAnimator)
+    }.start()
 }
