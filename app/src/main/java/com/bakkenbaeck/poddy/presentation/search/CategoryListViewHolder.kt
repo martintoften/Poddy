@@ -7,6 +7,7 @@ import com.bakkenbaeck.poddy.presentation.model.ViewCategory
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.category_list.*
+import kotlinx.android.synthetic.main.category_list.view.*
 
 class CategoryListViewHolder(
     private val viewPool: RecyclerView.RecycledViewPool,
@@ -21,5 +22,9 @@ class CategoryListViewHolder(
                 setItems(category.podcasts)
             }
         }
+    }
+
+    fun getLayoutManager(): RecyclerView.LayoutManager? {
+        return containerView.list.layoutManager
     }
 }
