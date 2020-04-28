@@ -16,4 +16,6 @@ val useCaseModule = module {
     factory { GetPodcastUseCase(get()) }
     factory { GetEpisodeUseCase(get()) }
     factory { ToggleSubscriptionUseCase(get()) }
+    factory { DownloadEpisodeUseCase(get()) }
+    factory { DownloadStateFlowUseCase(get()) }
 }

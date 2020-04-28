@@ -11,17 +11,18 @@ import com.bakkenbaeck.poddy.extensions.getPodcastDir
 import com.bakkenbaeck.poddy.extensions.notifyNotification
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.MainActivity
-import com.bakkenbaeck.poddy.repository.DownloadRepository
+import com.bakkenbaeck.poddy.usecase.DownloadEpisodeTask
+import com.bakkenbaeck.poddy.usecase.DownloadEpisodeUseCase
 import com.bakkenbaeck.poddy.util.DownloadTask
 import com.bakkenbaeck.poddy.util.SafeQueue
 import com.bakkenbaeck.poddy.util.createNewFile
-import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import org.koin.android.ext.android.inject
 import org.koin.core.qualifier.named
+import java.io.File
 
 const val NOTIFICATION_ID = 1
 const val DEFAULT_NOTIFICATION_TITLE = "Downloading..."
@@ -34,7 +35,7 @@ const val NAME = "NAME"
 
 class DownloadService : Service() {
 
-    private val downloadRepository: DownloadRepository by inject()
+    private val downloadEpisodeUseCase: DownloadEpisodeUseCase by inject()
     private val progressChannel: ConflatedBroadcastChannel<ProgressEvent> by inject(named("progressChannel"))
     private val scope = CoroutineScope(Dispatchers.Main)
     private val workQueue = SafeQueue<DownloadTask>()
@@ -90,7 +91,8 @@ class DownloadService : Service() {
         scope.launch {
             workQueue.addTask(DownloadTask(episodeId, name, url))
             val downloadedPodcastId = async(Dispatchers.IO) {
-                downloadRepository.downloadPodcast(episodeId, url, podcastFile)
+                val downloadTask = DownloadEpisodeTask(episodeId, url, podcastFile)
+                downloadEpisodeUseCase.execute(downloadTask)
             }
             workQueue.removeTask(downloadedPodcastId.await())
 

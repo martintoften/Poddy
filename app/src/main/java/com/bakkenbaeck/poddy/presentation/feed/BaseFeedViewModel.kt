@@ -6,11 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.presentation.model.*
-import com.bakkenbaeck.poddy.repository.DownloadRepository
-import com.bakkenbaeck.poddy.usecase.GetEpisodeUseCase
-import com.bakkenbaeck.poddy.usecase.GetPodcastQuery
-import com.bakkenbaeck.poddy.usecase.GetPodcastUseCase
-import com.bakkenbaeck.poddy.usecase.ToggleSubscriptionUseCase
+import com.bakkenbaeck.poddy.usecase.*
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
@@ -21,11 +17,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 abstract class BaseFeedViewModel(
-    private val downloadRepository: DownloadRepository,
     private val downloadProgressChannel: ConflatedBroadcastChannel<ProgressEvent>,
     private val getPodcastUseCase: GetPodcastUseCase,
     private val getEpisodeUseCase: GetEpisodeUseCase,
-    private val toggleSubscriptionUseCase: ToggleSubscriptionUseCase
+    private val toggleSubscriptionUseCase: ToggleSubscriptionUseCase,
+    private val downloadStateFlowUseCase: DownloadStateFlowUseCase
 ) : ViewModel() {
 
     val downloadResult by lazy { MutableLiveData<ViewEpisode>() }
@@ -87,7 +83,7 @@ abstract class BaseFeedViewModel(
 
     private fun listenForDownloadUpdates() {
         viewModelScope.launch {
-            downloadRepository.listenForDownloadStateUpdates()
+            downloadStateFlowUseCase.execute()
                 .filterNotNull()
                 .map { getEpisodeUseCase.execute(it) }
                 .filterNotNull()

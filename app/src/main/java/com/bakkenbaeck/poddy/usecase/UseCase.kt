@@ -4,10 +4,12 @@ import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.network.model.toViewModel
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.presentation.model.*
+import com.bakkenbaeck.poddy.repository.DownloadRepository
 import com.bakkenbaeck.poddy.repository.PodcastRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.File
 
 interface NoInputUseCase<O> {
     suspend fun execute(): O
@@ -139,5 +141,27 @@ class GetPodcastUseCase(
                 is Result.Error -> it
             }
         }
+    }
+}
+
+data class DownloadEpisodeTask(
+    val episodeId: String,
+    val url: String,
+    val file: File
+)
+
+class DownloadEpisodeUseCase(
+    private val downloadRepository: DownloadRepository
+) : UseCase<DownloadEpisodeTask, String> {
+    override suspend fun execute(input: DownloadEpisodeTask): String {
+        return downloadRepository.downloadPodcast(input.episodeId, input.url, input.file)
+    }
+}
+
+class DownloadStateFlowUseCase(
+    private val downloadRepository: DownloadRepository
+) : NoInputUseCase<Flow<String?>> {
+    override suspend fun execute(): Flow<String?> {
+        return downloadRepository.getDownloadStateFlow()
     }
 }

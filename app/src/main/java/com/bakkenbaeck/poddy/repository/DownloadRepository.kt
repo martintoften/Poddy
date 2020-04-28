@@ -13,7 +13,7 @@ class DownloadRepository(
     private val episodeDBHandler: EpisodeDBHandler,
     private val downloadStateChannel: ConflatedBroadcastChannel<String?>
 ) {
-    suspend fun listenForDownloadStateUpdates(): Flow<String?> {
+    suspend fun getDownloadStateFlow(): Flow<String?> {
         downloadStateChannel.send(null)
         return downloadStateChannel.asFlow()
     }

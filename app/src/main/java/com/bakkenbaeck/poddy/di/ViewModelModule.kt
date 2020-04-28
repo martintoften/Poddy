@@ -39,14 +39,14 @@ val viewModelModule = module {
     }
 
     viewModel { SearchFeedViewModel(
-        downloadRepository = get(),
+        downloadStateFlowUseCase = get(),
         downloadProgressChannel = get(named("progressChannel")),
         getPodcastUseCase = get(),
         getEpisodeUseCase = get(),
         toggleSubscriptionUseCase = get()
     ) }
     viewModel { PodcastFeedViewModel(
-        downloadRepository = get(),
+        downloadStateFlowUseCase = get(),
         downloadProgressChannel = get(named("progressChannel")),
         getPodcastUseCase = get(),
         getEpisodeUseCase = get(),
