@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.presentation.model.*
-import com.bakkenbaeck.poddy.usecase.*
+import com.bakkenbaeck.poddy.useCase.*
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource

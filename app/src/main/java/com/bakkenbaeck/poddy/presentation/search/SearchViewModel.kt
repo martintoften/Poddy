@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.presentation.model.ViewCategory
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearch
-import com.bakkenbaeck.poddy.usecase.GetCategoriesUseCase
-import com.bakkenbaeck.poddy.usecase.PodcastSearchUseCase
+import com.bakkenbaeck.poddy.useCase.GetCategoriesUseCase
+import com.bakkenbaeck.poddy.useCase.PodcastSearchUseCase
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource

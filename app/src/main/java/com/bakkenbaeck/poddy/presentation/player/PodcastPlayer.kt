@@ -1,4 +1,4 @@
-package com.bakkenbaeck.poddy
+package com.bakkenbaeck.poddy.presentation.player
 
 import android.media.MediaPlayer
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode

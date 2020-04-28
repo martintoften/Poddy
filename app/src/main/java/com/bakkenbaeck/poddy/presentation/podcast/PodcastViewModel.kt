@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
-import com.bakkenbaeck.poddy.usecase.GetSubscribedPodcastsUseCase
+import com.bakkenbaeck.poddy.useCase.GetSubscribedPodcastsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn

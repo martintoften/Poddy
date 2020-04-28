@@ -17,10 +17,10 @@ import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.model.*
-import com.bakkenbaeck.poddy.service.DownloadService
-import com.bakkenbaeck.poddy.service.ID
-import com.bakkenbaeck.poddy.service.NAME
-import com.bakkenbaeck.poddy.service.URL
+import com.bakkenbaeck.poddy.presentation.service.DownloadService
+import com.bakkenbaeck.poddy.presentation.service.ID
+import com.bakkenbaeck.poddy.presentation.service.NAME
+import com.bakkenbaeck.poddy.presentation.service.URL
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.feed_fragment.*

@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
-import com.bakkenbaeck.poddy.usecase.GetPodcastRecommendationsUseCase
+import com.bakkenbaeck.poddy.useCase.GetPodcastRecommendationsUseCase
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource

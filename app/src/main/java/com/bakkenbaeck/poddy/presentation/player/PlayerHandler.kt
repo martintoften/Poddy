@@ -1,15 +1,13 @@
-package com.bakkenbaeck.poddy
+package com.bakkenbaeck.poddy.presentation.player
 
-import com.bakkenbaeck.poddy.notification.PlayerNotificationHandler
+import com.bakkenbaeck.poddy.presentation.notification.PlayerNotificationHandler
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.repository.ProgressRepository
-import com.bakkenbaeck.poddy.service.PlayerActionBuilder
-import com.bakkenbaeck.poddy.usecase.AddToQueueUseCase
-import com.bakkenbaeck.poddy.usecase.DeleteQueueUseCase
-import com.bakkenbaeck.poddy.usecase.QueueFlowUseCase
+import com.bakkenbaeck.poddy.useCase.AddToQueueUseCase
+import com.bakkenbaeck.poddy.useCase.DeleteQueueUseCase
+import com.bakkenbaeck.poddy.useCase.QueueFlowUseCase
 import com.bakkenbaeck.poddy.util.EpisodePathHelper
-import com.bakkenbaeck.poddy.util.PlayerQueue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -46,7 +44,11 @@ class PlayerHandler(
     private val scope by lazy { CoroutineScope(Dispatchers.Main) }
 
     private val tickerChannel by lazy { ticker(delayMillis = 1000, context = mainDispatcher) }
-    private val playerActionBuilder by lazy { PlayerActionBuilder(playerQueue) }
+    private val playerActionBuilder by lazy {
+        PlayerActionBuilder(
+            playerQueue
+        )
+    }
 
     fun init() {
         listenForProgressUpdates()

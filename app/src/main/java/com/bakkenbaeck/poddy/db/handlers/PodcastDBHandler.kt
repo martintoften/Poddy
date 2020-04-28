@@ -1,17 +1,13 @@
 package com.bakkenbaeck.poddy.db.handlers
 
+import com.bakkenbaeck.poddy.db.model.PodcastWithEpisodes
+import com.bakkenbaeck.poddy.db.model.toJoinedModel
 import db.PoddyDB
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import org.db.ByPodcastIdEpisodes
 import org.db.Episode
 import org.db.Podcast
-
-data class PodcastWithEpisodes(
-    val podcast: Podcast,
-    val episodes: List<JoinedEpisode>
-)
+import kotlin.coroutines.CoroutineContext
 
 interface PodcastDBHandler {
     suspend fun getPodcastWithEpisodes(id: String): PodcastWithEpisodes?

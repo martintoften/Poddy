@@ -1,6 +1,6 @@
 package com.bakkenbaeck.poddy.di
 
-import com.bakkenbaeck.poddy.usecase.*
+import com.bakkenbaeck.poddy.useCase.*
 import org.koin.dsl.module
 
 val useCaseModule = module {

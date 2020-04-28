@@ -1,8 +1,7 @@
-package com.bakkenbaeck.poddy.service
+package com.bakkenbaeck.poddy.presentation.player
 
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
-import com.bakkenbaeck.poddy.util.PlayerQueue
 
 class PlayerActionBuilder(
     private val playerQueue: PlayerQueue

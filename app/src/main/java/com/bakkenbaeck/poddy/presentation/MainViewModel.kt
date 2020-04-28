@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
-import com.bakkenbaeck.poddy.usecase.QueueFlowUseCase
-import com.bakkenbaeck.poddy.usecase.QueueUseCase
+import com.bakkenbaeck.poddy.useCase.QueueFlowUseCase
+import com.bakkenbaeck.poddy.useCase.QueueUseCase
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

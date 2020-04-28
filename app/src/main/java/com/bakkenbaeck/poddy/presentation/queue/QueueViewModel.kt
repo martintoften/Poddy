@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
-import com.bakkenbaeck.poddy.usecase.DeleteQueueUseCase
-import com.bakkenbaeck.poddy.usecase.QueueFlowUseCase
-import com.bakkenbaeck.poddy.usecase.ReorderQueueUseCase
+import com.bakkenbaeck.poddy.useCase.DeleteQueueUseCase
+import com.bakkenbaeck.poddy.useCase.QueueFlowUseCase
+import com.bakkenbaeck.poddy.useCase.ReorderQueueUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect

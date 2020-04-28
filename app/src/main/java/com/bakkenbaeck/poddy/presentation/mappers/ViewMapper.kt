@@ -1,6 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.mappers
 
-import com.bakkenbaeck.poddy.db.handlers.JoinedEpisode
+import com.bakkenbaeck.poddy.db.model.JoinedEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.presentation.model.toPodcastEpisodeViewModel
 import org.db.Podcast

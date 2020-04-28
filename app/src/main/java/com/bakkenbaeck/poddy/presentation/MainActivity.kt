@@ -14,7 +14,8 @@ import androidx.navigation.NavController
 import com.bakkenbaeck.poddy.*
 import com.bakkenbaeck.poddy.extensions.*
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
-import com.bakkenbaeck.poddy.service.PlayerService
+import com.bakkenbaeck.poddy.presentation.player.*
+import com.bakkenbaeck.poddy.presentation.service.PlayerService
 import com.bakkenbaeck.poddy.util.OnProgressChangesListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main.*

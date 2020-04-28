@@ -1,6 +1,10 @@
 package com.bakkenbaeck.poddy.repository
 
-import com.bakkenbaeck.poddy.db.handlers.*
+import com.bakkenbaeck.poddy.db.handlers.EpisodeDBHandler
+import com.bakkenbaeck.poddy.db.handlers.PodcastDBHandler
+import com.bakkenbaeck.poddy.db.handlers.SubscriptionDBHandler
+import com.bakkenbaeck.poddy.db.model.JoinedEpisode
+import com.bakkenbaeck.poddy.db.model.PodcastWithEpisodes
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.network.SearchApi
 import com.bakkenbaeck.poddy.network.model.*

@@ -1,4 +1,4 @@
-package com.bakkenbaeck.poddy.service
+package com.bakkenbaeck.poddy.presentation.service
 
 import android.app.*
 import android.content.Intent
@@ -11,8 +11,8 @@ import com.bakkenbaeck.poddy.extensions.getPodcastDir
 import com.bakkenbaeck.poddy.extensions.notifyNotification
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.MainActivity
-import com.bakkenbaeck.poddy.usecase.DownloadEpisodeTask
-import com.bakkenbaeck.poddy.usecase.DownloadEpisodeUseCase
+import com.bakkenbaeck.poddy.useCase.DownloadEpisodeTask
+import com.bakkenbaeck.poddy.useCase.DownloadEpisodeUseCase
 import com.bakkenbaeck.poddy.util.DownloadTask
 import com.bakkenbaeck.poddy.util.SafeQueue
 import com.bakkenbaeck.poddy.util.createNewFile

@@ -1,6 +1,6 @@
 package com.bakkenbaeck.poddy.di
 
-import com.bakkenbaeck.poddy.download.DownloadHandler
+import com.bakkenbaeck.poddy.network.DownloadHandler
 import com.bakkenbaeck.poddy.network.DownloadProgressInterceptor
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.network.buildDownloadApi
@@ -28,5 +28,10 @@ val appModule = module {
     single(named("queueChannel")) { ConflatedBroadcastChannel<List<Episode>>() }
 
     // Download
-    factory { DownloadHandler(get(), Dispatchers.IO) }
+    factory {
+        DownloadHandler(
+            get(),
+            Dispatchers.IO
+        )
+    }
 }

@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
-import com.bakkenbaeck.poddy.usecase.AddToQueueUseCase
-import com.bakkenbaeck.poddy.util.PlayerQueue
+import com.bakkenbaeck.poddy.useCase.AddToQueueUseCase
+import com.bakkenbaeck.poddy.presentation.player.PlayerQueue
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect

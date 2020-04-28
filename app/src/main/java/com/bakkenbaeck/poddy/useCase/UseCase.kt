@@ -1,4 +1,4 @@
-package com.bakkenbaeck.poddy.usecase
+package com.bakkenbaeck.poddy.useCase
 
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.network.model.toViewModel

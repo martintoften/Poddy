@@ -8,13 +8,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bakkenbaeck.poddy.ACTION_START
-import com.bakkenbaeck.poddy.EPISODE
+import com.bakkenbaeck.poddy.presentation.player.ACTION_START
+import com.bakkenbaeck.poddy.presentation.player.EPISODE
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
-import com.bakkenbaeck.poddy.service.PlayerService
+import com.bakkenbaeck.poddy.presentation.service.PlayerService
 import com.bakkenbaeck.poddy.util.OnStartDragListener
 import com.bakkenbaeck.poddy.util.SimpleItemTouchHelperCallback
 import kotlinx.android.synthetic.main.queue_fragment.*

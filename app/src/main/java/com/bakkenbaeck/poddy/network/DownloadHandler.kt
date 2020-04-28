@@ -1,6 +1,5 @@
-package com.bakkenbaeck.poddy.download
+package com.bakkenbaeck.poddy.network
 
-import com.bakkenbaeck.poddy.network.DownloadApi
 import java.io.File
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.withContext

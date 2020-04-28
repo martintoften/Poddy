@@ -1,7 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.model
 
 import android.os.Parcelable
-import com.bakkenbaeck.poddy.db.handlers.JoinedEpisode
+import com.bakkenbaeck.poddy.db.model.JoinedEpisode
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
 import com.bakkenbaeck.poddy.util.Diffable
 import kotlinx.android.parcel.Parcelize

@@ -23,8 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.DownloadService"/>
-        <service android:name=".service.PlayerService"/>
+        <service android:name="com.bakkenbaeck.poddy.presentation.service.DownloadService"/>
+        <service android:name="com.bakkenbaeck.poddy.presentation.service.PlayerService"/>
     </application>
 
 </manifest>
