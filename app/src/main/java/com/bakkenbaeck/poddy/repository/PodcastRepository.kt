@@ -15,6 +15,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
 import org.db.Episode
@@ -67,21 +68,33 @@ class PodcastRepository(
         return subscriptionDBHandler.hasSubscribed(podcastId)
     }
 
-    suspend fun getPodcast(podcastId: String, nextDate: Long? = null): Flow<Result<PodcastWithEpisodes>> {
+    suspend fun getPodcastFlow(podcastId: String, nextDate: Long? = null): Flow<Result<PodcastWithEpisodes>> {
         return flow {
             val dbPodcast = podcastDBHandler.getPodcastWithEpisodes(podcastId)
             if (dbPodcast != null) {
                 emit(Result.Success(dbPodcast))
             }
 
-            val podcastResponse = safeApiCall { searchApi.getEpisodes(podcastId, EPISODE, nextDate) }
-            when (podcastResponse) {
-                is Result.Success -> {
-                    val updatedPodcast = updatePodcastEpisodes(podcastResponse.value, nextDate)
-                    emit(Result.Success(updatedPodcast))
-                }
-                is Result.Error -> emit(podcastResponse.copy())
+            val podcastResponse = getPodcastRemote(podcastId, nextDate)
+            emit(podcastResponse)
+        }
+    }
+
+    suspend fun getPodcastRemoteFlow(podcastId: String, nextDate: Long? = null): Flow<Result<PodcastWithEpisodes>> {
+        return flow {
+            val podcastResponse = getPodcastRemote(podcastId, nextDate)
+            emit(podcastResponse)
+        }
+    }
+
+    private suspend fun getPodcastRemote(podcastId: String, nextDate: Long? = null): Result<PodcastWithEpisodes> {
+        val podcastResponse = safeApiCall { searchApi.getEpisodes(podcastId, EPISODE, nextDate) }
+        return when (podcastResponse) {
+            is Result.Success -> {
+                val updatedPodcast = updatePodcastEpisodes(podcastResponse.value, nextDate)
+                Result.Success(updatedPodcast)
             }
+            is Result.Error -> podcastResponse
         }
     }
 

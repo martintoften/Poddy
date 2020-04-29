@@ -2,15 +2,19 @@ package com.bakkenbaeck.poddy.presentation.feed
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bakkenbaeck.poddy.extensions.navigate
+import com.bakkenbaeck.poddy.presentation.feed.factory.PodcastFeedFactory
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.util.Success
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class PodcastFeedFragment : FeedFragment() {
-    private val viewModel by viewModel<PodcastFeedViewModel>()
+    private val factory by inject<PodcastFeedFactory> { parametersOf(basePodcast?.id) }
+    private val viewModel by viewModels<PodcastFeedViewModel> { factory }
 
     override fun getFeed(podcastId: String, pubDate: Long?) {
         viewModel.getFeed(podcastId, pubDate)

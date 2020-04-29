@@ -23,9 +23,11 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.feed_fragment.*
 
+const val ML_PROGRESS = "ML_PROGRESS"
+
 abstract class FeedFragment : BackableFragment() {
 
-    private val basePodcast: ViewBasePodcast? by lazy(mode = LazyThreadSafetyMode.NONE) {
+    protected val basePodcast: ViewBasePodcast? by lazy(mode = LazyThreadSafetyMode.NONE) {
         val arguments = arguments ?: return@lazy null
         val args = PodcastFeedFragmentArgs.fromBundle(arguments)
         return@lazy args.podcast
@@ -70,16 +72,21 @@ abstract class FeedFragment : BackableFragment() {
 
     override fun onViewCreated(view: View, inState: Bundle?) {
         super.onViewCreated(view, inState)
-        init()
+        init(inState)
     }
 
-    private fun init() {
+    private fun init(inState: Bundle?) {
+        initRoot(inState)
         initTransition()
         initClickListener()
         initToolbar()
         initFloatingActionButton()
         initAdapter()
-        getEpisodes()
+    }
+
+    private fun initRoot(inState: Bundle?) {
+        val progress = inState?.getFloat(ML_PROGRESS) ?: 0f
+        feedRoot.progress = progress.round()
     }
 
     private fun initTransition() {
@@ -165,11 +172,6 @@ abstract class FeedFragment : BackableFragment() {
         getFeed(podcastId, episode.pubDate)
     }
 
-    private fun getEpisodes() {
-        val podcastId = basePodcast?.id ?: return
-        getFeed(podcastId)
-    }
-
     abstract fun getFeed(podcastId: String, pubDate: Long? = null)
 
     protected fun handleFeedResult(podcast: ViewPodcast) {
@@ -206,5 +208,10 @@ abstract class FeedFragment : BackableFragment() {
         if (hasAnimatedFab) return
         subscribeButton.scaleUp()
         hasAnimatedFab = true
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putFloat(ML_PROGRESS, feedRoot.progress)
     }
 }

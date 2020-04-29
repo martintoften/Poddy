@@ -14,10 +14,10 @@ val repositoryModule = module {
             get(),
             get(),
             get(),
-            get(named("subscriptionChannel"))
+            get(named(SUBSCRIPTION_CHANNEL))
         )
     }
-    factory { QueueRepository(get(), get(), get(named("queueChannel"))) }
-    factory { DownloadRepository(get(), get(), get(named("downloadStateChannel"))) }
+    factory { QueueRepository(get(), get(), get(named(QUEUE_CHANNEL))) }
+    factory { DownloadRepository(get(), get(), get(named(DOWNLOAD_CHANNEL))) }
     factory { ProgressRepository(get()) }
 }
