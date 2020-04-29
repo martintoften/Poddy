@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.feed_fragment.*
 
 abstract class FeedFragment : BackableFragment() {
 
-    private val basePodcast: ViewBasePodcast? by lazy(mode = LazyThreadSafetyMode.NONE) {
+    protected val basePodcast: ViewBasePodcast? by lazy(mode = LazyThreadSafetyMode.NONE) {
         val arguments = arguments ?: return@lazy null
         val args = PodcastFeedFragmentArgs.fromBundle(arguments)
         return@lazy args.podcast
@@ -79,7 +79,6 @@ abstract class FeedFragment : BackableFragment() {
         initToolbar()
         initFloatingActionButton()
         initAdapter()
-        getEpisodes()
     }
 
     private fun initTransition() {
@@ -163,11 +162,6 @@ abstract class FeedFragment : BackableFragment() {
         val adapter = episodeList.adapter as? EpisodeAdapter?
         val episode = adapter?.getLastItem() ?: return
         getFeed(podcastId, episode.pubDate)
-    }
-
-    private fun getEpisodes() {
-        val podcastId = basePodcast?.id ?: return
-        getFeed(podcastId)
     }
 
     abstract fun getFeed(podcastId: String, pubDate: Long? = null)

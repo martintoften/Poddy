@@ -1,5 +1,6 @@
 package com.bakkenbaeck.poddy.useCase
 
+import com.bakkenbaeck.poddy.db.model.PodcastWithEpisodes
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.network.model.toViewModel
 import com.bakkenbaeck.poddy.presentation.mappers.mapToViewPodcastFromDB
@@ -9,6 +10,7 @@ import com.bakkenbaeck.poddy.repository.PodcastRepository
 import com.bakkenbaeck.poddy.repository.QueueRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.db.Podcast
 import java.io.File
 
 interface NoInputUseCase<O> {
@@ -120,27 +122,35 @@ class GetSubscribedPodcastsUseCase(
 
 data class GetPodcastQuery(
     val podcastId: String,
-    val lastTimestamp: Long? = null
+    val lastTimestamp: Long? = null,
+    val remoteOnly: Boolean = false
 )
 
 class GetPodcastUseCase(
     private val podcastRepository: PodcastRepository
 ) : UseCase<GetPodcastQuery, Flow<Result<ViewPodcast>>> {
-    override suspend fun execute(query: GetPodcastQuery): Flow<Result<ViewPodcast>> {
-        return podcastRepository.getPodcast(query.podcastId, query.lastTimestamp).map {
-            val hasSubscribed = podcastRepository.hasSubscribed(query.podcastId)
-            when (it) {
-                is Result.Success -> {
-                    val podcast = mapToViewPodcastFromDB(
-                        it.value.podcast,
-                        it.value.episodes,
-                        hasSubscribed
-                    )
-                    Result.Success(podcast)
-                }
-                is Result.Error -> it
+    private suspend fun mapTo(podcastId: String, it: Result<PodcastWithEpisodes>): Result<ViewPodcast> {
+        val hasSubscribed = podcastRepository.hasSubscribed(podcastId)
+        return when (it) {
+            is Result.Success -> {
+                val podcast = mapToViewPodcastFromDB(
+                    it.value.podcast,
+                    it.value.episodes,
+                    hasSubscribed
+                )
+                Result.Success(podcast)
             }
+            is Result.Error -> it
         }
+    }
+
+    override suspend fun execute(query: GetPodcastQuery): Flow<Result<ViewPodcast>> {
+        if (query.remoteOnly) {
+            return podcastRepository.getPodcastRemoteFlow(query.podcastId, query.lastTimestamp)
+                .map { mapTo(query.podcastId, it) }
+        }
+        return podcastRepository.getPodcastFlow(query.podcastId, query.lastTimestamp)
+            .map { mapTo(query.podcastId, it) }
     }
 }
 

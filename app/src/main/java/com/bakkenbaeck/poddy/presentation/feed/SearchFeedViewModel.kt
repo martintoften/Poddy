@@ -12,11 +12,13 @@ class SearchFeedViewModel(
     downloadProgressChannel: ConflatedBroadcastChannel<ProgressEvent>,
     getPodcastUseCase: GetPodcastUseCase,
     getEpisodeUseCase: GetEpisodeUseCase,
-    toggleSubscriptionUseCase: ToggleSubscriptionUseCase
+    toggleSubscriptionUseCase: ToggleSubscriptionUseCase,
+    podcastId: String?
 ) : BaseFeedViewModel(
     downloadProgressChannel,
     getPodcastUseCase,
     getEpisodeUseCase,
     toggleSubscriptionUseCase,
-    downloadStateFlowUseCase
+    downloadStateFlowUseCase,
+    podcastId
 )

@@ -21,7 +21,8 @@ abstract class BaseFeedViewModel(
     private val getPodcastUseCase: GetPodcastUseCase,
     private val getEpisodeUseCase: GetEpisodeUseCase,
     private val toggleSubscriptionUseCase: ToggleSubscriptionUseCase,
-    private val downloadStateFlowUseCase: DownloadStateFlowUseCase
+    private val downloadStateFlowUseCase: DownloadStateFlowUseCase,
+    podcastId: String?
 ) : ViewModel() {
 
     val downloadResult by lazy { MutableLiveData<ViewEpisode>() }
@@ -32,14 +33,21 @@ abstract class BaseFeedViewModel(
     init {
         listenForDownloadUpdates()
         listenForDownloadProgressUpdates()
+        podcastId?.let {
+            getFeed(GetPodcastQuery(podcastId))
+        }
     }
 
-    fun getFeed(id: String, lastTimestamp: Long? = null) {
+    fun getFeed(id: String, lastTimestamp: Long?) {
+        getFeed(GetPodcastQuery(id, lastTimestamp, remoteOnly = true))
+    }
+
+    private fun getFeed(query: GetPodcastQuery) {
         if (feedResult.value is Loading) return
 
         viewModelScope.launch {
             feedResult.value = Loading()
-            getPodcastUseCase.execute(GetPodcastQuery(id, lastTimestamp))
+            getPodcastUseCase.execute(query)
                 .filterNotNull()
                 .flowOn(Dispatchers.IO)
                 .catch { handleFeedError(it) }

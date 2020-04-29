@@ -1,10 +1,6 @@
 package com.bakkenbaeck.poddy.di
 
-import com.bakkenbaeck.poddy.network.DownloadHandler
-import com.bakkenbaeck.poddy.network.DownloadProgressInterceptor
-import com.bakkenbaeck.poddy.network.ProgressEvent
-import com.bakkenbaeck.poddy.network.buildDownloadApi
-import com.bakkenbaeck.poddy.network.buildSearchApi
+import com.bakkenbaeck.poddy.network.*
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -13,19 +9,24 @@ import org.db.Podcast
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+const val PROGRESS_CHANNEL = "progressChannel"
+const val PLAYER_CHANNEL = "playerChannel"
+const val SUBSCRIPTION_CHANNEL = "subscriptionChannel"
+const val DOWNLOAD_CHANNEL = "downloadStateChannel"
+const val QUEUE_CHANNEL = "queueChannel"
+
 val appModule = module {
     // Network
     single { buildSearchApi() }
     single { buildDownloadApi(get()) }
-    single { DownloadProgressInterceptor(get(named("progressChannel"))) }
+    single { DownloadProgressInterceptor(get(named(PROGRESS_CHANNEL))) }
 
     // Channels
-    single(named("progressChannel")) { ConflatedBroadcastChannel<ProgressEvent?>() }
-    single(named("playerChannel")) { ConflatedBroadcastChannel<ViewPlayerAction>() }
-    single(named("subscriptionChannel")) { ConflatedBroadcastChannel<List<Podcast>>() }
-    single(named("podcastChannel")) { ConflatedBroadcastChannel<Pair<Podcast, List<Episode>>?>() }
-    single(named("downloadStateChannel")) { ConflatedBroadcastChannel<String?>() }
-    single(named("queueChannel")) { ConflatedBroadcastChannel<List<Episode>>() }
+    single(named(PROGRESS_CHANNEL)) { ConflatedBroadcastChannel<ProgressEvent?>() }
+    single(named(PLAYER_CHANNEL)) { ConflatedBroadcastChannel<ViewPlayerAction>() }
+    single(named(SUBSCRIPTION_CHANNEL)) { ConflatedBroadcastChannel<List<Podcast>>() }
+    single(named(DOWNLOAD_CHANNEL)) { ConflatedBroadcastChannel<String?>() }
+    single(named(QUEUE_CHANNEL)) { ConflatedBroadcastChannel<List<Episode>>() }
 
     // Download
     factory {

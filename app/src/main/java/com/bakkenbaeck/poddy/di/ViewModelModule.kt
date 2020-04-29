@@ -15,7 +15,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModel {
         MainViewModel(
-            playerChannel = get(named("playerChannel")),
+            playerChannel = get(named(PLAYER_CHANNEL)),
             queueFlowUseCase = get(),
             queueUseCase = get()
         )
@@ -33,25 +33,10 @@ val viewModelModule = module {
     viewModel { PodcastViewModel(getSubscribedPodcastsUseCase = get()) }
     viewModel {
         DetailViewModel(
-            progressChannel = get(named("progressChannel")),
-            playerChannel = get(named("playerChannel")),
+            progressChannel = get(named(PROGRESS_CHANNEL)),
+            playerChannel = get(named(PLAYER_CHANNEL)),
             playerQueue = get(),
             addToQueueUseCase = get()
         )
     }
-
-    viewModel { SearchFeedViewModel(
-        downloadStateFlowUseCase = get(),
-        downloadProgressChannel = get(named("progressChannel")),
-        getPodcastUseCase = get(),
-        getEpisodeUseCase = get(),
-        toggleSubscriptionUseCase = get()
-    ) }
-    viewModel { PodcastFeedViewModel(
-        downloadStateFlowUseCase = get(),
-        downloadProgressChannel = get(named("progressChannel")),
-        getPodcastUseCase = get(),
-        getEpisodeUseCase = get(),
-        toggleSubscriptionUseCase = get()
-    ) }
 }
