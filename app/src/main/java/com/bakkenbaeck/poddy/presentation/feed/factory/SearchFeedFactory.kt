@@ -28,5 +28,4 @@ class SearchFeedModelFactory(
             podcastId
         ) as T
     }
-
 }

@@ -15,7 +15,7 @@ import org.koin.core.qualifier.named
 
 class SearchFeedFragment : FeedFragment() {
 
-    private val viewModel by viewModels<PodcastFeedViewModel> {
+    private val viewModel by viewModels<SearchFeedViewModel> {
         SearchFeedModelFactory(
             get(), get(named(PROGRESS_CHANNEL)),
             get(), get(), get(), basePodcast?.id
