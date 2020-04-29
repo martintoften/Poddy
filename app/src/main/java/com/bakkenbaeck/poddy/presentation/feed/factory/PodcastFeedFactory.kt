@@ -1,11 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.feed.factory
 
-import android.os.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.savedstate.SavedStateRegistryOwner
 import com.bakkenbaeck.poddy.network.ProgressEvent
 import com.bakkenbaeck.poddy.presentation.feed.PodcastFeedViewModel
 import com.bakkenbaeck.poddy.useCase.DownloadStateFlowUseCase
@@ -14,7 +10,7 @@ import com.bakkenbaeck.poddy.useCase.GetPodcastUseCase
 import com.bakkenbaeck.poddy.useCase.ToggleSubscriptionUseCase
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 
-class PodcastFeedModelFactory(
+class PodcastFeedFactory(
     private val downloadStateFlowUseCase: DownloadStateFlowUseCase,
     private val downloadProgressChannel: ConflatedBroadcastChannel<ProgressEvent>,
     private val getPodcastUseCase: GetPodcastUseCase,

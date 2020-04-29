@@ -4,23 +4,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.bakkenbaeck.poddy.di.PROGRESS_CHANNEL
 import com.bakkenbaeck.poddy.extensions.navigate
-import com.bakkenbaeck.poddy.presentation.feed.factory.SearchFeedModelFactory
+import com.bakkenbaeck.poddy.presentation.feed.factory.SearchFeedFactory
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.util.Success
-import org.koin.android.ext.android.get
-import org.koin.core.qualifier.named
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class SearchFeedFragment : FeedFragment() {
 
-    private val viewModel by viewModels<SearchFeedViewModel> {
-        SearchFeedModelFactory(
-            get(), get(named(PROGRESS_CHANNEL)),
-            get(), get(), get(), basePodcast?.id
-        )
-    }
+    private val factory by inject<SearchFeedFactory> { parametersOf(basePodcast?.id) }
+    private val viewModel by viewModels<SearchFeedViewModel> { factory }
 
     override fun getFeed(podcastId: String, pubDate: Long?) {
         viewModel.getFeed(podcastId, pubDate)

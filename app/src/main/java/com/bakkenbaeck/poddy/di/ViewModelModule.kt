@@ -3,8 +3,8 @@ package com.bakkenbaeck.poddy.di
 import androidx.lifecycle.SavedStateHandle
 import com.bakkenbaeck.poddy.presentation.MainViewModel
 import com.bakkenbaeck.poddy.presentation.feed.DetailViewModel
-import com.bakkenbaeck.poddy.presentation.feed.PodcastFeedViewModel
-import com.bakkenbaeck.poddy.presentation.feed.SearchFeedViewModel
+import com.bakkenbaeck.poddy.presentation.feed.factory.PodcastFeedFactory
+import com.bakkenbaeck.poddy.presentation.feed.factory.SearchFeedFactory
 import com.bakkenbaeck.poddy.presentation.podcast.PodcastViewModel
 import com.bakkenbaeck.poddy.presentation.queue.QueueViewModel
 import com.bakkenbaeck.poddy.presentation.search.SearchViewModel
@@ -37,6 +37,28 @@ val viewModelModule = module {
             playerChannel = get(named(PLAYER_CHANNEL)),
             playerQueue = get(),
             addToQueueUseCase = get()
+        )
+    }
+
+    factory { (podcastId: String?) ->
+        PodcastFeedFactory(
+            get(),
+            get(named(PROGRESS_CHANNEL)),
+            get(),
+            get(),
+            get(),
+            podcastId
+        )
+    }
+
+    factory { (podcastId: String?) ->
+        SearchFeedFactory(
+            get(),
+            get(named(PROGRESS_CHANNEL)),
+            get(),
+            get(),
+            get(),
+            podcastId
         )
     }
 }

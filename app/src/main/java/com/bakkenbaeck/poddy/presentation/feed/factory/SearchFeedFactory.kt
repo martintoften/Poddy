@@ -10,7 +10,7 @@ import com.bakkenbaeck.poddy.useCase.GetPodcastUseCase
 import com.bakkenbaeck.poddy.useCase.ToggleSubscriptionUseCase
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 
-class SearchFeedModelFactory(
+class SearchFeedFactory(
     private val downloadStateFlowUseCase: DownloadStateFlowUseCase,
     private val downloadProgressChannel: ConflatedBroadcastChannel<ProgressEvent>,
     private val getPodcastUseCase: GetPodcastUseCase,
