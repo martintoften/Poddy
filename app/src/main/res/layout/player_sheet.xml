@@ -75,7 +75,7 @@
             android:layout_height="48dp"
             android:layout_marginEnd="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:srcCompat="@drawable/ic_back_10"
+            app:srcCompat="@drawable/ic_backward"
             app:layout_constraintTop_toTopOf="@id/playBig"
             app:layout_constraintEnd_toStartOf="@id/playBig"
             app:layout_constraintBottom_toBottomOf="@id/playBig" />
@@ -97,7 +97,7 @@
             android:layout_height="48dp"
             android:layout_marginStart="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:srcCompat="@drawable/ic_forward_30"
+            app:srcCompat="@drawable/ic_forward"
             app:layout_constraintTop_toTopOf="@id/playBig"
             app:layout_constraintStart_toEndOf="@id/playBig"
             app:layout_constraintBottom_toBottomOf="@id/playBig" />

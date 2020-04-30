@@ -1,0 +1,39 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:name="path_1"
+                android:pathData="M 10.06 15.38 C 9.77 15.38 9.44 15.21 9.44 14.84 L 8.59 14.84 C 8.59 15.81 9.49 16.07 10.04 16.07 C 10.91 16.07 11.55 15.61 11.55 14.82 C 11.55 14.16 11.1 13.92 10.84 13.82 C 10.95 13.77 11.49 13.5 11.49 12.9 C 11.49 12.69 11.44 11.68 10.05 11.68 C 9.43 11.68 8.65 12.03 8.65 12.84 L 9.5 12.84 C 9.5 12.5 9.81 12.36 10.07 12.36 C 10.66 12.36 10.65 12.86 10.65 12.9 C 10.65 13.42 10.24 13.49 10.02 13.49 L 9.56 13.49 L 9.56 14.15 L 10.01 14.15 C 10.66 14.15 10.71 14.57 10.71 14.79 C 10.71 15.11 10.5 15.38 10.06 15.38 Z M 13.85 11.68 C 13.71 11.68 12.41 11.6 12.41 13.5 L 12.41 14.24 C 12.41 16.14 13.72 16.06 13.85 16.06 C 13.99 16.06 15.29 16.15 15.29 14.24 L 15.29 13.5 C 15.3 11.59 13.99 11.68 13.85 11.68 Z M 14.45 14.35 C 14.45 15.12 14.24 15.38 13.86 15.38 C 13.48 15.38 13.26 15.12 13.26 14.35 L 13.26 13.38 C 13.26 12.63 13.48 12.37 13.85 12.37 C 14.23 12.37 14.45 12.63 14.45 13.38 L 14.45 14.35 Z"
+                android:fillColor="?attr/colorOnPrimary"
+                android:strokeWidth="1"/>
+            <group
+                android:name="group_1"
+                android:pivotX="12"
+                android:pivotY="13">
+                <path
+                    android:name="path"
+                    android:pathData="M 18 13 C 18 16.31 15.31 19 12 19 C 8.69 19 6 16.31 6 13 C 6 9.69 8.69 7 12 7 L 12 11 L 17 6 L 12 1 L 12 5 C 7.58 5 4 8.58 4 13 C 4 17.42 7.58 21 12 21 C 16.42 21 20 17.42 20 13 L 18 13 Z"
+                    android:fillColor="?attr/colorOnPrimary"
+                    android:strokeWidth="1"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="group_1">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="rotation"
+                android:duration="300"
+                android:valueFrom="0"
+                android:valueTo="360"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+</animated-vector>

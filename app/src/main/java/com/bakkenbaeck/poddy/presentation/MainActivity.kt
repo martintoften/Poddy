@@ -69,10 +69,24 @@ class MainActivity : AppCompatActivity() {
     private fun initView() {
         sheet.playBig.setOnClickListener { handlePlayClicked() }
         player.setOnPlayListener { handlePlayClicked() }
-        player.setOnRewindListener { startForegroundService<PlayerService>(ACTION_REWIND) }
-        sheet.back.setOnClickListener { startForegroundService<PlayerService>(ACTION_REWIND) }
-        sheet.forward.setOnClickListener { startForegroundService<PlayerService>(ACTION_FAST_FORWARD) }
-        player.setOnFastForwardListener { startForegroundService<PlayerService>(ACTION_FAST_FORWARD) }
+        player.setOnRewindListener { handleBackwardClicked() }
+        sheet.back.setOnClickListener { handleBackwardClicked() }
+        sheet.forward.setOnClickListener { handleForwardClicked() }
+        player.setOnFastForwardListener { handleForwardClicked() }
+    }
+
+    private fun handleBackwardClicked() {
+        val drawable = sheet.back.drawable as? AnimatedVectorDrawable?
+        drawable?.start()
+        sheet.player.animateBackwardButton()
+        startForegroundService<PlayerService>(ACTION_REWIND)
+    }
+
+    private fun handleForwardClicked() {
+        val drawable = sheet.forward.drawable as? AnimatedVectorDrawable?
+        drawable?.start()
+        sheet.player.animateForwardButton()
+        startForegroundService<PlayerService>(ACTION_FAST_FORWARD)
     }
 
     private fun handlePlayClicked() {

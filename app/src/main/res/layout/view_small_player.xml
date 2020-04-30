@@ -32,7 +32,7 @@
         android:layout_height="24dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginEnd="@dimen/margin_primary"
-        app:srcCompat="@drawable/ic_back_10"
+        app:srcCompat="@drawable/ic_backward"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/playSmall"
         app:layout_constraintBottom_toBottomOf="parent" />
@@ -43,7 +43,7 @@
         android:layout_height="24dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginStart="@dimen/margin_primary"
-        app:srcCompat="@drawable/ic_forward_30"
+        app:srcCompat="@drawable/ic_forward"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/playSmall"
         app:layout_constraintBottom_toBottomOf="parent" />

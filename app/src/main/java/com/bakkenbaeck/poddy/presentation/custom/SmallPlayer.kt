@@ -1,6 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.custom
 
 import android.content.Context
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.FrameLayout
@@ -8,6 +9,7 @@ import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.loadWithRoundCorners
+import com.google.android.material.imageview.ShapeableImageView
 import kotlinx.android.synthetic.main.view_small_player.view.*
 
 class SmallPlayer : ConstraintLayout {
@@ -35,10 +37,12 @@ class SmallPlayer : ConstraintLayout {
     }
 
     fun setOnRewindListener(cb: () -> Unit) {
+        animateBackwardButton()
         smallBack.setOnClickListener { cb() }
     }
 
     fun setOnFastForwardListener(cb: () -> Unit) {
+        animateForwardButton()
         smallForward.setOnClickListener { cb() }
     }
 
@@ -51,4 +55,17 @@ class SmallPlayer : ConstraintLayout {
     }
 
     fun getPlayDrawable(): Drawable? = playSmall.drawable
+
+    fun animateForwardButton() {
+        animateImageView(smallForward)
+    }
+
+    fun animateBackwardButton() {
+        animateImageView(smallBack)
+    }
+
+    private fun animateImageView(view: ShapeableImageView) {
+        val drawable = view.drawable as? AnimatedVectorDrawable?
+        drawable?.start()
+    }
 }
