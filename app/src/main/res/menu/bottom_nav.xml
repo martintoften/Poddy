@@ -2,19 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/search"
-        android:icon="@drawable/ic_search"
-        android:title="Search" />
-
-    <item
         android:id="@+id/queue"
         android:icon="@drawable/ic_queue"
         android:title="Queue" />
-
 
     <item
         android:id="@+id/podcast"
         android:icon="@drawable/ic_podcasts"
         android:title="Podcast" />
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search"
+        android:title="Search" />
 
 </menu>
