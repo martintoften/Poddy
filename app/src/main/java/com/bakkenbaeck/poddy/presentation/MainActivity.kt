@@ -1,6 +1,7 @@
 package com.bakkenbaeck.poddy.presentation
 
 import android.animation.ValueAnimator
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -157,11 +158,17 @@ class MainActivity : AppCompatActivity() {
     private fun updatePlayerUi(action: ViewPlayerAction) {
         val drawable = action.getPlayIcon() ?: return
         sheet.apply {
-            playBig.setImageResource(drawable)
-            player.setPlayImageResource(drawable)
             episodeName.text = action.episode.title
             image.loadWithRoundCorners(action.episode.image, R.dimen.radius_small)
             player.setThumbnail(action.episode.image)
+
+            playBig.setImageResource(drawable)
+            val playBigDrawable = playBig.drawable as? AnimatedVectorDrawable?
+            playBigDrawable?.start()
+
+            player.setPlayImageResource(drawable)
+            val playSmallDrawable = player.getPlayDrawable() as? AnimatedVectorDrawable?
+            playSmallDrawable?.start()
         }
     }
 }

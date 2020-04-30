@@ -1,6 +1,7 @@
 package com.bakkenbaeck.poddy.presentation.custom
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
@@ -48,4 +49,6 @@ class SmallPlayer : ConstraintLayout {
     fun setPlayImageResource(@DrawableRes drawable: Int) {
         playSmall.setImageResource(drawable)
     }
+
+    fun getPlayDrawable(): Drawable? = playSmall.drawable
 }

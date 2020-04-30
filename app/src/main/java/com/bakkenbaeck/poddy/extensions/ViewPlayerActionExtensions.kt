@@ -5,9 +5,9 @@ import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 
 fun ViewPlayerAction.getPlayIcon(): Int? {
     return when (this) {
-        is ViewPlayerAction.Start -> R.drawable.ic_player_pause
-        is ViewPlayerAction.Play -> R.drawable.ic_player_pause
-        is ViewPlayerAction.Pause -> R.drawable.ic_player_play
+        is ViewPlayerAction.Start -> R.drawable.ic_pause_to_play
+        is ViewPlayerAction.Play -> R.drawable.ic_pause_to_play
+        is ViewPlayerAction.Pause -> R.drawable.ic_play_to_pause
         is ViewPlayerAction.Progress -> null
     }
 }

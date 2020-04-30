@@ -89,7 +89,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/episodeName"
-            app:srcCompat="@drawable/ic_player_play" />
+            app:srcCompat="@drawable/ic_pause_to_play" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/forward"
