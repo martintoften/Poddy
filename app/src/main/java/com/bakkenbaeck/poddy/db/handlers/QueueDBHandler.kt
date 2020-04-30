@@ -22,8 +22,8 @@ class QueueDBHandlerImpl(
         return withContext(context) {
             val queue = db.queueQueries.selectEpisodeIdAll().executeAsList()
             val episodeResult = db.episodeQueries.byIdsEpisodes(queue).executeAsList()
-            return@withContext queue.map {
-                episodeResult.first { episode -> it == episode.id } // Query order is ignored for episodes
+            return@withContext queue.mapNotNull {
+                episodeResult.firstOrNull { episode -> it == episode.id } // Query order is ignored for episodes
             }
         }
     }
