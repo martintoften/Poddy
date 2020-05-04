@@ -7,19 +7,21 @@ import com.bakkenbaeck.poddy.db.model.JoinedEpisode
 import com.bakkenbaeck.poddy.db.model.PodcastWithEpisodes
 import com.bakkenbaeck.poddy.network.Result
 import com.bakkenbaeck.poddy.network.SearchApi
+import com.bakkenbaeck.poddy.network.handleApiError
 import com.bakkenbaeck.poddy.network.model.*
 import com.bakkenbaeck.poddy.network.safeApiCall
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.presentation.model.toDbModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
 import org.db.Episode
 import org.db.Podcast
+import kotlin.coroutines.CoroutineContext
 
 const val PODCAST = "podcast"
 const val EPISODE = "episode"
@@ -30,11 +32,12 @@ class PodcastRepository(
     private val podcastDBHandler: PodcastDBHandler,
     private val episodeDBHandler: EpisodeDBHandler,
     private val subscriptionDBHandler: SubscriptionDBHandler,
-    private val subscriptionsChannel: ConflatedBroadcastChannel<List<Podcast>>
+    private val subscriptionsChannel: ConflatedBroadcastChannel<List<Podcast>>,
+    private val context: CoroutineContext = Dispatchers.IO
 ) {
 
     suspend fun search(query: String): Result<SearchResponse> {
-        return safeApiCall { searchApi.search(query, PODCAST) }
+        return safeApiCall(context) { searchApi.search(query, PODCAST) }
     }
 
     suspend fun getEpisode(episodeId: String): JoinedEpisode? {
@@ -42,24 +45,27 @@ class PodcastRepository(
     }
 
     suspend fun getPodcastRecommendations(podcastId: String): Result<PodcastRecommendationResponse> {
-        return safeApiCall { searchApi.getPodcastRecommendations(podcastId) }
+        return safeApiCall(context) { searchApi.getPodcastRecommendations(podcastId) }
     }
 
     suspend fun getCategories(): Result<List<CategoryPodcastReponse>> {
-        return safeApiCall {
-            coroutineScope {
-                val genresResult = async { searchApi.getGenres() }
-                val topPodcastResult = async { searchApi.getBestPodcasts() }
+        return coroutineScope {
+            try {
+                val genresResult = async(context) { searchApi.getGenres() }
+                val topPodcastResult = async(context) { searchApi.getBestPodcasts() }
                 val genres = genresResult.await()
                 val topPodcasts = topPodcastResult.await()
                 val categoryPodcasts = genres.genres
                     .filter { !CATEGORIES_TO_IGNORE.contains(it.id) }
                     .take(5)
                     .map { it.id }
-                    .map { async { searchApi.getCategoryById(it) } }
+                    .map { async(context) { searchApi.getCategoryById(it) } }
                     .map { it.await() }
 
-                return@coroutineScope listOf(topPodcasts) + categoryPodcasts
+                val s = listOf(topPodcasts) + categoryPodcasts
+                return@coroutineScope Result.Success(s)
+            } catch (e: Throwable) {
+                return@coroutineScope handleApiError(e)
             }
         }
     }
