@@ -159,6 +159,6 @@ class QueueQueryTest : KoinTest {
         queueQueries.delete("1123")
         val queue = queueQueries.selectAll().executeAsList()
 
-        assertEquals(3, queue.count())
+        assertEquals(queueMockList.count(), queue.count())
     }
 }
