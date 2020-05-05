@@ -11,4 +11,5 @@ val testDBModule = module {
     single { buildTestDB() }
     factory { get<PoddyDB>().episodeQueries }
     factory { get<PoddyDB>().podcastQueries }
+    factory { get<PoddyDB>().queueQueries }
 }
