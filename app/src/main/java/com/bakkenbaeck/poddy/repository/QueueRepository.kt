@@ -24,11 +24,9 @@ class QueueRepository(
     }
 
     suspend fun addToQueue(episode: ViewEpisode) {
-        val (id, podcastId) = episode
-        val dbQueueItem = Queue.Impl(id, podcastId, -1)
         val dbEpisode = episode.toDbModel()
 
-        queueDBHandler.insertQueueItem(dbQueueItem, dbEpisode)
+        queueDBHandler.insertQueueItem(dbEpisode)
         val queue = queueDBHandler.getQueue()
         queueChannel.send(queue)
     }
