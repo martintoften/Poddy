@@ -110,7 +110,7 @@ class PodcastQueryTest: KoinTest {
     }
 
     @Test
-    fun `select by episode id - no podcast`() {
+    fun `select by episode id - non existing podcast`() {
         episodeQueries.insert(replyAllMockEpisode)
         podcastMockList.forEach {
             podcastQueries.insert(it)

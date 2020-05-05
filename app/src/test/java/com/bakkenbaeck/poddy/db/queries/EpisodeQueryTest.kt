@@ -315,8 +315,6 @@ class EpisodeQueryTest: KoinTest {
         assertEquals(null, episodeDownloaded)
     }
 
-
-
     @Test
     fun `update progress state, single episode`() {
         val episodeId = "1"
