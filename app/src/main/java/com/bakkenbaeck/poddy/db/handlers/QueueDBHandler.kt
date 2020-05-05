@@ -1,15 +1,15 @@
 package com.bakkenbaeck.poddy.db.handlers
 
 import db.PoddyDB
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.withContext
 import org.db.ByIdsEpisodes
 import org.db.Episode
 import org.db.Queue
+import kotlin.coroutines.CoroutineContext
 
 interface QueueDBHandler {
     suspend fun getQueue(): List<ByIdsEpisodes>
-    suspend fun insertQueueItem(queue: Queue, episode: Episode)
+    suspend fun insertQueueItem(episode: Episode)
     suspend fun reorderQueue(queueIds: List<String>)
     suspend fun doesEpisodeAlreadyExist(episodeId: String): Boolean
 }
@@ -28,10 +28,11 @@ class QueueDBHandlerImpl(
         }
     }
 
-    override suspend fun insertQueueItem(queue: Queue, episode: Episode) {
+    override suspend fun insertQueueItem(episode: Episode) {
         return withContext(context) {
             db.episodeQueries.insert(episode)
-            db.queueQueries.insert(queue)
+            val queueItem = Queue.Impl(episode.id, episode.podcast_id, -1)
+            db.queueQueries.insert(queueItem)
             db.queueQueries
                 .selectAll()
                 .executeAsList()
