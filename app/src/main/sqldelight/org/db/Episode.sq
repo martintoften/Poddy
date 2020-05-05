@@ -12,6 +12,9 @@ CREATE TABLE episode (
     progress INTEGER NOT NULL
 );
 
+selectAll:
+SELECT * FROM episode;
+
 allEpisodes:
 SELECT episode.*, podcast.title FROM episode INNER JOIN podcast ON episode.podcast_id = podcast.id;
 
