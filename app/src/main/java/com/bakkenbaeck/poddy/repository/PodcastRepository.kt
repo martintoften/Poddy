@@ -62,8 +62,7 @@ class PodcastRepository(
                     .map { async(context) { searchApi.getCategoryById(it) } }
                     .map { it.await() }
 
-                val s = listOf(topPodcasts) + categoryPodcasts
-                return@coroutineScope Result.Success(s)
+                return@coroutineScope Result.Success(listOf(topPodcasts) + categoryPodcasts)
             } catch (e: Throwable) {
                 return@coroutineScope handleApiError(e)
             }
