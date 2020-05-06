@@ -2,7 +2,6 @@ package com.bakkenbaeck.poddy.extensions
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.ColorRes
@@ -12,11 +11,8 @@ import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bakkenbaeck.poddy.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
-import kotlinx.android.synthetic.main.feed_fragment.*
-import kotlinx.android.synthetic.main.view_toolbar.view.*
 
 fun View.getDimen(@DimenRes resource: Int): Float {
     return this.resources.getDimension(resource)
@@ -27,6 +23,14 @@ fun View.layoutInflater(): LayoutInflater {
 }
 
 fun View.getPxSize(@DimenRes id: Int) = resources.getDimensionPixelSize(id)
+
+fun View.dpToPx(dp: Float): Float {
+    return context.dpToPx(dp)
+}
+
+fun View.pxToDp(px: Float): Float {
+    return context.pxToDp(px)
+}
 
 fun View.getColorById(@ColorRes id: Int) = context.getColorById(id)
 

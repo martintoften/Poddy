@@ -7,8 +7,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginLeft
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.clearDrawables
+import com.bakkenbaeck.poddy.extensions.dpToPx
 import com.bakkenbaeck.poddy.extensions.getColorFromAttr
 import com.bakkenbaeck.poddy.extensions.setRightDrawable
 import com.bakkenbaeck.poddy.util.TextListener
@@ -51,6 +54,7 @@ class Toolbar : ConstraintLayout {
         initTitle()
         initText()
         setBackgroundColor(getColorFromAttr(R.attr.colorPrimary))
+        initArrowAnimation()
     }
 
     private fun initBackArrow() {
@@ -77,6 +81,7 @@ class Toolbar : ConstraintLayout {
 
     fun setText(text: String) {
         titleView.text = text
+        initTitleAnimation()
     }
 
     fun setTextSize(size: Float) {
@@ -106,5 +111,28 @@ class Toolbar : ConstraintLayout {
             }
             return@OnTouchListener false
         })
+    }
+
+    private fun initTitleAnimation() {
+        if (titleView.text.isEmpty()) return
+
+        titleView.alpha = 0f
+        titleView.animate()
+            .setInterpolator(FastOutSlowInInterpolator())
+            .alpha(1f)
+            .setDuration(600)
+            .start()
+    }
+
+    private fun initArrowAnimation() {
+        if (!showBackArrow) return
+
+        val startPosition = dpToPx(24f) + backButton.marginLeft
+        backButton.x = -startPosition
+        backButton.animate()
+            .setInterpolator(FastOutSlowInInterpolator())
+            .setDuration(600)
+            .translationX(0f)
+            .start()
     }
 }
