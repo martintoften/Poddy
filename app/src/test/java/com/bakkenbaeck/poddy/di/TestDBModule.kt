@@ -1,10 +1,7 @@
 package com.bakkenbaeck.poddy.di
 
 import com.bakkenbaeck.poddy.db.buildTestDB
-import com.bakkenbaeck.poddy.db.handlers.QueueDBHandler
-import com.bakkenbaeck.poddy.db.handlers.QueueDBHandlerImpl
-import com.bakkenbaeck.poddy.db.handlers.SubscriptionDBHandler
-import com.bakkenbaeck.poddy.db.handlers.SubscriptionDBHandlerImpl
+import com.bakkenbaeck.poddy.db.handlers.*
 import db.PoddyDB
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.koin.dsl.module
@@ -25,6 +22,20 @@ val testDBModule = module {
 
     factory<QueueDBHandler> {
         QueueDBHandlerImpl(
+            db = get(),
+            context = TestCoroutineDispatcher()
+        )
+    }
+
+    factory<EpisodeDBHandler> {
+        EpisodeDBHandlerImpl(
+            db = get(),
+            context = TestCoroutineDispatcher()
+        )
+    }
+
+    factory<PodcastDBHandler> {
+        PodcastDBHandlerImpl(
             db = get(),
             context = TestCoroutineDispatcher()
         )

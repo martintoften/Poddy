@@ -41,7 +41,7 @@ class AddToQueueUseCase(
     private val queueRepository: QueueRepository
 ) : UseCase<ViewEpisode, Unit> {
     override suspend fun execute(input: ViewEpisode) {
-        queueRepository.addToQueue(input)
+        queueRepository.addToQueue(input.toDbModel())
     }
 }
 
@@ -49,7 +49,8 @@ class ReorderQueueUseCase(
     private val queueRepository: QueueRepository
 ) : UseCase<List<ViewEpisode>, Unit> {
     override suspend fun execute(input: List<ViewEpisode>) {
-        queueRepository.reorderQueue(input)
+        val queueIds = input.map { it.id }
+        queueRepository.reorderQueue(queueIds)
     }
 }
 

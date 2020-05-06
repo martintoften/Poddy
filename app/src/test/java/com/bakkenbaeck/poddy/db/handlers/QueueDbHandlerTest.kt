@@ -46,16 +46,6 @@ class QueueDbHandlerTest : KoinTest {
     }
 
     @Test
-    fun `get queue - multiple episodes no podcast`() = runBlockingTest {
-        episodeMockList.forEach {
-            queueDbHandler.insertQueueItem(it)
-        }
-
-        val queue = queueDbHandler.getQueue()
-        assertEquals(0, queue.count())
-    }
-
-    @Test
     fun `reorder queue - multiple episodes`() = runBlockingTest {
         podcastMockList.forEach {
             podcastQueries.insert(it)

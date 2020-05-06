@@ -16,16 +16,16 @@ selectAll:
 SELECT * FROM episode;
 
 allEpisodes:
-SELECT episode.*, podcast.title FROM episode INNER JOIN podcast ON episode.podcast_id = podcast.id;
+SELECT episode.*, podcast.title FROM episode LEFT JOIN podcast ON episode.podcast_id = podcast.id;
 
 byIdEpisode:
-SELECT episode.*, podcast.title FROM episode INNER JOIN podcast ON episode.podcast_id = podcast.id WHERE episode.id = ?;
+SELECT episode.*, podcast.title FROM episode LEFT JOIN podcast ON episode.podcast_id = podcast.id WHERE episode.id = ?;
 
 byIdsEpisodes:
-SELECT episode.*, podcast.title FROM episode INNER JOIN podcast ON episode.podcast_id = podcast.id WHERE episode.id IN ?;
+SELECT episode.*, podcast.title FROM episode LEFT JOIN podcast ON episode.podcast_id = podcast.id WHERE episode.id IN ?;
 
 byPodcastIdEpisodes:
-SELECT episode.*, podcast.title FROM episode INNER JOIN podcast ON episode.podcast_id = podcast.id WHERE episode.podcast_id = ? ORDER BY pub_date DESC;
+SELECT episode.*, podcast.title FROM episode LEFT JOIN podcast ON episode.podcast_id = podcast.id WHERE episode.podcast_id = ? ORDER BY pub_date DESC;
 
 insert:
 INSERT OR IGNORE INTO episode(
