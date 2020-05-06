@@ -48,8 +48,8 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
         queueList.apply {
             adapter = QueueAdapter(
                 this@QueueFragment,
-                { queueViewModel.reorderQueue(it) },
-                { queueViewModel.deleteEpisode(it) },
+                { queueViewModel.reorderQueue(it.map { ep -> ep.id }) },
+                { queueViewModel.deleteEpisode(it.id) },
                 { handleEpisodeClicked(it) }
             )
 

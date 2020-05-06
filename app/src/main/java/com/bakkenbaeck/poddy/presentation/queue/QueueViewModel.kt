@@ -39,15 +39,15 @@ class QueueViewModel(
         queue.value = queueResult
     }
 
-    fun reorderQueue(queue: List<ViewEpisode>) {
+    fun reorderQueue(queueIds: List<String>) {
         viewModelScope.launch {
-            reorderQueueUseCase.execute(queue)
+            reorderQueueUseCase.execute(queueIds)
         }
     }
 
-    fun deleteEpisode(episode: ViewEpisode) {
+    fun deleteEpisode(episodeId: String) {
         viewModelScope.launch {
-            deleteQueueUseCase.execute(episode.id)
+            deleteQueueUseCase.execute(episodeId)
         }
     }
 }
