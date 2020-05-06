@@ -3,9 +3,7 @@ package com.bakkenbaeck.poddy.viewModel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bakkenbaeck.poddy.db.handlers.QueueDBHandler
 import com.bakkenbaeck.poddy.db.mockData.episodeMockList
-import com.bakkenbaeck.poddy.db.mockData.serialMockEpisode
 import com.bakkenbaeck.poddy.di.*
-import com.bakkenbaeck.poddy.presentation.model.toByIdsViewModel
 import com.bakkenbaeck.poddy.presentation.queue.QueueViewModel
 import com.bakkenbaeck.poddy.viewModel.util.MainCoroutineRule
 import com.bakkenbaeck.poddy.viewModel.util.getOrAwaitValue
@@ -28,13 +26,13 @@ class QueueViewModelTest : KoinTest {
     val instantTaskRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val mainCoroutineRule = MainCoroutineRule()
+    val coroutineRule = MainCoroutineRule()
 
     private val viewModel: QueueViewModel by inject()
     private val queueDBHandler: QueueDBHandler by inject()
 
     @Test
-    fun `get queue - multiple episodes`() = mainCoroutineRule.runBlockingTest {
+    fun `get queue - multiple episodes`() = coroutineRule.runBlockingTest {
         episodeMockList.forEach {
             queueDBHandler.insertQueueItem(it)
         }
@@ -43,13 +41,13 @@ class QueueViewModelTest : KoinTest {
     }
 
     @Test
-    fun `get queue - no episodes`() = mainCoroutineRule.runBlockingTest {
+    fun `get queue - no episodes`() = coroutineRule.runBlockingTest {
         val queue = viewModel.queue.getOrAwaitValue()
         assertEquals(0, queue.count())
     }
 
     @Test
-    fun `delete episode - multiple episodes`() = mainCoroutineRule.runBlockingTest {
+    fun `delete episode - multiple episodes`() = coroutineRule.runBlockingTest {
         episodeMockList.forEach {
             queueDBHandler.insertQueueItem(it)
         }
@@ -63,14 +61,14 @@ class QueueViewModelTest : KoinTest {
     }
 
     @Test
-    fun `delete episode - no episodes`() = mainCoroutineRule.runBlockingTest {
+    fun `delete episode - no episodes`() = coroutineRule.runBlockingTest {
         viewModel.deleteEpisode("3")
         val queue = viewModel.queue.getOrAwaitValue()
         assertEquals(0, queue.count())
     }
 
     @Test
-    fun `reorder queue - multiple episodes`() = mainCoroutineRule.runBlockingTest {
+    fun `reorder queue - multiple episodes`() = coroutineRule.runBlockingTest {
         episodeMockList.forEach {
             queueDBHandler.insertQueueItem(it)
         }
@@ -86,11 +84,10 @@ class QueueViewModelTest : KoinTest {
     }
 
     @Test
-    fun `reorder queue - no episodes`() = mainCoroutineRule.runBlockingTest {
+    fun `reorder queue - no episodes`() = coroutineRule.runBlockingTest {
         val reversedQueue = queueDBHandler.getQueue().reversed().map { it.id }
         viewModel.reorderQueue(reversedQueue)
         val queue = queueDBHandler.getQueue()
-
         assertEquals(0, queue.count())
     }
 }
