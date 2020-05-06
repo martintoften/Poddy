@@ -1,7 +1,6 @@
 package com.bakkenbaeck.poddy.presentation.search
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,14 +14,16 @@ import com.bakkenbaeck.poddy.extensions.getScrollStates
 import com.bakkenbaeck.poddy.extensions.hideKeyboard
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
-import com.bakkenbaeck.poddy.presentation.model.*
+import com.bakkenbaeck.poddy.presentation.model.ViewBasePodcast
+import com.bakkenbaeck.poddy.presentation.model.ViewCategory
+import com.bakkenbaeck.poddy.presentation.model.ViewPodcastSearch
+import com.bakkenbaeck.poddy.presentation.model.toViewModel
 import com.bakkenbaeck.poddy.util.Failure
 import com.bakkenbaeck.poddy.util.Loading
 import com.bakkenbaeck.poddy.util.Resource
 import com.bakkenbaeck.poddy.util.Success
 import kotlinx.android.synthetic.main.search_fragment.*
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : BackableFragment() {
 

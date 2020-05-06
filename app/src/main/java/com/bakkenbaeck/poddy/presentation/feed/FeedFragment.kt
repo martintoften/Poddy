@@ -49,7 +49,7 @@ abstract class FeedFragment : BackableFragment() {
 
             // Load the cached image with corner radius when the transition is done
             doOnEnd {
-                podcastImage.loadWithRoundCorners(basePodcast?.image, R.dimen.radius_default_coil)
+                podcastImage?.loadWithRoundCorners(basePodcast?.image, R.dimen.radius_default_coil)
             }
         }
 
