@@ -64,16 +64,6 @@ class EpisodeQueryTest: KoinTest {
     }
 
     @Test
-    fun `all episodes - multiple episodes, no podcasts`() {
-        episodeMockList.forEach {
-            episodeQueries.insert(it)
-        }
-
-        val episodes = episodeQueries.allEpisodes().executeAsList()
-        assertEquals(0, episodes.count())
-    }
-
-    @Test
     fun `by id episode - single episode`() {
         podcastMockList.forEach {
             podcastQueries.insert(it)
@@ -89,16 +79,6 @@ class EpisodeQueryTest: KoinTest {
 
     @Test
     fun `by id episode - no episodes`() {
-        val episodes = episodeQueries.byIdEpisode("1").executeAsList()
-        assertEquals(0, episodes.count())
-    }
-
-    @Test
-    fun `by id episode - single episode, no podcasts`() {
-        episodeMockList.forEach {
-            episodeQueries.insert(it)
-        }
-
         val episodes = episodeQueries.byIdEpisode("1").executeAsList()
         assertEquals(0, episodes.count())
     }
@@ -120,16 +100,6 @@ class EpisodeQueryTest: KoinTest {
 
     @Test
     fun `by ids episode - no episode`() {
-        val episodes = episodeQueries.byIdsEpisodes(listOf("1", "2")).executeAsList()
-        assertEquals(0, episodes.count())
-    }
-
-    @Test
-    fun `by ids episode - multiple episode, no podcasts`() {
-        episodeMockList.forEach {
-            episodeQueries.insert(it)
-        }
-
         val episodes = episodeQueries.byIdsEpisodes(listOf("1", "2")).executeAsList()
         assertEquals(0, episodes.count())
     }
@@ -165,16 +135,6 @@ class EpisodeQueryTest: KoinTest {
         }
 
         val episodes = episodeQueries.byPodcastIdEpisodes("14931").executeAsList()
-        assertEquals(0, episodes.count())
-    }
-
-    @Test
-    fun `by podcast id episode - multiple episodes, no podcasts`() {
-        multiplePerPodcastMockList.forEach {
-            episodeQueries.insert(it)
-        }
-
-        val episodes = episodeQueries.byPodcastIdEpisodes("11").executeAsList()
         assertEquals(0, episodes.count())
     }
 

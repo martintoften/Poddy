@@ -35,7 +35,7 @@ data class ViewEpisode(
     val isDownloaded: DownloadState,
     val downloadProgress: String = "",
     val progress: Long,
-    val podcastTitle: String
+    val podcastTitle: String?
 ) : Diffable, Parcelable
 
 enum class DownloadState(val value: Int) {

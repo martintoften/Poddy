@@ -15,7 +15,7 @@ data class JoinedEpisode(
     val timestamp: Long,
     val isDownloaded: Long,
     val progress: Long,
-    val podcastTitle: String
+    val podcastTitle: String?
 )
 
 fun ByIdEpisode.toJoinedModel(): JoinedEpisode {
