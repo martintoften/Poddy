@@ -5,7 +5,6 @@
         <item name="shapeAppearanceSmallComponent">@style/smallComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/mediumComponent</item>
         <item name="shapeAppearanceLargeComponent">@style/largeComponent</item>
-        <item name="bottomSheetDialogTheme">@style/appModalBottomSheet</item>
         <item name="bottomSheetStyle">@style/appStandardBottomSheet</item>
 
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -44,6 +43,9 @@
 
     <style name="appModalBottomSheet" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/modalBottomSheet</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
     </style>
 
     <style name="modalBottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
