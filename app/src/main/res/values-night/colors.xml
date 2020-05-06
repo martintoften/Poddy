@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
     <color name="colorPrimary">#222</color>
     <color name="colorOnPrimary">#DDD</color>
@@ -13,6 +12,8 @@
     <color name="textColorPrimary">#FFF</color>
     <color name="textColorSecondary">#DDD</color>
     <color name="textColorHint">#DDD</color>
+
+    <color name="windowBackground">#000</color>
 
     <color name="positive">#4CAF50</color>
     <color name="negative">#FF224E</color>
