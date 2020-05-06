@@ -1,12 +1,13 @@
 package com.bakkenbaeck.poddy.repository
 
 import com.bakkenbaeck.poddy.db.mockData.episodeMockList
-import com.bakkenbaeck.poddy.db.mockData.radioresepsjonenMockEpisode
+import com.bakkenbaeck.poddy.db.mockData.replyAll2MockEpisode
 import com.bakkenbaeck.poddy.db.mockData.replyAllMockEpisode
-import com.bakkenbaeck.poddy.db.mockData.serialMockEpisode
 import com.bakkenbaeck.poddy.di.testChannelModule
 import com.bakkenbaeck.poddy.di.testDBModule
 import com.bakkenbaeck.poddy.di.testRepositoryModule
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -87,5 +88,67 @@ class QueueRepositoryTest : KoinTest {
         assertEquals("1", resultQueue[0].id)
         assertEquals("2", resultQueue[1].id)
         assertEquals("3", resultQueue[2].id)
+    }
+
+    @Test
+    fun `queue flow - multiple episodes`() = runBlockingTest {
+        episodeMockList.forEach {
+            queueRepository.addToQueue(it)
+        }
+
+        val result = queueRepository.getQueueFlow().take(1).toList()
+
+        assertEquals(1, result.count())
+        assertEquals(3, result[0].count())
+    }
+
+    @Test
+    fun `queue flow - no episodes`() = runBlockingTest {
+        val result = queueRepository.getQueueFlow().take(1).toList()
+
+        assertEquals(1, result.count())
+        assertEquals(0, result[0].count())
+    }
+
+    @Test
+    fun `queue flow - add`() = runBlockingTest {
+        episodeMockList.forEach {
+            queueRepository.addToQueue(it)
+        }
+
+        val queueFlow = queueRepository.getQueueFlow()
+
+        val resultWithThreeEpisodes = queueFlow.take(1).toList()
+
+        assertEquals(1, resultWithThreeEpisodes.count())
+        assertEquals(3, resultWithThreeEpisodes[0].count())
+
+        queueRepository.addToQueue(replyAll2MockEpisode)
+
+        val resultWithFourEpisodes = queueFlow.take(1).toList()
+
+        assertEquals(1, resultWithFourEpisodes.count())
+        assertEquals(4, resultWithFourEpisodes[0].count())
+    }
+
+    @Test
+    fun `queue flow - remove`() = runBlockingTest {
+        episodeMockList.forEach {
+            queueRepository.addToQueue(it)
+        }
+
+        val queueFlow = queueRepository.getQueueFlow()
+
+        val resultWithThreeEpisodes = queueFlow.take(1).toList()
+
+        assertEquals(1, resultWithThreeEpisodes.count())
+        assertEquals(3, resultWithThreeEpisodes[0].count())
+
+        queueRepository.deleteEpisodeFromQueue("1")
+
+        val resultWithFourEpisodes = queueFlow.take(1).toList()
+
+        assertEquals(1, resultWithFourEpisodes.count())
+        assertEquals(2, resultWithFourEpisodes[0].count())
     }
 }
