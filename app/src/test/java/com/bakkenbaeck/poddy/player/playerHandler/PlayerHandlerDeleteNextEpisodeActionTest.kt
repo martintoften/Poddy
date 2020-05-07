@@ -2,7 +2,6 @@ package com.bakkenbaeck.poddy.player.playerHandler
 
 import com.bakkenbaeck.poddy.db.mockData.episodeMockList
 import com.bakkenbaeck.poddy.di.*
-import com.bakkenbaeck.poddy.player.mockData.radioresepsjonenMockEpisode
 import com.bakkenbaeck.poddy.player.mockData.viewEpisodeMockList
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 import com.bakkenbaeck.poddy.presentation.player.ACTION_START
@@ -23,7 +22,7 @@ import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.koin.test.inject
 
-class PlayerHandlerDeleteCurrentActionTest : KoinTest {
+class PlayerHandlerDeleteNextEpisodeActionTest : KoinTest {
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {
@@ -42,12 +41,12 @@ class PlayerHandlerDeleteCurrentActionTest : KoinTest {
 
         playerHandler.init()
         playerHandler.handlePlayerAction(ACTION_START, viewEpisodeMockList[2])
-        queueRepository.deleteEpisodeFromQueue(viewEpisodeMockList[2].id)
+        queueRepository.deleteEpisodeFromQueue(viewEpisodeMockList[1].id)
 
         val actions = playerChannel.asFlow().filterNotNull().take(3).toList()
 
         assertTrue(actions[0] is ViewPlayerAction.Start)
-        assertEquals(viewEpisodeMockList[1].id, actions[0].episode.id)
+        assertEquals(viewEpisodeMockList[2].id, actions[0].episode.id)
         assertTrue(actions[1] is ViewPlayerAction.Progress)
         assertTrue(actions[2] is ViewPlayerAction.Progress)
 
