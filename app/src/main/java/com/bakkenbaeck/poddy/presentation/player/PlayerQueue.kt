@@ -17,11 +17,6 @@ class PlayerQueue {
 
     fun hasCurrent() = currentEpisode != null
 
-    fun setFirstAsCurrent(): ViewEpisode? {
-        currentEpisode = first()
-        return currentEpisode
-    }
-
     fun setCurrent(episode: ViewEpisode) {
         currentEpisode = episode
     }
@@ -29,6 +24,4 @@ class PlayerQueue {
     fun clearCurrentEpisode() {
         currentEpisode = null
     }
-
-    fun deleteFirst() = queue.removeAt(0)
 }
