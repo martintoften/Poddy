@@ -20,6 +20,9 @@ class QueueRepository(
     }
 
     suspend fun addToQueue(episode: Episode) {
+        val alreadyExists = queueDBHandler.doesEpisodeAlreadyExist(episode.id)
+        if (alreadyExists) return
+
         queueDBHandler.insertQueueItem(episode)
         val queue = queueDBHandler.getQueue()
         queueChannel.send(queue)

@@ -17,6 +17,20 @@ val replyAllMockEpisode = ViewEpisode(
     podcastTitle = ""
 )
 
+val radioresepsjonenMockEpisode = ViewEpisode(
+    id = "2",
+    podcastId = "12",
+    title = "01.05.2020",
+    description = "RR",
+    pubDate = 1000,
+    audio = "url",
+    duration = 1000,
+    image = "",
+    isDownloaded = DownloadState.DOWNLOADED,
+    progress = 0,
+    podcastTitle = ""
+)
+
 val serialMockEpisode = ViewEpisode(
     id = "3",
     podcastId = "13",
@@ -31,4 +45,4 @@ val serialMockEpisode = ViewEpisode(
     podcastTitle = ""
 )
 
-val viewEpisodeMockList = listOf(replyAllMockEpisode, serialMockEpisode)
+val viewEpisodeMockList = listOf(replyAllMockEpisode, radioresepsjonenMockEpisode, serialMockEpisode)

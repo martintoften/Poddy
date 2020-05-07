@@ -6,8 +6,8 @@ import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
 class PlayerActionBuilder(
     private val playerQueue: PlayerQueue
 ) {
-    fun getStartAction(episode: ViewEpisode?, isPlaying: Boolean): ViewPlayerAction {
-        if (episode == null) throw IllegalStateException("Must pass an episode with the start action")
+    fun getStartAction(episode: ViewEpisode?, isPlaying: Boolean): ViewPlayerAction? {
+        if (episode == null) return null // Must pass an episode with the start action
 
         val isTheSameEpisodeAsCurrent = episode.id == playerQueue.current()?.id
         return if (isTheSameEpisodeAsCurrent) {

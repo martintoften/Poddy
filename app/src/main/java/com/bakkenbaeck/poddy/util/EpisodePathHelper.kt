@@ -12,3 +12,9 @@ class EpisodePathHelperImpl : EpisodePathHelper {
         return episode.getEpisodePath()
     }
 }
+
+class TestEpisodePathHelperImpl : EpisodePathHelper {
+    override fun getPath(episode: ViewEpisode): String {
+        return ""
+    }
+}
