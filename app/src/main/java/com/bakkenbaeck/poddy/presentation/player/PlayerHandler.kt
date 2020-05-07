@@ -38,12 +38,13 @@ class PlayerHandler(
     private val addToQueueUseCase: AddToQueueUseCase,
     private val deleteQueueUseCase: DeleteQueueUseCase,
     private val playerActionBuilder: PlayerActionBuilder = PlayerActionBuilder(playerQueue),
+    private val tickerContext: CoroutineContext = Dispatchers.Main,
     private val mainContext: CoroutineContext = Dispatchers.Main,
     private val backgroundContext: CoroutineContext = Dispatchers.IO
 ) {
     private var isQueueListenerInitialised = false
     private val scope by lazy { CoroutineScope(mainContext) }
-    private val tickerChannel by lazy { ticker(delayMillis = 1000, context = mainContext) }
+    private val tickerChannel by lazy { ticker(delayMillis = 1000, context = tickerContext) }
 
     fun init() {
         listenForProgressUpdates()

@@ -17,17 +17,18 @@ val testPlayerModule = module {
     factory<EpisodePathHelper> { TestEpisodePathHelperImpl() }
     factory { PlayerActionBuilder(get()) }
     single { PlayerHandler(
-        get(),
-        get(named(PLAYER_CHANNEL)),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        Dispatchers.IO,
-        TestCoroutineDispatcher()
+        progressRepository = get(),
+        playerChannel = get(named(PLAYER_CHANNEL)),
+        playerNotificationHandler = get(),
+        podcastPlayer = get(),
+        episodeHelper = get(),
+        playerQueue = get(),
+        queueFlowUseCase = get(),
+        addToQueueUseCase = get(),
+        deleteQueueUseCase = get(),
+        playerActionBuilder = get(),
+        tickerContext = Dispatchers.IO,
+        mainContext = TestCoroutineDispatcher(),
+        backgroundContext = TestCoroutineDispatcher()
     ) }
 }
