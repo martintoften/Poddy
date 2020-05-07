@@ -8,17 +8,19 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bakkenbaeck.poddy.presentation.player.ACTION_START
-import com.bakkenbaeck.poddy.presentation.player.EPISODE
 import com.bakkenbaeck.poddy.R
+import com.bakkenbaeck.poddy.extensions.getPodcastDir
 import com.bakkenbaeck.poddy.extensions.startForegroundService
 import com.bakkenbaeck.poddy.presentation.BackableFragment
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
+import com.bakkenbaeck.poddy.presentation.player.ACTION_START
+import com.bakkenbaeck.poddy.presentation.player.EPISODE
 import com.bakkenbaeck.poddy.presentation.service.PlayerService
 import com.bakkenbaeck.poddy.util.OnStartDragListener
 import com.bakkenbaeck.poddy.util.SimpleItemTouchHelperCallback
 import kotlinx.android.synthetic.main.queue_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
 class QueueFragment : BackableFragment(), OnStartDragListener {
 
@@ -49,12 +51,18 @@ class QueueFragment : BackableFragment(), OnStartDragListener {
             adapter = QueueAdapter(
                 this@QueueFragment,
                 { queueViewModel.reorderQueue(it.map { ep -> ep.id }) },
-                { queueViewModel.deleteEpisode(it.id) },
+                { handleOnDeleteEpisode(it) },
                 { handleEpisodeClicked(it) }
             )
 
             layoutManager = LinearLayoutManager(context)
         }
+    }
+
+    private fun handleOnDeleteEpisode(episode: ViewEpisode) {
+        queueViewModel.deleteEpisode(episode.id)
+        val file = File(getPodcastDir(), episode.id.plus(".mp3"))
+        file.delete()
     }
 
     private fun handleEpisodeClicked(episode: ViewEpisode) {
