@@ -1,8 +1,8 @@
 package com.bakkenbaeck.poddy.presentation.player
 
-import com.bakkenbaeck.poddy.presentation.notification.PlayerNotificationHandler
 import com.bakkenbaeck.poddy.presentation.model.ViewEpisode
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
+import com.bakkenbaeck.poddy.presentation.notification.PlayerNotificationHandler
 import com.bakkenbaeck.poddy.repository.ProgressRepository
 import com.bakkenbaeck.poddy.useCase.AddToQueueUseCase
 import com.bakkenbaeck.poddy.useCase.DeleteQueueUseCase
@@ -32,23 +32,18 @@ class PlayerHandler(
     private val playerChannel: ConflatedBroadcastChannel<ViewPlayerAction?>,
     private val playerNotificationHandler: PlayerNotificationHandler,
     private val podcastPlayer: PodcastPlayer,
-    private val mainDispatcher: CoroutineContext,
     private val episodeHelper: EpisodePathHelper,
     private val playerQueue: PlayerQueue,
     private val queueFlowUseCase: QueueFlowUseCase,
     private val addToQueueUseCase: AddToQueueUseCase,
-    private val deleteQueueUseCase: DeleteQueueUseCase
+    private val deleteQueueUseCase: DeleteQueueUseCase,
+    private val mainContext: CoroutineContext = Dispatchers.Main,
+    private val backgroundContext: CoroutineContext = Dispatchers.IO
 ) {
     private var isQueueListenerInitialised = false
-
-    private val scope by lazy { CoroutineScope(Dispatchers.Main) }
-
-    private val tickerChannel by lazy { ticker(delayMillis = 1000, context = mainDispatcher) }
-    private val playerActionBuilder by lazy {
-        PlayerActionBuilder(
-            playerQueue
-        )
-    }
+    private val scope by lazy { CoroutineScope(mainContext) }
+    private val tickerChannel by lazy { ticker(delayMillis = 1000, context = mainContext) }
+    private val playerActionBuilder by lazy { PlayerActionBuilder(playerQueue) }
 
     fun init() {
         listenForProgressUpdates()
@@ -179,12 +174,12 @@ class PlayerHandler(
     private fun listenForQueueUpdates() {
         scope.launch {
             queueFlowUseCase.execute()
-                .flowOn(Dispatchers.IO)
-                .collect { handleQueue(it) }
+                .flowOn(backgroundContext)
+                .collect { handleQueueUpdate(it) }
         }
     }
 
-    private fun handleQueue(episodes: List<ViewEpisode>) {
+    private fun handleQueueUpdate(episodes: List<ViewEpisode>) {
         playerQueue.setQueue(episodes)
 
         if (!playerQueue.hasCurrent()) {
