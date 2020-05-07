@@ -1,6 +1,7 @@
 package com.bakkenbaeck.poddy.player.playerHandler
 
 import com.bakkenbaeck.poddy.db.mockData.episodeMockList
+import com.bakkenbaeck.poddy.db.mockData.replyAll2MockEpisode
 import com.bakkenbaeck.poddy.di.*
 import com.bakkenbaeck.poddy.player.mockData.viewEpisodeMockList
 import com.bakkenbaeck.poddy.presentation.model.ViewPlayerAction
@@ -22,7 +23,7 @@ import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.koin.test.inject
 
-class PlayerHandlerDeleteNextEpisodeActionTest : KoinTest {
+class PlayerHandlerAddNewActionTest : KoinTest {
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {
@@ -34,14 +35,14 @@ class PlayerHandlerDeleteNextEpisodeActionTest : KoinTest {
     private val queueRepository: QueueRepository by inject()
 
     @Test
-    fun `add start action and delete the next episode`() = runBlocking {
+    fun `add start action and add new episode`() = runBlocking {
         episodeMockList.forEach {
             queueRepository.addToQueue(it)
         }
 
         playerHandler.init()
         playerHandler.handlePlayerAction(ACTION_START, viewEpisodeMockList[2])
-        queueRepository.deleteEpisodeFromQueue(viewEpisodeMockList[1].id)
+        queueRepository.addToQueue(replyAll2MockEpisode)
 
         val actions = playerChannel.asFlow().filterNotNull().take(3).toList()
 
