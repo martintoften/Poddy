@@ -37,6 +37,7 @@ class PlayerHandlerStartActionTest : KoinTest {
         val actions = playerChannel.asFlow().filterNotNull().take(3).toList()
 
         assertTrue(actions[0] is ViewPlayerAction.Start)
+        assertEquals(serialMockEpisode.id, actions[0].episode.id)
         assertTrue(actions[1] is ViewPlayerAction.Progress)
         assertTrue(actions[2] is ViewPlayerAction.Progress)
 
