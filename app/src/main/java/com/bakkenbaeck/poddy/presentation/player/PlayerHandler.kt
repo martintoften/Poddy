@@ -136,7 +136,7 @@ class PlayerHandler(
     }
 
     private fun buildAndBroadcastAction(action: String, episode: ViewEpisode?) {
-        val playerAction = buildAction(action, episode) ?: return
+        val playerAction = buildAction(action, episode) ?: return // Invalid action
 
         scope.launch {
             broadcastAction(playerAction)
