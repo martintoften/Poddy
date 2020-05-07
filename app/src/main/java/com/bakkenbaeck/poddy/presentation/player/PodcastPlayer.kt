@@ -82,3 +82,43 @@ class PodcastPlayerImpl(
         mediaPlayer.release()
     }
 }
+
+class TestPodcastPlayerImpl : PodcastPlayer {
+
+    private var isPlaying = false
+
+    override fun load(
+        episode: ViewEpisode,
+        path: String,
+        onStartListener: () -> Unit,
+        onCompletedListener: () -> Unit
+    ) {
+        isPlaying = true
+    }
+
+    override fun seekTo(progressInPercent: Int) {}
+
+    override fun start() {
+        isPlaying = true
+    }
+
+    override fun pause() {
+        isPlaying = false
+    }
+
+    override fun isPlaying(): Boolean = isPlaying
+
+    override fun getDuration(): Int = 0
+
+    override fun getProgress(): Int = 0
+
+    override fun getProgressAndDuration(): Pair<Int, Int> = Pair(0, 0)
+
+    override fun goBack(milliseconds: Int) {}
+
+    override fun goForward(milliseconds: Int) {}
+
+    override fun destroy() {
+        isPlaying = false
+    }
+}

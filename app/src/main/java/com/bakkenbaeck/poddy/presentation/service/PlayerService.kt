@@ -60,7 +60,7 @@ class PlayerService : Service() {
 
             val action = intent.action
             val episode = intent.getParcelableExtra<ViewEpisode?>(EPISODE)
-            playerHandler.handleIntent(action = action, episode = episode)
+            playerHandler.handlePlayerAction(action = action, episode = episode)
         }
 
         return START_NOT_STICKY

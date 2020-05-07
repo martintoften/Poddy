@@ -6,9 +6,22 @@ class PlayerQueue {
     private val queue = mutableListOf<ViewEpisode>()
     private var currentEpisode: ViewEpisode? = null
 
-    fun setQueue(episodes: List<ViewEpisode>) {
+    fun updateQueue(episodes: List<ViewEpisode>) {
+        setQueue(episodes)
+        clearCurrentIfNeeded()
+    }
+
+    private fun setQueue(episodes: List<ViewEpisode>) {
         queue.clear()
         queue.addAll(episodes)
+    }
+
+    private fun clearCurrentIfNeeded() {
+        val current = current() ?: return
+        val currentExist = queue.find { it.id == current.id } != null
+        if (!currentExist) {
+            clearCurrentEpisode()
+        }
     }
 
     fun first(): ViewEpisode? = queue.firstOrNull()

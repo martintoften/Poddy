@@ -19,7 +19,7 @@ class QueueViewModelTest : KoinTest {
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {
-        modules(testDBModule, testRepositoryModule, testChannelModule, viewModelModule, useCaseModule)
+        modules(testDBModule, testRepositoryModule, testChannelModule, testViewModelModule, testUseCaseModule)
     }
 
     @get:Rule

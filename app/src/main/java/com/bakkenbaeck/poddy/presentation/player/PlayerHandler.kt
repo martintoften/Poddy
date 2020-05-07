@@ -37,13 +37,13 @@ class PlayerHandler(
     private val queueFlowUseCase: QueueFlowUseCase,
     private val addToQueueUseCase: AddToQueueUseCase,
     private val deleteQueueUseCase: DeleteQueueUseCase,
+    private val playerActionBuilder: PlayerActionBuilder = PlayerActionBuilder(playerQueue),
     private val mainContext: CoroutineContext = Dispatchers.Main,
     private val backgroundContext: CoroutineContext = Dispatchers.IO
 ) {
     private var isQueueListenerInitialised = false
     private val scope by lazy { CoroutineScope(mainContext) }
     private val tickerChannel by lazy { ticker(delayMillis = 1000, context = mainContext) }
-    private val playerActionBuilder by lazy { PlayerActionBuilder(playerQueue) }
 
     fun init() {
         listenForProgressUpdates()
@@ -70,7 +70,7 @@ class PlayerHandler(
 
     private fun listenForPlayerAction() {
         scope.launch {
-            playerChannel.offer(null) // Make sure the channel is cleared when starting a new session.
+            playerChannel.send(null) // Make sure the channel is cleared when starting a new session.
             playerChannel.asFlow()
                 .filterNotNull()
                 .collect { handlePlayerAction(it) }
@@ -118,7 +118,7 @@ class PlayerHandler(
         podcastPlayer.pause()
     }
 
-    fun handleIntent(action: String?, episode: ViewEpisode?) {
+    fun handlePlayerAction(action: String?, episode: ViewEpisode?) {
         if (action == null) return
         handleAction(action, episode)
         buildAndBroadcastAction(action, episode)
@@ -180,7 +180,7 @@ class PlayerHandler(
     }
 
     private fun handleQueueUpdate(episodes: List<ViewEpisode>) {
-        playerQueue.setQueue(episodes)
+        playerQueue.updateQueue(episodes)
 
         if (!playerQueue.hasCurrent()) {
             val nextEpisode = playerQueue.first() ?: return

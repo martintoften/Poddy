@@ -127,3 +127,9 @@ class PlayerNotificationHandlerImpl(
         context.createNotificationChannel(channel ?: return)
     }
 }
+
+class TestPlayerNotificationHandlerImpl : PlayerNotificationHandler {
+    override fun showPauseNotification(podcastName: String, episodeName: String) {}
+    override fun showPlayNotification(podcastName: String, episodeName: String) {}
+    override fun initNotification(podcastName: String, episodeName: String) {}
+}
