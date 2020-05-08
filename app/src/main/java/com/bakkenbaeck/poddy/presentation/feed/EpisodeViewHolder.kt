@@ -22,7 +22,7 @@ class EpisodeViewHolder(override val containerView: View) :
         length.text = "${episode.duration.toSeconds()} min"
 
         val icon = when (episode.isDownloaded) {
-            DownloadState.DOWNLOADED -> R.drawable.ic_check_24px
+            DownloadState.DOWNLOADED -> R.drawable.ic_check
             DownloadState.IN_PROGRESS -> R.drawable.ic_cancel
             DownloadState.NOT_DOWNLOADED -> R.drawable.ic_download
         }

@@ -23,6 +23,7 @@ class Toolbar : ConstraintLayout {
     private var title: String = ""
     private var showBackArrow = false
     private var showInput = false
+    private var showMore = false
 
     constructor(context: Context) : super(context)
 
@@ -45,6 +46,7 @@ class Toolbar : ConstraintLayout {
         title = a.getString(R.styleable.Toolbar_titleText).orEmpty()
         showBackArrow = a.getBoolean(R.styleable.Toolbar_showBackArrow, false)
         showInput = a.getBoolean(R.styleable.Toolbar_showInput, false)
+        showMore = a.getBoolean(R.styleable.Toolbar_showMore, false)
         a.recycle()
     }
 
@@ -53,6 +55,7 @@ class Toolbar : ConstraintLayout {
         initBackArrow()
         initTitle()
         initText()
+        initMore()
         setBackgroundColor(getColorFromAttr(R.attr.colorPrimary))
         initArrowAnimation()
     }
@@ -75,6 +78,14 @@ class Toolbar : ConstraintLayout {
         }
     }
 
+    private fun initMore() {
+        if (showMore) {
+            moreButton.visibility = View.VISIBLE
+        } else {
+            moreButton.visibility = View.GONE
+        }
+    }
+
     fun setOnBackClickedListener(action: () -> Unit) {
         backButton.setOnClickListener { action() }
     }
@@ -92,7 +103,7 @@ class Toolbar : ConstraintLayout {
         input.addTextChangedListener(object : TextListener() {
             override fun onTextChanged(value: String) {
                 if (!input.text.isNullOrEmpty()) {
-                    input.setRightDrawable(R.drawable.ic_clear_24px)
+                    input.setRightDrawable(R.drawable.ic_clear)
                 } else {
                     input.clearDrawables()
                 }
@@ -111,6 +122,10 @@ class Toolbar : ConstraintLayout {
             }
             return@OnTouchListener false
         })
+    }
+
+    fun setOnMoreClickedListener(cb: () -> Unit) {
+        moreButton.setOnClickListener { cb() }
     }
 
     private fun initTitleAnimation() {

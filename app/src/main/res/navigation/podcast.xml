@@ -13,6 +13,9 @@
         tools:layout="@layout/podcast_fragment">
         <action android:id="@+id/to_details_fragment"
             app:destination="@id/detailsFragment"/>
+        <action
+            android:id="@+id/to_podcast_filter"
+            app:destination="@id/podcastFilterFragment" />
     </fragment>
 
     <fragment
@@ -56,5 +59,12 @@
         <argument
             android:name="episode"
             app:argType="com.bakkenbaeck.poddy.presentation.model.ViewEpisode" />
+    </dialog>
+
+    <dialog
+        android:id="@+id/podcastFilterFragment"
+        android:name="com.bakkenbaeck.poddy.presentation.podcast.PodcastFilterFragment"
+        android:label="podcastFilterFragment"
+        tools:layout="@layout/podcast_filter_fragment" >
     </dialog>
 </navigation>

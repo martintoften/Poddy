@@ -13,7 +13,8 @@
         app:titleText="@string/podcasts"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:showMore="true"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/podcastList"

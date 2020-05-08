@@ -187,12 +187,12 @@ abstract class FeedFragment : BackableFragment() {
     protected fun updateSubscriptionState(subscriptionState: SubscriptionState) {
         when (subscriptionState) {
             is Unsubscribed -> {
-                subscribeButton.setImageResource(R.drawable.ic_check_24px)
+                subscribeButton.setImageResource(R.drawable.ic_check)
                 subscribeButton.backgroundTintList =
                     ColorStateList.valueOf(getColorById(R.color.positive))
             }
             is Subscribed -> {
-                subscribeButton.setImageResource(R.drawable.ic_clear_24px)
+                subscribeButton.setImageResource(R.drawable.ic_clear)
                 subscribeButton.backgroundTintList =
                     ColorStateList.valueOf(getColorById(R.color.negative))
             }

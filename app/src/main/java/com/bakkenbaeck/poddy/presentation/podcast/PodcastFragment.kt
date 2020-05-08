@@ -14,6 +14,7 @@ import coil.api.get
 import com.bakkenbaeck.poddy.R
 import com.bakkenbaeck.poddy.extensions.navigate
 import com.bakkenbaeck.poddy.presentation.BackableFragment
+import com.bakkenbaeck.poddy.presentation.feed.PodcastFeedFragmentDirections
 import com.bakkenbaeck.poddy.presentation.model.ViewPodcast
 import com.bakkenbaeck.poddy.presentation.model.toBaseViewModel
 import kotlinx.android.synthetic.main.podcast_fragment.*
@@ -39,9 +40,16 @@ class PodcastFragment : BackableFragment() {
     }
 
     private fun init() {
+        initView()
         initTransition()
         initAdapter()
         initObservers()
+    }
+
+    private fun initView() {
+        toolbar.setOnMoreClickedListener {
+            navigate(PodcastFragmentDirections.toPodcastFilter())
+        }
     }
 
     private fun initTransition() {
